@@ -16,31 +16,12 @@ const router = new Router({
             path: '/',
             component: Root,
             // meta: { auth: true },
-            redirect: '/home'
-        },
-        {
-            path: '/home',
-            component: loadView('testing/Index')
+            redirect: '/login'
         },
         {
             path: '/login',
             component: loadView('dashboard/Login')
-        },
-        {
-            path: '/reset-password',
-            name: 'reset_password',
-            component: loadView('dashboard/ResetEmailSend')
-        },
-        {
-            path: '/reset-password-code',
-            name: 'reset_password_code',
-            component: loadView('dashboard/ResetCodeSend')
-        },
-        {
-            path: '/reset-password-confirmation',
-            name: 'reset_password_confirmation',
-            component: loadView('dashboard/ResetPassword')
-        },
+        }
     ]
 });
 

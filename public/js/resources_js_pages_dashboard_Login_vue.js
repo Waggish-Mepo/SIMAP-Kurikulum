@@ -115,7 +115,9 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", [
-      _c("h1", { staticClass: "text-green1" }, [_vm._v("halaman login")]),
+      _c("div", { staticClass: "alert alert-info" }, [
+        _vm._v("halo! ini testing"),
+      ]),
     ])
   },
 ]

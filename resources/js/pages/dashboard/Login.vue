@@ -1,6 +1,6 @@
 <template>
   <div>
-      <h1 class="text-green1">halaman login</h1>
+    <div class="alert alert-info">halo! ini testing</div>
   </div>
 </template>
 
