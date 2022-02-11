@@ -5401,6 +5401,21 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
   }, {
     path: '/home',
     component: loadView('testing/Index')
+  }, {
+    path: '/login',
+    component: loadView('dashboard/Login')
+  }, {
+    path: '/reset-password',
+    name: 'reset_password',
+    component: loadView('dashboard/ResetEmailSend')
+  }, {
+    path: '/reset-password-code',
+    name: 'reset_password_code',
+    component: loadView('dashboard/ResetCodeSend')
+  }, {
+    path: '/reset-password-confirmation',
+    name: 'reset_password_confirmation',
+    component: loadView('dashboard/ResetPassword')
   }]
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (router);
@@ -44696,6 +44711,22 @@ var index = {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var map = {
+	"./dashboard/Login.vue": [
+		"./resources/js/pages/dashboard/Login.vue",
+		"resources_js_pages_dashboard_Login_vue"
+	],
+	"./dashboard/ResetCodeSend.vue": [
+		"./resources/js/pages/dashboard/ResetCodeSend.vue",
+		"resources_js_pages_dashboard_ResetCodeSend_vue"
+	],
+	"./dashboard/ResetEmailSend.vue": [
+		"./resources/js/pages/dashboard/ResetEmailSend.vue",
+		"resources_js_pages_dashboard_ResetEmailSend_vue"
+	],
+	"./dashboard/ResetPassword.vue": [
+		"./resources/js/pages/dashboard/ResetPassword.vue",
+		"resources_js_pages_dashboard_ResetPassword_vue"
+	],
 	"./dashboard/Root.vue": [
 		"./resources/js/pages/dashboard/Root.vue"
 	],
@@ -44842,7 +44873,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if (chunkId === "resources_js_pages_testing_Index_vue") return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_ResetCodeSend_vue":1,"resources_js_pages_dashboard_ResetEmailSend_vue":1,"resources_js_pages_dashboard_ResetPassword_vue":1,"resources_js_pages_testing_Index_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

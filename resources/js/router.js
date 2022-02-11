@@ -22,6 +22,25 @@ const router = new Router({
             path: '/home',
             component: loadView('testing/Index')
         },
+        {
+            path: '/login',
+            component: loadView('dashboard/Login')
+        },
+        {
+            path: '/reset-password',
+            name: 'reset_password',
+            component: loadView('dashboard/ResetEmailSend')
+        },
+        {
+            path: '/reset-password-code',
+            name: 'reset_password_code',
+            component: loadView('dashboard/ResetCodeSend')
+        },
+        {
+            path: '/reset-password-confirmation',
+            name: 'reset_password_confirmation',
+            component: loadView('dashboard/ResetPassword')
+        },
     ]
 });
 
