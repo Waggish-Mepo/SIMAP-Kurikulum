@@ -2,13 +2,16 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 //IMPORT MODULE SECTION
+import auth from './stores/auth/index.js'
 
 Vue.use(Vuex);
 
 const debug = process.env.NODE_ENV !== 'production';
 
 const store = new Vuex.Store({
-    modules: {},
+    modules: {
+        auth
+    },
     state: {
         errors: [],
         errorMessage: '',

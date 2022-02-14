@@ -5,10 +5,14 @@
                 <img src="assets/img/login.svg" alt="login" class="img-login">
             </div>
             <div class="col-md-6 bg-light">
+                <div class="loader" v-if="isLoading"></div>
                 <div class="d-flex align-items-center py-5">
                     <div class="container p-sm-5 p-3">
                         <form action="#" @submit.prevent="handleLogin">
                             <div class="mt-4 text-center">
+                                <div class="alert alert-danger mb-3" v-if="errorMessage">
+                                    {{ errorMessage }}
+                                </div>
                                 <h1 class="text-blue1 text-capitalize font-weight-bold">welcome</h1>
                                 <p class="text-dark-gray mb-5">Login to your account to continue</p>
                                 <div class="mt-3 inputbox">
@@ -37,7 +41,9 @@
 </template>
 
 <script>
+import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
 export default {
+    name: "login",
     data() {
         return {
             formData: {
@@ -46,8 +52,12 @@ export default {
             }
         }
     },
-    name: "login",
+    computed: {
+        ...mapState(['errorMessage', 'errors', 'isLoading']),
+    },
     methods: {
+       ...mapActions('auth', ['login']),
+
         seePassword() {
             var x = document.getElementById("myInput");
             if (x.type === "password") {
@@ -57,10 +67,7 @@ export default {
             }
         },
         handleLogin() {
-            axios.post('/api/login', this.formData).then(response => {
-                console.log(response);
-                // this.testToken();
-            });
+            this.login(this.formData).then((result) => {})
         },
         // testToken() {
         //     axios.get('/api/user').then(response => {

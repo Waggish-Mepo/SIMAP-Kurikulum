@@ -11,6 +11,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -49,7 +56,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: "login",
   data: function data() {
     return {
       formData: {
@@ -58,8 +71,8 @@ __webpack_require__.r(__webpack_exports__);
       }
     };
   },
-  name: "login",
-  methods: {
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapState)(['errorMessage', 'errors', 'isLoading'])),
+  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)('auth', ['login'])), {}, {
     seePassword: function seePassword() {
       var x = document.getElementById("myInput");
 
@@ -70,16 +83,14 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     handleLogin: function handleLogin() {
-      axios.post('/api/login', this.formData).then(function (response) {
-        console.log(response); // this.testToken();
-      });
+      this.login(this.formData).then(function (result) {});
     } // testToken() {
     //     axios.get('/api/user').then(response => {
     //         console.log(response);
     //     });
     // }
 
-  }
+  })
 });
 
 /***/ }),
@@ -100,7 +111,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.container[data-v-4dcaaab5] {\n  margin-top: 6%;\n}\n.img-login[data-v-4dcaaab5] {\n  max-width: 350px;\n  width: 100%;\n  display: block;\n  margin: auto;\n}\n.content[data-v-4dcaaab5] {\n  min-height: 100vh;\n}\n.form-control[data-v-4dcaaab5] {\n  text-indent: 18px;\n  padding: 8px 5px 8px 20px;\n  background: #dadada;\n  border: none;\n  margin-bottom: 10px;\n}\n.form-control[data-v-4dcaaab5]:focus {\n  color: #495057;\n  background: #dadada;\n  border-color: #182A36;\n  outline: 0;\n  box-shadow: none;\n}\n.inputbox[data-v-4dcaaab5] {\n  position: relative;\n  width: 80%;\n  margin: auto;\n}\n.inputbox i[data-v-4dcaaab5] {\n  position: absolute;\n  left: 12px;\n  top: 12px;\n  color: #495057;\n  margin-right: 15px;\n}\n.inputbox i.fa-eye[data-v-4dcaaab5] {\n  left: 90%;\n  cursor: pointer;\n}\n.forgot[data-v-4dcaaab5] {\n  font-size: 12px;\n  text-decoration: none;\n  color: #182A36;\n  top: 10px;\n  right: 50px;\n}\n.forgot[data-v-4dcaaab5]:hover {\n  text-decoration: underline;\n}\n.btn-primary[data-v-4dcaaab5] {\n  color: #fff;\n  background-color: #182A36;\n  border-color: #182A36;\n  display: block;\n  margin: auto;\n  padding: 5px 45px;\n  border-radius: 50px;\n}\n@media (max-width: 850px) {\n.form-control[data-v-4dcaaab5] {\n    padding: 8px 5px 8px 12px;\n}\n.inputbox i[data-v-4dcaaab5] {\n    left: 10px;\n}\n.inputbox i.fa-eye[data-v-4dcaaab5] {\n    left: 88%;\n}\n}\n@media (max-width: 770px) {\n.inputbox[data-v-4dcaaab5]{\n    width: 100%;\n}\n.inputbox i.fa-eye[data-v-4dcaaab5] {\n    left: 92%;\n}\n.forgot[data-v-4dcaaab5] {\n    right: 0;\n}\n}\n@media (max-width: 450px) {\n.form-control[data-v-4dcaaab5] {\n    text-indent: 12px;\n}\n.inputbox i[data-v-4dcaaab5] {\n    font-size: 12px;\n    left: 8px;\n}\n.inputbox i.fa-eye[data-v-4dcaaab5] {\n    left: 90%;\n}\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.container[data-v-4dcaaab5] {\r\n  margin-top: 6%;\n}\n.img-login[data-v-4dcaaab5] {\r\n  max-width: 350px;\r\n  width: 100%;\r\n  display: block;\r\n  margin: auto;\n}\n.content[data-v-4dcaaab5] {\r\n  min-height: 100vh;\n}\n.form-control[data-v-4dcaaab5] {\r\n  text-indent: 18px;\r\n  padding: 8px 5px 8px 20px;\r\n  background: #dadada;\r\n  border: none;\r\n  margin-bottom: 10px;\n}\n.form-control[data-v-4dcaaab5]:focus {\r\n  color: #495057;\r\n  background: #dadada;\r\n  border-color: #182A36;\r\n  outline: 0;\r\n  box-shadow: none;\n}\n.inputbox[data-v-4dcaaab5] {\r\n  position: relative;\r\n  width: 80%;\r\n  margin: auto;\n}\n.inputbox i[data-v-4dcaaab5] {\r\n  position: absolute;\r\n  left: 12px;\r\n  top: 12px;\r\n  color: #495057;\r\n  margin-right: 15px;\n}\n.inputbox i.fa-eye[data-v-4dcaaab5] {\r\n  left: 90%;\r\n  cursor: pointer;\n}\n.forgot[data-v-4dcaaab5] {\r\n  font-size: 12px;\r\n  text-decoration: none;\r\n  color: #182A36;\r\n  top: 10px;\r\n  right: 50px;\n}\n.forgot[data-v-4dcaaab5]:hover {\r\n  text-decoration: underline;\n}\n.btn-primary[data-v-4dcaaab5] {\r\n  color: #fff;\r\n  background-color: #182A36;\r\n  border-color: #182A36;\r\n  display: block;\r\n  margin: auto;\r\n  padding: 5px 45px;\r\n  border-radius: 50px;\n}\n@media (max-width: 850px) {\n.form-control[data-v-4dcaaab5] {\r\n    padding: 8px 5px 8px 12px;\n}\n.inputbox i[data-v-4dcaaab5] {\r\n    left: 10px;\n}\n.inputbox i.fa-eye[data-v-4dcaaab5] {\r\n    left: 88%;\n}\n}\n@media (max-width: 770px) {\n.inputbox[data-v-4dcaaab5]{\r\n    width: 100%;\n}\n.inputbox i.fa-eye[data-v-4dcaaab5] {\r\n    left: 92%;\n}\n.forgot[data-v-4dcaaab5] {\r\n    right: 0;\n}\n}\n@media (max-width: 450px) {\n.form-control[data-v-4dcaaab5] {\r\n    text-indent: 12px;\n}\n.inputbox i[data-v-4dcaaab5] {\r\n    font-size: 12px;\r\n    left: 8px;\n}\n.inputbox i.fa-eye[data-v-4dcaaab5] {\r\n    left: 90%;\n}\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -592,6 +603,8 @@ var render = function () {
       _vm._m(0),
       _vm._v(" "),
       _c("div", { staticClass: "col-md-6 bg-light" }, [
+        _vm.isLoading ? _c("div", { staticClass: "loader" }) : _vm._e(),
+        _vm._v(" "),
         _c("div", { staticClass: "d-flex align-items-center py-5" }, [
           _c("div", { staticClass: "container p-sm-5 p-3" }, [
             _c(
@@ -607,6 +620,16 @@ var render = function () {
               },
               [
                 _c("div", { staticClass: "mt-4 text-center" }, [
+                  _vm.errorMessage
+                    ? _c("div", { staticClass: "alert alert-danger mb-3" }, [
+                        _vm._v(
+                          "\n                                " +
+                            _vm._s(_vm.errorMessage) +
+                            "\n                            "
+                        ),
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
                   _c(
                     "h1",
                     {
