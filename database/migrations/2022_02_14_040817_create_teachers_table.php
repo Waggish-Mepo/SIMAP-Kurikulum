@@ -78,7 +78,6 @@ class CreateTeachersTable extends Migration
             $table->integer('no_induk')->nullable();
             $table->float('ipk')->nullable();
             $table->jsonb('anak')->nullable();
-            $table->integer('tahun_masuk')->nullable();
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -21,6 +22,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('Wikrama2022'),
             'role' => User::ADMIN,
             'status' => true,
+            'userable_id' => Teacher::factory(['name' => 'Admin Kurikulum'])->id,
         ];
 
         User::factory($user)->create();
