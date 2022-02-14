@@ -71,9 +71,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     handleLogin: function handleLogin() {
       axios.post('/api/login', this.formData).then(function (response) {
-        console.log(response);
+        console.log(response); // this.testToken();
       });
-    }
+    } // testToken() {
+    //     axios.get('/api/user').then(response => {
+    //         console.log(response);
+    //     });
+    // }
+
   }
 });
 

@@ -33,6 +33,6 @@ class AuthController extends Controller
 
         return response()->json([
             'access_token' => $authToken,
-        ]);
+        ], 200);
     }
 }
