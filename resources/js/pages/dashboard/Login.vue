@@ -1,51 +1,72 @@
 <template>
     <div class="container-fluid">
-      <div class="row no-gutter content">
-          <div class="col-md-6 d-none d-md-flex bg-blue1 wave">
-            <img src="assets/img/login.svg" alt="login" class="img-login">
-          </div>
-          <div class="col-md-6 bg-light">
-              <div class="d-flex align-items-center py-5">
-                  <div class="container p-sm-5 p-3">
-                      <div class="mt-4 text-center">
-                        <h1 class="text-blue1 text-capitalize font-weight-bold">welcome</h1> 
-                        <p class="text-dark-gray mb-5">Login to your account to continue</p>
-                        <div class="mt-3 inputbox"> 
-                          <input type="text" class="form-control" placeholder="Username"><i class="fa fa-user"></i> 
-                        </div>
-                        <div class="inputbox"> 
-                          <input type="password" class="form-control" placeholder="Password" id="myInput"><i class="fa fa-lock"></i> 
-                          <i class="fas fa-eye" @click="seePassword"></i>
-                        </div>
-                      </div>
-                      <div class="d-flex justify-content-between position-relative pb-5">
-                        <div></div>
-                        <div> 
-                          <a href="#" class="forgot position-absolute">For assistance, contact Admin here</a> 
-                        </div>
-                      </div>
-                      <div class="mt-4"> 
-                        <button class="btn btn-primary btn-block btn-lg">Log In</button> 
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
+        <div class="row no-gutter content">
+            <div class="col-md-6 d-none d-md-flex bg-blue1 wave">
+                <img src="assets/img/login.svg" alt="login" class="img-login">
+            </div>
+            <div class="col-md-6 bg-light">
+                <div class="d-flex align-items-center py-5">
+                    <div class="container p-sm-5 p-3">
+                        <form action="#" @submit.prevent="handleLogin">
+                            <div class="mt-4 text-center">
+                                <h1 class="text-blue1 text-capitalize font-weight-bold">welcome</h1>
+                                <p class="text-dark-gray mb-5">Login to your account to continue</p>
+                                <div class="mt-3 inputbox">
+                                    <input type="text" class="form-control" v-model="formData.username" placeholder="Username"><i class="fa fa-user"></i>
+                                </div>
+                                <div class="inputbox">
+                                    <input type="password" class="form-control" v-model="formData.password"  placeholder="Password" id="myInput"><i class="fa fa-lock"></i>
+                                    <i class="fas fa-eye" @click="seePassword"></i>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between position-relative pb-5">
+                                <div></div>
+                                <div>
+                                    <a href="#" class="forgot position-absolute">For assistance, contact Admin here</a>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary btn-block btn-lg">Log In</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
 export default {
+    data() {
+        return {
+            formData: {
+                username: '',
+                password: ''
+            }
+        }
+    },
     name: "login",
     methods: {
-      seePassword() {
-        var x = document.getElementById("myInput");
-        if (x.type === "password") {
-          x.type = "text";
-        } else {
-          x.type = "password";
-        }
-      }
+        seePassword() {
+            var x = document.getElementById("myInput");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        },
+        handleLogin() {
+            axios.post('/api/login', this.formData).then(response => {
+                console.log(response);
+                // this.testToken();
+            });
+        },
+        // testToken() {
+        //     axios.get('/api/user').then(response => {
+        //         console.log(response);
+        //     });
+        // }
     }
 }
 </script>
@@ -84,7 +105,7 @@ export default {
 
 .inputbox {
   position: relative;
-  width: 80%;  
+  width: 80%;
   margin: auto;
 }
 
@@ -160,7 +181,7 @@ export default {
     font-size: 12px;
     left: 8px;
   }
-  
+
   .inputbox i.fa-eye {
     left: 90%;
   }
