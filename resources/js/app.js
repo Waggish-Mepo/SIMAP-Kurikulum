@@ -11,8 +11,25 @@ import store from './store.js'
 import App from './App.vue'
 import axios from 'axios'
 
-// window.Vue = require('vue').default;
-// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.prototype.$http = axios;
+Vue.prototype.$http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+Vue.prototype.$http.defaults.headers.common['Accept'] = 'application/json';
+axios.defaults.baseURL = window.location.origin + '/api';
+axios.defaults.withCredentials = true
+axios.interceptors.request.use(function(config) {
+    // Do something before request is sent
+    return config;
+}, function(error) {
+    if (error.response.status === 401) {
+        router.push({ name: 'login' })
+    }
+    // Do something with request error
+    return Promise.reject(error);
+});
+
+if (localStorage.getItem('token_kurikulum')) {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token_kurikulum');
+}
 
 new Vue({
     router,

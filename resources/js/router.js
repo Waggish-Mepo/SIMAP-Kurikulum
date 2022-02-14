@@ -15,14 +15,30 @@ const router = new Router({
     routes: [{
             path: '/',
             component: Root,
-            // meta: { auth: true },
-            redirect: '/login'
+            redirect: '/home'
         },
         {
             path: '/login',
             component: loadView('dashboard/Login')
-        }
+        },
+        {
+            path: '/home',
+            name: 'home',
+            component: loadView('dashboard/Home'),
+            meta: { auth: true },
+        },
     ]
+});
+
+router.beforeEach((to, from, next) => {
+    // const loggedIn = localStorage.getItem('user');
+    const token = localStorage.getItem('token_kurikulum');
+
+    if (to.matched.some(record => record.meta.auth) && !token) {
+        next('/login')
+        return
+    }
+    next()
 });
 
 export default router;

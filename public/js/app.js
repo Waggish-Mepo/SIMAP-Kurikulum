@@ -5316,8 +5316,29 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 
- // window.Vue = require('vue').default;
-// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+
+vue__WEBPACK_IMPORTED_MODULE_4__["default"].prototype.$http = (axios__WEBPACK_IMPORTED_MODULE_3___default());
+vue__WEBPACK_IMPORTED_MODULE_4__["default"].prototype.$http.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+vue__WEBPACK_IMPORTED_MODULE_4__["default"].prototype.$http.defaults.headers.common.Accept = 'application/json';
+(axios__WEBPACK_IMPORTED_MODULE_3___default().defaults.baseURL) = window.location.origin + '/api';
+(axios__WEBPACK_IMPORTED_MODULE_3___default().defaults.withCredentials) = true;
+axios__WEBPACK_IMPORTED_MODULE_3___default().interceptors.request.use(function (config) {
+  // Do something before request is sent
+  return config;
+}, function (error) {
+  if (error.response.status === 401) {
+    _router_js__WEBPACK_IMPORTED_MODULE_0__["default"].push({
+      name: 'login'
+    });
+  } // Do something with request error
+
+
+  return Promise.reject(error);
+});
+
+if (localStorage.getItem('token_kurikulum')) {
+  (axios__WEBPACK_IMPORTED_MODULE_3___default().defaults.headers.common.Authorization) = 'Bearer ' + localStorage.getItem('token_kurikulum');
+}
 
 new vue__WEBPACK_IMPORTED_MODULE_4__["default"]({
   router: _router_js__WEBPACK_IMPORTED_MODULE_0__["default"],
@@ -5397,12 +5418,31 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
   routes: [{
     path: '/',
     component: _pages_dashboard_Root__WEBPACK_IMPORTED_MODULE_0__["default"],
-    // meta: { auth: true },
-    redirect: '/login'
+    redirect: '/home'
   }, {
     path: '/login',
     component: loadView('dashboard/Login')
+  }, {
+    path: '/home',
+    name: 'home',
+    component: loadView('dashboard/Home'),
+    meta: {
+      auth: true
+    }
   }]
+});
+router.beforeEach(function (to, from, next) {
+  // const loggedIn = localStorage.getItem('user');
+  var token = localStorage.getItem('token_kurikulum');
+
+  if (to.matched.some(function (record) {
+    return record.meta.auth;
+  }) && !token) {
+    next('/login');
+    return;
+  }
+
+  next();
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (router);
 
@@ -5419,15 +5459,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./stores/auth/index.js */ "./resources/js/stores/auth/index.js");
 
  //IMPORT MODULE SECTION
 
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
+
+vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2__["default"]);
 var debug = "development" !== 'production';
-var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
-  modules: {},
+var store = new vuex__WEBPACK_IMPORTED_MODULE_2__["default"].Store({
+  modules: {
+    auth: _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
   state: {
     errors: [],
     errorMessage: '',
@@ -5465,6 +5509,67 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   strict: debug
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (store);
+
+/***/ }),
+
+/***/ "./resources/js/stores/auth/index.js":
+/*!*******************************************!*\
+  !*** ./resources/js/stores/auth/index.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../router */ "./resources/js/router.js");
+
+
+
+var state = function state() {
+  return {};
+};
+
+var mutations = {};
+var actions = {
+  login: function login(_ref, payload) {
+    var commit = _ref.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('auth/sanctum/csrf-cookie').then(function (response) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default().post('/login', payload).then(function (res) {
+          var data = res.data;
+          (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.headers.common.Authorization) = 'Bearer ' + data.access_token;
+          localStorage.setItem('token_kurikulum', data.access_token); // localStorage.setItem('user', JSON.stringify(data.user));
+          // commit('SET_USER', data.user, { root: true });
+
+          commit('SET_GOOD', null, {
+            root: true
+          });
+          _router__WEBPACK_IMPORTED_MODULE_1__["default"].push({
+            name: 'home'
+          });
+          resolve(res.data);
+        })["catch"](function (error) {
+          commit('SET_ERROR', error.response.data, {
+            root: true
+          });
+        });
+      });
+    });
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: state,
+  actions: actions,
+  mutations: mutations
+});
 
 /***/ }),
 
@@ -44697,6 +44802,10 @@ var index = {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var map = {
+	"./dashboard/Home.vue": [
+		"./resources/js/pages/dashboard/Home.vue",
+		"resources_js_pages_dashboard_Home_vue"
+	],
 	"./dashboard/Login.vue": [
 		"./resources/js/pages/dashboard/Login.vue",
 		"resources_js_pages_dashboard_Login_vue"
@@ -44843,7 +44952,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if (chunkId === "resources_js_pages_dashboard_Login_vue") return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};
