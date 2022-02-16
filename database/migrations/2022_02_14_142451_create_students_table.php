@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTeachersTable extends Migration
+class CreateStudentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateTeachersTable extends Migration
      */
     public function up()
     {
-        Schema::create('teachers', function (Blueprint $table) {
+        Schema::create('students', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
             $table->integer('nuptk')->nullable();
             $table->integer('nik')->nullable();
-            $table->string('no_induk_yayasan')->nullable();
+            $table->integer('no_induk_yayasan')->nullable();
             $table->integer('no_ukg')->nullable();
-            $table->string('jk');
             $table->string('tempat_lahir')->nullable();
             $table->date('tgl_lahir')->nullable();
             $table->string('nama_ibu_kandung')->nullable();
@@ -31,10 +30,10 @@ class CreateTeachersTable extends Migration
             $table->string('dusun')->nullable();
             $table->string('kelurahan_desa')->nullable();
             $table->string('kecamatan')->nullable();
-            $table->smallInteger('kode_pos')->nullable();
+            $table->integer('kode_pos')->nullable();
             $table->string('lintang')->nullable();
             $table->string('bujur')->nullable();
-            $table->integer('no_kartu_keluarga')->nullable();
+            $table->string('no_kartu_keluarga')->nullable();
             $table->string('agama')->nullable();
             $table->string('kewarganegaraan')->nullable();
             $table->integer('npwp')->nullable();
@@ -55,9 +54,9 @@ class CreateTeachersTable extends Migration
             $table->integer('kartu_suami_istri')->nullable();
             $table->string('lisensi_kepala_sekolah')->nullable();
             $table->integer('no_registrasi_nuksi')->nullable();
-            $table->string('keahlian_laboratorium')->nullable();
-            $table->string('mampu_menagani_kebutuhan_khusus')->nullable();
-            $table->string('keahlian_braille')->nullable();
+            $table->string('keahlian_labolatorium')->nullable();
+            $table->boolean('mampu_menangani_kebutuhan_khusus')->nullable();
+            $table->string('keahlian_braile')->nullable();
             $table->string('keahlian_bahasa_isyarat')->nullable();
             $table->integer('no_telp_rumah')->nullable();
             $table->integer('no_hp')->nullable();
@@ -65,19 +64,25 @@ class CreateTeachersTable extends Migration
             $table->date('tgl_surat_tugas')->nullable();
             $table->string('tmt_tugas')->nullable();
             $table->boolean('status_sekolah_induk')->nullable();
-            $table->string('jenis_sertifikasi')->nullable();
+            $table->boolean('jenis_sertifikasi')->nullable();
             $table->integer('no_sertifikasi')->nullable();
             $table->integer('tahun_sertifikasi')->nullable();
             $table->string('bidang_studi_sertifikasi')->nullable();
             $table->string('nrg_sertifikasi')->nullable();
             $table->integer('no_peserta_sertifikasi')->nullable();
             $table->string('jenjang_pendidikan')->nullable();
+            $table->string('gelar_akademi')->nullable();
             $table->string('satuan_pendidikan')->nullable();
             $table->integer('tahun_masuk')->nullable();
             $table->integer('tahun_keluar')->nullable();
             $table->integer('no_induk')->nullable();
-            $table->float('ipk')->nullable();
+            $table->integer('ipk')->nullable();
             $table->jsonb('anak')->nullable();
+            $table->boolean('status')->nullable();
+            $table->string('jenjang_pendidikan_anak')->nullable();
+            $table->integer('nisn')->nullable();
+            $table->boolean('jk');
+            $table->string('tempat_lahir_anak')->nullable();
             $table->timestamps();
         });
     }
@@ -89,6 +94,6 @@ class CreateTeachersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('teachers');
+        Schema::dropIfExists('students');
     }
 }
