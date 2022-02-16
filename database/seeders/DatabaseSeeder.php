@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Subject;
 use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -26,5 +27,8 @@ class DatabaseSeeder extends Seeder
         ];
 
         User::factory($user)->create();
+
+        // Subject::factory(['name' => 'Bahasa Indonesia'])->count(3)->create();
+
     }
 }
