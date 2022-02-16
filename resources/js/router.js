@@ -15,17 +15,32 @@ const router = new Router({
     routes: [{
             path: '/',
             component: Root,
-            redirect: '/home'
+            redirect: '/dashboard'
         },
         {
             path: '/login',
             component: loadView('dashboard/Login')
         },
         {
-            path: '/home',
-            name: 'home',
-            component: loadView('dashboard/Home'),
+            path: '/dashboard',
+            component: Root,
             meta: { auth: true },
+            children: [{ 
+                path: '/',
+                name: 'dashboard',
+                component: loadView('dashboard/Home')
+            },
+            {
+                path: '/:page/mata-pelajaran',
+                name: 'mata_pelajaran',
+                component: loadView('dashboard/Mapel')
+            },
+            {
+                path: '/:page/periode-rapor',
+                name: 'periode_rapor',
+                component: loadView('dashboard/PeriodeRapor')
+            },
+            ]
         },
     ]
 });

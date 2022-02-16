@@ -103,3 +103,22 @@
     -webkit-animation: spin .8s linear infinite;
     animation: spin .8s linear infinite;
 }
+
+.body-pd {
+    padding-left: 50px;
+}
+
+a {
+    text-decoration: none;
+}
+
+@media screen and (min-width: 768px) {
+    .body {
+        margin: calc(3rem + 1rem) 0 0 0;
+        padding-left: calc(50px + 2rem);
+    }
+
+    .body-pd {
+        padding-left: calc(50px + 188px);
+    }
+}
