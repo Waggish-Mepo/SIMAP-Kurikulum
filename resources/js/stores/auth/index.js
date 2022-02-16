@@ -19,7 +19,7 @@ const actions = {
                     // localStorage.setItem('user', JSON.stringify(data.user));
                     // commit('SET_USER', data.user, { root: true });
                     commit('SET_GOOD', null, { root: true });
-                    router.push({ name: 'home' });
+                    router.push({ name: 'dashboard' });
                     resolve(res.data);
                 }).catch((error) => {
                     commit('SET_ERROR', error.response.data, { root: true });

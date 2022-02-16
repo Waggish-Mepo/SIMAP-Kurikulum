@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Subject;
+use App\Models\Teacher;
 use App\Models\User;
 
 return [
@@ -16,4 +17,10 @@ return [
             Subject::MUATAN_C,
         ]
     ]
+    'teacher' => [
+        'gender' => [
+            Teacher::LAKILAKI,
+            Teacher::PEREMPUAN,
+        ],
+    ],
 ];
