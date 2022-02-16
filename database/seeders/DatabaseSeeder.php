@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Subject;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -24,5 +25,8 @@ class DatabaseSeeder extends Seeder
         ];
 
         User::factory($user)->create();
+
+        // Subject::factory(['name' => 'Bahasa Indonesia'])->count(3)->create();
+
     }
 }
