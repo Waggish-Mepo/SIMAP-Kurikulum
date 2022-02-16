@@ -27,6 +27,25 @@ const actions = {
             });
         })
     },
+    logout({ commit }) {
+        commit('SET_LOADING', true, { root: true });
+        return new Promise((resolve, reject) => {
+            axios.get('/logout')
+                .then((response) => {
+                    commit('CLEAR_ERROR', null, { root: true });
+                    // commit('SET_USER', {}, { root: true });
+                    localStorage.clear();
+                    delete axios.defaults.headers.common['Authorization'];
+                    resolve();
+                    commit('SET_LOADING', false, { root: true })
+                    router.push({ name: 'login' });
+                })
+                .catch((error) => {
+                    commit('SET_ERROR', error.response.data, { root: true });
+                    commit('SET_LOADING', false, { root: true })
+                })
+        })
+    },
 };
 
 export default {

@@ -35,4 +35,10 @@ class AuthController extends Controller
             'access_token' => $authToken,
         ], 200);
     }
+
+    public function logout()
+    {
+        auth()->user()->tokens()->delete();
+        return response(['message' => 'destroyed']);
+    }
 }

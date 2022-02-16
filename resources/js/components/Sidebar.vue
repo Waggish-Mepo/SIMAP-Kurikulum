@@ -25,7 +25,7 @@
                     </router-link>
                 </div> 
             </div>
-            <a href="#" class="nav_link">
+            <a href="#" class="nav_link" @click="handleLogout">
                 <i class="fas fa-power-off nav_icon"></i> 
                 <span class="nav_name">LogOut</span> 
             </a>
@@ -34,8 +34,16 @@
 </template>
 
 <script>
+import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
 export default {
     name: "Sidebar",
+    methods: {
+        ...mapActions('auth', ['logout']),
+
+        handleLogout() {
+            this.logout().then(() => { });
+        }
+    }
 }
 </script>
 
