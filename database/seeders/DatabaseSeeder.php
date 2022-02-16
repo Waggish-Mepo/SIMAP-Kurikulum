@@ -23,12 +23,11 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('Wikrama2022'),
             'role' => User::ADMIN,
             'status' => true,
-            'userable_id' => Teacher::factory(['name' => 'Admin Kurikulum'])->id,
+            'userable_id' => Teacher::factory(['name' => 'Admin Kurikulum'])->create()->id,
         ];
 
         User::factory($user)->create();
 
-        // Subject::factory(['name' => 'Bahasa Indonesia'])->count(3)->create();
-
+        Subject::factory(['name' => 'Bahasa Indonesia', 'group' => 'A (Muatan Nasional)'])->create();
     }
 }
