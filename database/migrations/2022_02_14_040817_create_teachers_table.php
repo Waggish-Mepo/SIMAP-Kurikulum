@@ -55,7 +55,7 @@ class CreateTeachersTable extends Migration
             $table->integer('kartu_suami_istri')->nullable();
             $table->string('lisensi_kepala_sekolah')->nullable();
             $table->integer('no_registrasi_nuksi')->nullable();
-            $table->string('keahlian_laboratorium');
+            $table->string('keahlian_laboratorium')->nullable();
             $table->string('mampu_menagani_kebutuhan_khusus')->nullable();
             $table->string('keahlian_braille')->nullable();
             $table->string('keahlian_bahasa_isyarat')->nullable();
