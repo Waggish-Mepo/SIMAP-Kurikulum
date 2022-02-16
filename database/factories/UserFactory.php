@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Teacher;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -14,16 +15,20 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+
+        $name = $this->faker->firstName();
+        $username = $name.$this->faker->numerify('###');
+
         return [
             'id' => $this->faker->uuid(),
-            'username' => $this->faker->name(),
-            'name' => $this->faker->name(),
+            'username' => $username,
+            'name' => $name,
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'role' => $this->faker->randomElement(config('constant.user.roles')), // password
             'remember_token' => Str::random(10),
-            'userable_id' => $this->faker->uuid()
+            'userable_id' => Teacher::factory(['name' => $name])->create()->id
         ];
     }
 
