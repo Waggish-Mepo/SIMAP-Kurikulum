@@ -16,7 +16,7 @@ return [
             Subject::MUATAN_B,
             Subject::MUATAN_C,
         ]
-    ]
+    ],
     'teacher' => [
         'gender' => [
             Teacher::LAKILAKI,
