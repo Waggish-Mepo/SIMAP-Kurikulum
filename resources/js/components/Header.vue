@@ -62,11 +62,11 @@ export default {
 }
 
 .header-pd {
-    padding: 0 2rem 0 calc(50px + 12rem);
+    padding: 0 2rem 0 calc(48px + 12rem);
 }
 
 .header-md {
-    padding: 0 2rem 0 calc(50px + 2rem);
+    padding: 0 2rem 0 calc(48px + 2rem);
 }
 
 @media screen and (min-width: 768px) {

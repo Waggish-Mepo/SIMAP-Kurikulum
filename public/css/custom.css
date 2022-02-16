@@ -46,6 +46,15 @@
     color: #4040F8;
 }
 
+.btn-blue {
+    background-color: #4040F8;
+}
+
+.btn-outline-blue {
+    border-color: #4040F8;
+    color: #4040F8;
+}
+
 .bg-dark-blue {
     background-color: #4962AC;
 }
@@ -53,7 +62,6 @@
 .text-dark-blue {
     color: #4962AC;
 }
-
 /* load */
 .loader {
     position: absolute;
@@ -105,7 +113,7 @@
 }
 
 .body-pd {
-    padding-left: 50px;
+    padding-left: 48px;
 }
 
 a {
@@ -115,10 +123,10 @@ a {
 @media screen and (min-width: 768px) {
     .body {
         margin: calc(3rem + 1rem) 0 0 0;
-        padding-left: calc(50px + 2rem);
+        padding-left: calc(48px + 2rem);
     }
 
     .body-pd {
-        padding-left: calc(50px + 188px);
+        padding-left: calc(48px + 188px);
     }
 }

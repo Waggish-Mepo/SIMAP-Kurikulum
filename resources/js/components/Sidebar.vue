@@ -52,7 +52,7 @@ export default {
     position: fixed;
     top: 0;
     left: -30%;
-    width: 50px;
+    width: 48px;
     height: 100vh;
     background-color: #182A36;
     padding: .5rem 0 0 0;
@@ -83,7 +83,7 @@ hr {
 }
 
 .nav_logo-icon {
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: #fff;
 }
 
@@ -109,7 +109,7 @@ hr {
 }
 
 .nav_icon {
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 .show {
@@ -137,15 +137,15 @@ hr {
     .l-navbar {
         left: 0;
         padding: 1rem 0 0 0;
-        width: 55px;
+        width: 50px;
     }
 
     .show {
-        width: calc(50px + 156px)
+        width: calc(48px + 156px)
     }
 
     .nav_logo-icon, .nav_icon {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
 
     .nav_link {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="text-capitalize my-3 font-weight-bold">selamat datang, manusia</h3>
+    <h4 class="text-capitalize my-3 font-weight-bold">selamat datang, manusia</h4>
     <div class="d-flex flex-wrap justify-content-center mt-5">
       <div class="w-box mb-3 shadow">
         <div class="box bg-white">
