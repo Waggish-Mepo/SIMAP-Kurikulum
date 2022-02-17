@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 //IMPORT MODULE SECTION
 import auth from './stores/auth/index.js'
+import subjects from './stores/subjects/index.js'
 
 Vue.use(Vuex);
 
@@ -10,7 +11,8 @@ const debug = process.env.NODE_ENV !== 'production';
 
 const store = new Vuex.Store({
     modules: {
-        auth
+        auth,
+        subjects
     },
     state: {
         errors: [],

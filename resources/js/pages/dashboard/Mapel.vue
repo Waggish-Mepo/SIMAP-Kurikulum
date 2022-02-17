@@ -1,6 +1,10 @@
 <template>
   <div>
+    <div class="loader" v-if="isLoading"></div>
     <h4 class="text-capitalize mt-3 mb-4 font-weight-bold">mapel dan tim guru</h4>
+    <div class="alert alert-danger my-3" v-if="errorMessage">
+      {{ errorMessage }}
+    </div>
     <div class="row">
         <div class="col-md-8">
             <div class="input-group mb-3"> 
@@ -58,6 +62,9 @@
     <modal v-if="modalAdd" @close="modalAdd = false" :action="addSubject">
         <h5 slot="header">Tambah Mapel</h5>
         <div slot="body">
+            <div class="alert alert-danger mb-3" v-if="errorMessage">
+                {{ errorMessage }}
+            </div>
             <div class="form-group">
                 <label class="mb-2">Kelompok Mapel</label>
                 <select2 :options="categories" v-model="subject.group"></select2>
@@ -75,6 +82,9 @@
     <modal v-if="modalEdit" @close="modalEdit = false" :action="editSubject">
         <h5 slot="header">Edit Mapel</h5>
         <div slot="body">
+            <div class="alert alert-danger mb-3" v-if="errorMessage">
+                {{ errorMessage }}
+            </div>
             <div class="form-group">
                 <label class="mb-2">Kelompok Mapel</label>
                 <select2 :options="categories"></select2>
@@ -119,8 +129,8 @@ export default {
         return {
             modalAdd: false,
             subject: {
+                name: null,
                 group: null,
-                name: null
             },
             categories: [
                 'A (Muatan Nasional)',
@@ -139,9 +149,16 @@ export default {
             modalDelete: false
         }
     },
+    computed: {
+        ...mapState(['errorMessage', 'errors', 'isLoading']),
+    },
     methods: {
+        ...mapActions('subjects', ['create']),
+
         addSubject() {
-            console.log(this.subject);
+            this.create(this.subject).then((result) => {
+                this.modalAdd = false;
+            })
         },
         editSubject() {
             console.log('edit');
