@@ -13,13 +13,12 @@
                         <slot name="body"></slot>
                     </div>
                     <div class="modal-footer py-1 bg-light">
-                        <div class="d-flex justify-content-between">
-                            <slot name="button"></slot>
-                            <div class="d-flex">
-                                <button type="button" class="btn btn-outline-blue" @click="$emit('close')">Batal</button>
-                                <button type="button" class="btn btn-blue text-white" v-if="action !=null" @click="action">Simpan</button>
-                                <button type="button" class="btn btn-danger text-white" v-if="deleteOpt !=null" @click="deleteOpt">Hapus</button>
-                            </div>
+                        <slot name="button"></slot>
+                        <div></div>
+                        <div class="d-flex">
+                            <button type="button" class="btn btn-outline-blue" @click="$emit('close')">Batal</button>
+                            <button type="button" class="btn btn-blue text-white" v-if="action !=null" @click="action">Simpan</button>
+                            <button type="button" class="btn btn-danger text-white" v-if="deleteOpt !=null" @click="deleteOpt">Hapus</button>
                         </div>
                     </div>
                 </div>
@@ -64,6 +63,8 @@ export default {
 .modal-footer{
 	border-top:none;
     margin-top: 15px;
+    justify-content: space-between !important;
+    padding-bottom: 15px !important;
 }
 
 .modal-header{

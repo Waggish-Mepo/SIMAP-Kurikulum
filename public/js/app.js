@@ -5681,12 +5681,12 @@ var actions = {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('auth/sanctum/csrf-cookie').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('sanctum/csrf-cookie').then(function (response) {
         axios__WEBPACK_IMPORTED_MODULE_0___default().post('/login', payload).then(function (res) {
           var data = res.data;
           (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.headers.common.Authorization) = 'Bearer ' + data.access_token;
           localStorage.setItem('token_kurikulum', data.access_token); // localStorage.setItem('user', JSON.stringify(data.user));
-          // commit('SET_USER', data.user, { root: true });
+          // commit('SET_USER', data.user_data, { root: true });
 
           commit('SET_GOOD', null, {
             root: true
@@ -5725,6 +5725,30 @@ var actions = {
         });
       })["catch"](function (error) {
         commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+        commit('SET_LOADING', false, {
+          root: true
+        });
+      });
+    });
+  },
+  getMe: function getMe(_ref3) {
+    var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/me').then(function (response) {
+        resolve(response.data);
+        commit('SET_USER', response.data.data, {
+          root: true
+        });
+        commit('SET_LOADING', false, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERRORS', error.response.data, {
           root: true
         });
         commit('SET_LOADING', false, {

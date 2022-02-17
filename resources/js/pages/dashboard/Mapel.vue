@@ -20,27 +20,21 @@
         <table class="table table-bordered text-capitalize bg-white">
             <thead>
                 <tr class="text-center">
-                    <th rowspan="2"></th>
-                    <th rowspan="2" class="th-middle">mata pelajaran</th>
-                    <th colspan="2">tim guru</th>
-                </tr>
-                <tr class="text-center">
-                    <th>Koordinator</th>
-                    <th>guru mapel</th>
+                    <th></th>
+                    <th>mata pelajaran</th>
+                    <th>tim guru</th>
                 </tr>
                 <tr>
-                    <th colspan="4" class="r-category">a. muatan nasional</th>
+                    <th colspan="3" class="r-category">a. muatan nasional</th>
                 </tr>
                 <tr>
                     <td class="text-center">:</td>
                     <td>pendidikan agama islam dan budi pekerti</td>
-                    <td><a href="#" class="text-primary">pilih koordinator</a></td>
-                    <td><a href="#" class="text-primary">pilih guru</a></td>
+                    <td><a href="#" class="text-primary" @click="modalEdit = true">pilih guru</a></td>
                 </tr>
                 <tr>
                     <td class="text-center">:</td>
                     <td>pendidikan pancasila dan kewarganegaraan</td>
-                    <td>guru</td>
                     <td>
                         <ul>
                             <li>nama1</li>
@@ -65,9 +59,43 @@
         <h5 slot="header">Tambah Mapel</h5>
         <div slot="body">
             <div class="form-group">
-                <label>Kategori</label>
+                <label class="mb-2">Kelompok Mapel</label>
+                <select2 :options="categories" v-model="subject.group"></select2>
+            </div>
+            <div class="form-group">
+                <div class="d-flex flex-column">
+                    <label class="mb-1">Nama Mapel</label>
+                    <small class="text-capitalize mb-2">pastikan mata pelajaran belum tersedia pada list table mapel</small>
+                </div>
+                <input type="text" class="form-control" v-model="subject.name">
+            </div>
+        </div>
+    </modal>
+
+    <modal v-if="modalEdit" @close="modalEdit = false" :action="editSubject">
+        <h5 slot="header">Edit Mapel</h5>
+        <div slot="body">
+            <div class="form-group">
+                <label class="mb-2">Kelompok Mapel</label>
+                <select2 :options="categories"></select2>
+            </div>
+            <div class="form-group">
+                <label class="mb-2">Nama Mapel</label>
                 <input type="text" class="form-control">
             </div>
+            <div class="form-group">
+                <label class="mb-2">Guru Mapel</label>
+                <select2 multiple :options="teachers"></select2>
+            </div>
+        </div>
+        <button type="button" class="btn btn-outline-danger" slot="button" @click="showModalDelete">Hapus</button>
+    </modal>
+
+    <modal v-if="modalDelete" @close="modalDelete = false" :deleteOpt="deleteSubject">
+        <h5 slot="header">Hapus Mapel</h5>
+        <div slot="body">
+            <p>Yakin akan menghapus mata pelajaran <b class="text-capitalize">bahasa indonesia</b>?</p>
+            <p>Semua data nilai mata pelajaran <b class="text-capitalize">bahasa indonesia</b> dalam buku nilai akan terhapus.</p>
         </div>
     </modal>
   </div>
@@ -76,22 +104,54 @@
 <script>
 // vuex
 import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
-
 // modal
 import modalComponent from '../../components/Modal.vue';
+// vue-select
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 export default {
     name: "subjects",
     components: {
-        "modal": modalComponent
+        "modal": modalComponent,
+        "select2": vSelect
     },
     data() {
         return {
-            modalAdd: false
+            modalAdd: false,
+            subject: {
+                group: null,
+                name: null
+            },
+            categories: [
+                'A (Muatan Nasional)',
+                'B (Muatan Kewilayahan)',
+                'C (Muatan Produktif)',
+                'C1 (Dasar Bidang Keahlian)',
+                'C2 (Dasar Program Keahlian)',
+                'C3 (Dasar Kompetensi Keahlian)'
+            ],
+            modalEdit: false,
+            teachers: [
+                'guru1',
+                'guru2',
+                'guru3'
+            ],
+            modalDelete: false
         }
     },
     methods: {
         addSubject() {
-            console.log('add subject');
+            console.log(this.subject);
+        },
+        editSubject() {
+            console.log('edit');
+        },
+        showModalDelete() {
+            this.modalEdit = false;
+            this.modalDelete = true;
+        },
+        deleteSubject() {
+            console.log('hapus');
         }
     }
 }
@@ -130,5 +190,9 @@ export default {
 
 td, .th-middle {
     vertical-align : middle;
+}
+
+.form-group {
+    margin-bottom: 10px;
 }
 </style>
