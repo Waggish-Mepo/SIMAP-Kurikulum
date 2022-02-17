@@ -8,16 +8,19 @@
     <div class="row">
         <div class="col-md-8">
             <div class="input-group mb-3"> 
-                <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Mapel....">
+                <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Mapel...." @keyup="searchSubject()" v-model="search">
                 <div class="input-group-append"> 
-                    <button class="btn btn-outline-muted btn-lg shadow-sm bg-white" type="button"><i class="fa fa-search"></i></button> 
+                    <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white" @click="searchSubject()"><i class="fa fa-search"></i></a> 
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <a href="#" class="btn btn-primary btn-block mt-1" @click="modalAdd = true">
-                <span class="fas fa-plus"></span> Tambah Mapel
-            </a>
+            <div class="d-flex">
+                <a href="#" class="btn btn-primary btn-block mt-1" @click="modalAdd = true">
+                    <span class="fas fa-plus"></span> Tambah Mapel
+                </a>
+                <a href="#" class="btn btn-secondary btn-block mt-1" @click="search = ''; getSubjects('')">Refresh Data</a>
+            </div>
         </div>
     </div>
     <div class="table-responsive p-0 card-table mt-3">
@@ -28,32 +31,26 @@
                     <th>mata pelajaran</th>
                     <th>tim guru</th>
                 </tr>
-                <tr>
-                    <th colspan="3" class="r-category">a. muatan nasional</th>
-                </tr>
-                <tr>
-                    <td class="text-center">:</td>
-                    <td>pendidikan agama islam dan budi pekerti</td>
-                    <td><a href="#" class="text-primary" @click="modalEdit = true">pilih guru</a></td>
-                </tr>
-                <tr>
-                    <td class="text-center">:</td>
-                    <td>pendidikan pancasila dan kewarganegaraan</td>
-                    <td>
-                        <ul>
-                            <li>nama1</li>
-                            <li>nama2</li>
-                            <li>nama3</li>
-                        </ul>
-                    </td>
-                </tr>
-                <tr>
-                    <th colspan="4" class="r-category">b. muatan kewilayahan</th>
-                </tr>
-                <tr>
-                    <th colspan="4" class="r-category">c. muatan peminatan kejuruan</th>
-                </tr>
             </thead>
+            <tbody style="border-top: 0;" v-for="(category, index) in categories" :key="index">
+                <tr>
+                    <th colspan="3" class="r-category">{{category | groupSubject}}</th>
+                </tr>
+                <tr v-for="(subject,index) in filterSubjects(category)" :key="index">
+                    <td class="text-center">:</td>
+                    <td><a href="#" class="text-dark" @click="showSubject(subject.id)">{{subject.name}}</a></td>
+                    <td><a href="#" class="text-primary" @click="showSubject(subject.id)">pilih guru</a></td>
+                    <!-- ini yang tampil cuman si yg if teacher.teachers -->
+                    <!-- <td>
+                        <ul>
+                            <div v-for="(teacher,index) in filterSubjectTeachers(subject.id)" :key="index">
+                                <li v-if="!teacher.teachers"><a href="#" class="text-primary" @click="showSubject(subject.id)">pilih guru</a></li>
+                                <li v-if="teacher.teachers">{{teacher.teachers}}</li>
+                            </div>
+                        </ul>
+                    </td> -->
+                </tr>
+            </tbody>
         </table>
     </div>
 
@@ -68,6 +65,9 @@
             <div class="form-group">
                 <label class="mb-2">Kelompok Mapel</label>
                 <select2 :options="categories" v-model="subject.group"></select2>
+                <div class="invalid-feedback" v-if="errors.group">
+                    {{ errors.group[0] }}
+                </div>
             </div>
             <div class="form-group">
                 <div class="d-flex flex-column">
@@ -75,6 +75,9 @@
                     <small class="text-capitalize mb-2">pastikan mata pelajaran belum tersedia pada list table mapel</small>
                 </div>
                 <input type="text" class="form-control" v-model="subject.name">
+                <div class="invalid-feedback" v-if="errors.name">
+                    {{ errors.name[0] }}
+                </div>
             </div>
         </div>
     </modal>
@@ -87,15 +90,24 @@
             </div>
             <div class="form-group">
                 <label class="mb-2">Kelompok Mapel</label>
-                <select2 :options="categories"></select2>
+                <select2 :options="categories" v-model="teacherSubject.group"></select2>
+                <div class="invalid-feedback" v-if="errors.group">
+                    {{ errors.group[0] }}
+                </div>
             </div>
             <div class="form-group">
                 <label class="mb-2">Nama Mapel</label>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" v-model="teacherSubject.name">
+                <div class="invalid-feedback" v-if="errors.name">
+                    {{ errors.name[0] }}
+                </div>
             </div>
             <div class="form-group">
                 <label class="mb-2">Guru Mapel</label>
-                <select2 multiple :options="teachers"></select2>
+                <select2 multiple :options="teachers" :reduce="name => name.id" label="name" v-model="teacherSubject.teachers"></select2>
+                <div class="invalid-feedback" v-if="errors.teachers">
+                    {{ errors.teachers[0] }}
+                </div>
             </div>
         </div>
         <button type="button" class="btn btn-outline-danger" slot="button" @click="showModalDelete">Hapus</button>
@@ -141,27 +153,101 @@ export default {
                 'C3 (Dasar Kompetensi Keahlian)'
             ],
             modalEdit: false,
-            teachers: [
-                'guru1',
-                'guru2',
-                'guru3'
-            ],
-            modalDelete: false
+            teachers: [],
+            modalDelete: false,
+            dataSubject: [],
+            teacherSubject: {
+                group: null,
+                name: null,
+                order: null,
+                subject_id: null,
+                teachers: []
+            },
+            subjectId: null,
+            dataSubjectTeacher: [],
+            techerNotFound: null,
+            teachersMatch: [],
+            search: ''
         }
+    },
+    created() {
+        this.getSubjects('');
+        this.getTeachers();
+        // this.getSubjectTeachers();
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
     },
     methods: {
-        ...mapActions('subjects', ['create']),
+        ...mapActions('subjects', ['create', 'index', 'show', 'edit']),
+        ...mapActions('teachers', ['getAll']),
+        ...mapActions('subjectTeachers', ['update', 'indexSubjectTeacher']),
 
+        searchSubject() {
+            this.getSubjects(this.search);
+        },
+        getSubjects(search) {
+            this.index(search).then((result) => {
+                if(search != '') {
+                    this.dataSubject = result.data;
+                }else {
+                    this.dataSubject = result;
+                }
+            });
+        },
+        filterSubjects(category) {
+            return this.dataSubject.filter(function(subject) {
+                return subject.group == category;
+            });
+        },
+        // ini buat ambil data semua dr subject-teacher
+        // kalau mau pake ini jan lupa di created nya di aktif in lagi
+        // getSubjectTeachers() {
+        //     this.indexSubjectTeacher().then((result) => {
+        //         this.dataSubjectTeacher = result;
+        //     });
+        // },
+        // ini nge filter biar tampil per subject_id
+        // filterSubjectTeachers(subjectId) {
+        //     return this.dataSubjectTeacher.filter(function(teacher) {
+        //         return teacher.subject_id == subjectId;
+        //     });
+        // },
+        showSubject(id) {
+            this.show(id).then((result) => {
+                this.teacherSubject.name = result.name;
+                this.teacherSubject.group = result.group;
+                this.teacherSubject.order = result.order;
+                this.subjectId = result.id;
+                this.modalEdit = true;
+            })
+        },
         addSubject() {
             this.create(this.subject).then((result) => {
                 this.modalAdd = false;
+                this.getSubjects();
+            })
+        },
+        getTeachers() {
+            this.getAll().then((result) => {
+                this.teachers = result;
             })
         },
         editSubject() {
-            console.log('edit');
+            let payloadSubject = {id: this.subjectId, data: {
+                name: this.teacherSubject.name,
+                group: this.teacherSubject.group,
+                order: this.teacherSubject.order
+            }};
+            let payloadSubjectTeacher = {subjectId: this.subjectId, data: {
+                subject_id: this.subjectId,
+                teachers: this.teacherSubject.teachers
+            }};
+            this.edit(payloadSubject).then(() => {});
+            this.update(payloadSubjectTeacher).then(() => {
+                this.modalEdit = false;
+                this.getSubjects();
+            });
         },
         showModalDelete() {
             this.modalEdit = false;
@@ -175,10 +261,6 @@ export default {
 </script>
 
 <style scoped>
-.btn:hover {
-    color: #fff;
-}
-
 .input-text:focus {
     box-shadow: 0px 0px 0px;
     border-color: #B4ADAD;
@@ -195,6 +277,10 @@ export default {
     border-radius: 0px !important;
 }
 
+.btn-secondary {
+    margin-left: 10px !important;
+}
+
 .card-table {
     width: 100%;
     display: block;
@@ -202,7 +288,7 @@ export default {
 }
 
 .r-category {
-    padding-left: 2rem;
+    padding-left: 4rem;
 }
 
 td, .th-middle {

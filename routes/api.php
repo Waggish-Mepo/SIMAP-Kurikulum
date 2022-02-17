@@ -4,6 +4,8 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\SubjectTeacherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,5 +30,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('subjects')->group(function () {
         Route::post('/', [SubjectController::class, 'store']);
         Route::get('/', [SubjectController::class, 'index']);
+        Route::get('/{id}', [SubjectController::class, 'show']);
+        Route::patch('/{id}', [SubjectController::class, 'update']);
+    });
+    Route::prefix('teachers')->group(function () {
+        Route::get('/', [TeacherController::class, 'index']);
+    });
+    Route::prefix('subject-teachers')->group(function () {
+        Route::get('/', [SubjectTeacherController::class, 'index']);
+        Route::patch('/{id}', [SubjectTeacherController::class, 'update']);
     });
 });

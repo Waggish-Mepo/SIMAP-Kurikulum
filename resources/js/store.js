@@ -4,6 +4,8 @@ import Vuex from 'vuex'
 //IMPORT MODULE SECTION
 import auth from './stores/auth/index.js'
 import subjects from './stores/subjects/index.js'
+import teachers from './stores/teachers/index.js'
+import subjectTeachers from './stores/subjectTeachers/index.js'
 
 Vue.use(Vuex);
 
@@ -12,7 +14,9 @@ const debug = process.env.NODE_ENV !== 'production';
 const store = new Vuex.Store({
     modules: {
         auth,
-        subjects
+        subjects,
+        teachers,
+        subjectTeachers
     },
     state: {
         errors: [],

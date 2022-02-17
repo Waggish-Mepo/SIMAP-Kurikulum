@@ -39,6 +39,9 @@ return [
             Subject::MUATAN_A,
             Subject::MUATAN_B,
             Subject::MUATAN_C,
+            Subject::MUATAN_C1,
+            Subject::MUATAN_C2,
+            Subject::MUATAN_C3,
         ]
     ],
     'teacher' => [

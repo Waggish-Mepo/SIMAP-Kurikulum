@@ -120,6 +120,14 @@ a {
     text-decoration: none;
 }
 
+a:hover {
+    text-decoration: underline;
+}
+
+a.btn:hover {
+    text-decoration: none;
+}
+
 @media screen and (min-width: 768px) {
     .body {
         margin: calc(3rem + 1rem) 0 0 0;

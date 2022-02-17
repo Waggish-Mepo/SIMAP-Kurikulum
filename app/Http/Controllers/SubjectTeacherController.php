@@ -3,25 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Service\Database\SubjectService;
+use App\Service\Database\SubjectTeacherService;
 
-class SubjectController extends Controller
+class SubjectTeacherController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $subjects = new SubjectService;
-        $search = $request->search;
-        if($search == "") {
-            return response()->json($subjects->index(['without_pagination' => true]));
-        } else {
-            return response()->json($subjects->index(['name' => $search, 'page' => 50]));
-        }
+        $subjectTeachers = new SubjectTeacherService;
+        return response()->json($subjectTeachers->index(['without_pagination' => true]));
     }
 
     /**
@@ -42,18 +36,7 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {
-        $subjectDB = new SubjectService;
-        $getOrder = $subjectDB->index(['order_by' => 'DESC', 'page' => 1]);
-        if(!count($getOrder)) {
-            $order = 1;
-        }else {
-            $order = $getOrder[0]['order'] + 1;
-        }
-        return response()->json($subjectDB->create([
-            'name' => $request->name,
-            'group' => $request->group,
-            'order' => $order,
-        ]));
+        //
     }
 
     /**
@@ -64,8 +47,7 @@ class SubjectController extends Controller
      */
     public function show($id)
     {
-        $subjectDB = new SubjectService;
-        return response()->json($subjectDB->detail($id));
+        //
     }
 
     /**
@@ -88,12 +70,19 @@ class SubjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $subjectDB = new SubjectService;
-        return response()->json($subjectDB->update($id,[
-            'name' => $request->name,
-            'group' => $request->group,
-            'order' => $request->order,
-        ]));
+        $subjectTeachers = new SubjectTeacherService;
+        $check = $subjectTeachers->index(['subject_id' => $id]);
+        if(!count($check)) {
+            return response()->json($subjectTeachers->create([
+                'subject_id' => $request->subject_id,
+                'teachers' => $request->teachers
+            ]));
+        }else {
+            return response()->json($subjectTeachers->update(null, [
+                'subject_id' => $request->subject_id,
+                'teachers' => $request->teachers
+            ], $request->subject_id));
+        }
     }
 
     /**

@@ -5465,8 +5465,14 @@ axios__WEBPACK_IMPORTED_MODULE_3___default().interceptors.request.use(function (
 
 if (localStorage.getItem('token_kurikulum')) {
   (axios__WEBPACK_IMPORTED_MODULE_3___default().defaults.headers.common.Authorization) = 'Bearer ' + localStorage.getItem('token_kurikulum');
-}
+} // filter
 
+
+vue__WEBPACK_IMPORTED_MODULE_4__["default"].filter('groupSubject', function (text) {
+  var textWithDot = text.substring(0, 1) + "." + " " + text.substring(1, text.length);
+  var updateText = textWithDot.replace('(', '');
+  return updateText.replace(')', '');
+});
 new vue__WEBPACK_IMPORTED_MODULE_4__["default"]({
   router: _router_js__WEBPACK_IMPORTED_MODULE_0__["default"],
   store: _store_js__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -5599,21 +5605,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./stores/auth/index.js */ "./resources/js/stores/auth/index.js");
 /* harmony import */ var _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stores/subjects/index.js */ "./resources/js/stores/subjects/index.js");
+/* harmony import */ var _stores_teachers_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./stores/teachers/index.js */ "./resources/js/stores/teachers/index.js");
+/* harmony import */ var _stores_subjectTeachers_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./stores/subjectTeachers/index.js */ "./resources/js/stores/subjectTeachers/index.js");
 
  //IMPORT MODULE SECTION
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_3__["default"]);
+
+
+vue__WEBPACK_IMPORTED_MODULE_4__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_5__["default"]);
 var debug = "development" !== 'production';
-var store = new vuex__WEBPACK_IMPORTED_MODULE_3__["default"].Store({
+var store = new vuex__WEBPACK_IMPORTED_MODULE_5__["default"].Store({
   modules: {
     auth: _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_0__["default"],
-    subjects: _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_1__["default"]
+    subjects: _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_1__["default"],
+    teachers: _stores_teachers_index_js__WEBPACK_IMPORTED_MODULE_2__["default"],
+    subjectTeachers: _stores_subjectTeachers_index_js__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   state: {
     errors: [],
@@ -5770,6 +5782,73 @@ var actions = {
 
 /***/ }),
 
+/***/ "./resources/js/stores/subjectTeachers/index.js":
+/*!******************************************************!*\
+  !*** ./resources/js/stores/subjectTeachers/index.js ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var state = function state() {
+  return {};
+};
+
+var mutations = {};
+var actions = {
+  indexSubjectTeacher: function indexSubjectTeacher(_ref) {
+    var commit = _ref.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/subject-teachers').then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response, {
+          root: true
+        });
+      });
+    });
+  },
+  update: function update(_ref2, payload) {
+    var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/subject-teachers/' + payload.subjectId, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response, {
+          root: true
+        });
+      });
+    });
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: state,
+  actions: actions,
+  mutations: mutations
+});
+
+/***/ }),
+
 /***/ "./resources/js/stores/subjects/index.js":
 /*!***********************************************!*\
   !*** ./resources/js/stores/subjects/index.js ***!
@@ -5797,7 +5876,7 @@ var actions = {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/subjects').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/subjects/?search=' + payload).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
@@ -5809,8 +5888,26 @@ var actions = {
       });
     });
   },
-  create: function create(_ref2, payload) {
+  show: function show(_ref2, payload) {
     var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/subjects/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response, {
+          root: true
+        });
+      });
+    });
+  },
+  create: function create(_ref3, payload) {
+    var commit = _ref3.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -5822,6 +5919,73 @@ var actions = {
         });
       })["catch"](function (error) {
         commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  edit: function edit(_ref4, payload) {
+    var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/subjects/' + payload.id, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response, {
+          root: true
+        });
+      });
+    });
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: state,
+  actions: actions,
+  mutations: mutations
+});
+
+/***/ }),
+
+/***/ "./resources/js/stores/teachers/index.js":
+/*!***********************************************!*\
+  !*** ./resources/js/stores/teachers/index.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var state = function state() {
+  return {};
+};
+
+var mutations = {};
+var actions = {
+  getAll: function getAll(_ref) {
+    var commit = _ref.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/teachers').then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response, {
           root: true
         });
       });

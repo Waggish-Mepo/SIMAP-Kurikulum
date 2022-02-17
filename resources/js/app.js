@@ -31,6 +31,13 @@ if (localStorage.getItem('token_kurikulum')) {
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token_kurikulum');
 }
 
+// filter
+Vue.filter('groupSubject', function(text) {
+    let textWithDot = text.substring(0, 1) + "." + " " + text.substring(1, text.length);
+    let updateText = textWithDot.replace('(', '');
+    return updateText.replace(')', '');
+})
+
 new Vue({
     router,
     store,
