@@ -14,6 +14,7 @@ class SubjectService{
         $group = $filter['group'] ?? null;
         $withRelation = $filter['relation'] ?? false;
         $perPage = $filter['page'] ?? 20;
+        $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = Subject::orderBy('order', $orderBy);
 
@@ -23,6 +24,10 @@ class SubjectService{
 
         if($withRelation) {
             $query->with('subjectTeacher');
+        }
+
+        if ($withoutPagination) {
+            return $query->get()->toArray();
         }
 
         $subjects = $query->paginate($perPage);
