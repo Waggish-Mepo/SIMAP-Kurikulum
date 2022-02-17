@@ -2,8 +2,6 @@
 
 namespace App\Service\Database;
 
-use App\Models\School;
-use App\Models\Subject;
 use App\Models\SubjectTeacher;
 use Illuminate\Support\Facades\Validator;
 use Ramsey\Uuid\Uuid;
@@ -35,7 +33,7 @@ class SubjectTeacherService {
 
     public function create($payload)
     {
-        $subject = new SubjectTeacher();
+        $subject = new SubjectTeacher;
         $subject->id = Uuid::uuid4()->toString();
         $subject = $this->fill($subject, $payload);
         $subject->save();
@@ -59,10 +57,14 @@ class SubjectTeacherService {
             $subject->$key = $value;
         }
 
-        Validator::make($subject->toArray(), [
+        $validate = Validator::make($subject->toArray(), [
             'subject_id' => 'required|string',
             'teachers' => 'nullable|array',
-        ])->validate();
+        ]);
+
+        if($validate->fails()) {
+            return $validate->errors()->toArray();
+        }
 
         return $subject;
     }
