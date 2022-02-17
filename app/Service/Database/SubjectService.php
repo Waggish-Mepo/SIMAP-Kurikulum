@@ -3,7 +3,6 @@
 namespace App\Service\Database;
 
 use App\Models\Subject;
-use App\Models\SubjectTeacher;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
