@@ -33,6 +33,21 @@ class AuthController extends Controller
 
         return response()->json([
             'access_token' => $authToken,
+            'user_data' => $user,
+        ], 200);
+    }
+
+    public function logout()
+    {
+        auth()->user()->tokens()->delete();
+        return response(['message' => 'destroyed']);
+    }
+
+    public function me()
+    {
+        $user = auth()->user();
+        return response()->json([
+            'data' => $user,
         ], 200);
     }
 }

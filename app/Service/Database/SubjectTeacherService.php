@@ -12,11 +12,21 @@ class SubjectTeacherService {
         $orderBy = $filter['order_by'] ?? 'DESC';
         $per_page = $filter['per_page'] ?? 99;
         $teacherId = $filter['teacher_id'] ?? null;
+        $subjectId = $filter['subject_id'] ?? null;
+        $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = SubjectTeacher::orderBy('created_at', $orderBy);
 
         if ($teacherId !== null) {
             $query->whereJsonContains('teachers', $teacherId);
+        }
+
+        if ($subjectId) {
+            return $query->where('subject_id', $subjectId)->get()->toArray();
+        }
+
+        if ($withoutPagination) {
+            return $query->get()->toArray();
         }
 
         $users = $query->paginate($per_page);
@@ -41,9 +51,13 @@ class SubjectTeacherService {
         return $subject;
     }
 
-    public function update($subjectTeacherId, $payload)
+    public function update($subjectTeacherId, $payload, $subjectId = null)
     {
-        $subject = SubjectTeacher::findOrFail($subjectTeacherId);
+        if($subjectId) {
+            $subject = SubjectTeacher::where('subject_id', '=', $subjectId);
+        }else {
+            $subject = SubjectTeacher::findOrFail($subjectTeacherId);
+        }
         $subject = $this->fill($subject, $payload);
         $subject->save();
 

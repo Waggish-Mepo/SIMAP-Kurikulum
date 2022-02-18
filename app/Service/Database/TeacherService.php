@@ -32,6 +32,15 @@ class TeacherService {
         return $teacher->toArray();
     }
 
+    public function bulkDetail($teacherIds)
+    {
+        $query = Teacher::whereIn('id', $teacherIds);
+
+        $users = $query->simplePaginate(100);
+
+        return $users->toArray();
+    }
+
     public function create($payload)
     {
         $teacher = new Teacher;

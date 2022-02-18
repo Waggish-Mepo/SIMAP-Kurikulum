@@ -12,6 +12,7 @@ class SubjectService{
 
         $orderBy = $filter['order_by'] ?? 'ASC';
         $group = $filter['group'] ?? null;
+        $name = $filter['name'] ?? null;
         $withRelation = $filter['relation'] ?? false;
         $perPage = $filter['page'] ?? 20;
         $withoutPagination = $filter['without_pagination'] ?? false;
@@ -20,6 +21,10 @@ class SubjectService{
 
         if ($group) {
             $query->where('group', $group);
+        }
+
+        if ($name) {
+            $query->where('name', 'LIKE','%'.$name.'%');
         }
 
         if($withRelation) {
@@ -35,9 +40,15 @@ class SubjectService{
         return $subjects;
     }
 
-    public function detail($subjectId) {
+    public function detail($subjectId, $withRelation = false) {
 
-        $subject = Subject::findOrFail($subjectId);
+        $query = Subject::where('id', $subjectId);
+
+        if($withRelation) {
+            $query->with('subjectTeacher');
+        }
+
+        $subject = $query->first();
 
         return $subject->toArray();
     }

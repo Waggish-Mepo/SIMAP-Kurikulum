@@ -25,26 +25,55 @@
                     </router-link>
                 </div> 
             </div>
-            <a href="#" class="nav_link">
+            <a href="#" class="nav_link" @click="modalShow = true">
                 <i class="fas fa-power-off nav_icon"></i> 
                 <span class="nav_name">LogOut</span> 
             </a>
         </nav>
+
+        <!-- modal -->
+        <modal v-if="modalShow" @close="modalShow = false" :logout="handleLogout">
+            <h5 slot="header">Logout</h5>
+            <span slot="body">Yakin untuk <b>logout</b>? anda tidak akan dapat mengakses data setelah logout, pastikan untuk <b>login</b> kembali untuk mengakses data.</span>
+        </modal>
     </div>
 </template>
 
 <script>
+// modal
+import modalComponent from './Modal.vue';
+// vuex
+import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
 export default {
     name: "Sidebar",
+    components: {
+        "modal": modalComponent
+    },
+    data() {
+        return {
+            modalShow: false
+        }
+    },
+    methods: {
+        ...mapActions('auth', ['logout']),
+
+        handleLogout() {
+            this.logout().then(() => { });
+        }
+    }
 }
 </script>
 
-<style>
+<style scoped>
+a:hover {
+    text-decoration: none;
+}
+
 .l-navbar {
     position: fixed;
     top: 0;
     left: -30%;
-    width: 50px;
+    width: 48px;
     height: 100vh;
     background-color: #182A36;
     padding: .5rem 0 0 0;
@@ -75,7 +104,7 @@ hr {
 }
 
 .nav_logo-icon {
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: #fff;
 }
 
@@ -101,7 +130,7 @@ hr {
 }
 
 .nav_icon {
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 .show {
@@ -129,15 +158,15 @@ hr {
     .l-navbar {
         left: 0;
         padding: 1rem 0 0 0;
-        width: 55px;
+        width: 50px;
     }
 
     .show {
-        width: calc(50px + 156px)
+        width: calc(48px + 156px)
     }
 
     .nav_logo-icon, .nav_icon {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
 
     .nav_link {

@@ -19,6 +19,7 @@ const router = new Router({
         },
         {
             path: '/login',
+            name: 'login',
             component: loadView('dashboard/Login')
         },
         {
@@ -38,7 +39,7 @@ const router = new Router({
             {
                 path: '/:page/periode-rapor',
                 name: 'periode_rapor',
-                component: loadView('dashboard/PeriodeRapor')
+                component: loadView('dashboard/ReportPeriod')
             },
             ]
         },
