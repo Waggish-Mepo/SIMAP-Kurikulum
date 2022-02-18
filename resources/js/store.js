@@ -6,6 +6,7 @@ import auth from './stores/auth/index.js'
 import subjects from './stores/subjects/index.js'
 import teachers from './stores/teachers/index.js'
 import subjectTeachers from './stores/subjectTeachers/index.js'
+import reportPeriods from './stores/reportPeriods/index.js'
 
 Vue.use(Vuex);
 
@@ -16,7 +17,8 @@ const store = new Vuex.Store({
         auth,
         subjects,
         teachers,
-        subjectTeachers
+        subjectTeachers,
+        reportPeriods
     },
     state: {
         errors: [],

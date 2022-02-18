@@ -25,18 +25,35 @@
                     </router-link>
                 </div> 
             </div>
-            <a href="#" class="nav_link" @click="handleLogout">
+            <a href="#" class="nav_link" @click="modalShow = true">
                 <i class="fas fa-power-off nav_icon"></i> 
                 <span class="nav_name">LogOut</span> 
             </a>
         </nav>
+
+        <!-- modal -->
+        <modal v-if="modalShow" @close="modalShow = false" :logout="handleLogout">
+            <h5 slot="header">Logout</h5>
+            <span slot="body">Yakin untuk <b>logout</b>? anda tidak akan dapat mengakses data setelah logout, pastikan untuk <b>login</b> kembali untuk mengakses data.</span>
+        </modal>
     </div>
 </template>
 
 <script>
+// modal
+import modalComponent from './Modal.vue';
+// vuex
 import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
 export default {
     name: "Sidebar",
+    components: {
+        "modal": modalComponent
+    },
+    data() {
+        return {
+            modalShow: false
+        }
+    },
     methods: {
         ...mapActions('auth', ['logout']),
 
@@ -47,7 +64,11 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+a:hover {
+    text-decoration: none;
+}
+
 .l-navbar {
     position: fixed;
     top: 0;

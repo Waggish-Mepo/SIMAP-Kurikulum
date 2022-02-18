@@ -3,19 +3,26 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Service\Database\SubjectTeacherService;
+use App\Service\Database\ReportPeriodService;
 
-class SubjectTeacherController extends Controller
+class ReportPeriodController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $subjectTeachers = new SubjectTeacherService;
-        return response()->json($subjectTeachers->index(['without_pagination' => true]));
+        $orderBy = $request->orderBy;
+        $search = $request->search;
+        $reportPeriodDB = new ReportPeriodService;
+
+        if ($orderBy == '') {
+            return response()->json($reportPeriodDB->index());
+        } else {
+            return response()->json($reportPeriodDB->index(['school_year' => $search]));
+        }
     }
 
     /**
@@ -36,7 +43,8 @@ class SubjectTeacherController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $reportPeriodDB = new ReportPeriodService;
+        return response()->json($reportPeriodDB->create($request->all()));
     }
 
     /**
@@ -47,7 +55,8 @@ class SubjectTeacherController extends Controller
      */
     public function show($id)
     {
-        //
+        $reportPeriodDB = new ReportPeriodService;
+        return response()->json($reportPeriodDB->detail($id));
     }
 
     /**
@@ -70,21 +79,8 @@ class SubjectTeacherController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $subjectTeachers = new SubjectTeacherService;
-        if($request->teachers) {
-            $check = $subjectTeachers->index(['subject_id' => $id]);
-            if (!count($check)) {
-                return response()->json($subjectTeachers->create([
-                    'subject_id' => $request->subject_id,
-                    'teachers' => $request->teachers
-                ]));
-            } else {
-                return response()->json($subjectTeachers->update(null, [
-                    'subject_id' => $request->subject_id,
-                    'teachers' => $request->teachers
-                ], $request->subject_id));
-            }
-        }
+        $reportPeriodDB = new ReportPeriodService;
+        return response()->json($reportPeriodDB->update($id, $request->all()));
     }
 
     /**

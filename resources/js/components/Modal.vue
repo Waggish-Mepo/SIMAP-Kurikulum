@@ -4,7 +4,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header pb-1">
-                        <slot name="header" class="font-weight-bold"></slot>
+                        <slot name="header" class="font-weight-bold header"></slot>
                         <button type="button" class="close" @click="$emit('close')">
                             <span class="fas fa-times"></span>
                         </button>
@@ -19,6 +19,7 @@
                             <button type="button" class="btn btn-outline-blue" @click="$emit('close')">Batal</button>
                             <button type="button" class="btn btn-blue text-white" v-if="action !=null" @click="action">Simpan</button>
                             <button type="button" class="btn btn-danger text-white" v-if="deleteOpt !=null" @click="deleteOpt">Hapus</button>
+                            <button type="button" class="btn btn-danger text-white" v-if="logout !=null" @click="logout">Logout</button>
                         </div>
                     </div>
                 </div>
@@ -31,6 +32,9 @@
 export default {
     name: "modalComponent",
     props:{
+		logout:{
+			type: Function
+		},
 		deleteOpt:{
 			type: Function
 		},
@@ -69,6 +73,10 @@ export default {
 
 .modal-header{
 	border-bottom:none;
+}
+
+.header {
+    font-weight: 700;
 }
 
 .modal-enter {

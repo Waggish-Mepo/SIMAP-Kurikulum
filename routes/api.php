@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\SubjectTeacherController;
+use App\Http\Controllers\ReportPeriodController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,5 +40,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('subject-teachers')->group(function () {
         Route::get('/', [SubjectTeacherController::class, 'index']);
         Route::patch('/{id}', [SubjectTeacherController::class, 'update']);
+    });
+    Route::prefix('report-periods')->group(function () {
+        Route::get('/', [ReportPeriodController::class, 'index']);
+        Route::post('/', [ReportPeriodController::class, 'store']);
+        Route::get('/{id}', [ReportPeriodController::class, 'show']);
+        Route::patch('/{id}', [ReportPeriodController::class, 'update']);
     });
 });

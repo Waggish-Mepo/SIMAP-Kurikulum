@@ -15,7 +15,7 @@ class ReportPeriodService{
         $perPage = $filter['page'] ?? 20;
         $schoolYear = $filter['school_year'] ?? null;
 
-        $query = ReportPeriod::orderBy('order', $orderBy);
+        $query = ReportPeriod::orderBy('created_at', $orderBy);
 
         if ($schoolYear) {
             $query->where('school_year', $schoolYear);

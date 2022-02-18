@@ -6,7 +6,7 @@
       {{ errorMessage }}
     </div>
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-6">
             <div class="input-group mb-3"> 
                 <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Mapel...." @keyup="searchSubject()" v-model="search">
                 <div class="input-group-append"> 
@@ -14,7 +14,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="d-flex">
                 <a href="#" class="btn btn-primary btn-block mt-1" @click="modalAdd = true">
                     <span class="fas fa-plus"></span> Tambah Mapel
@@ -225,7 +225,7 @@ export default {
         addSubject() {
             this.create(this.subject).then((result) => {
                 this.modalAdd = false;
-                this.getSubjects();
+                this.getSubjects('');
             })
         },
         getTeachers() {
@@ -246,7 +246,7 @@ export default {
             this.edit(payloadSubject).then(() => {});
             this.update(payloadSubjectTeacher).then(() => {
                 this.modalEdit = false;
-                this.getSubjects();
+                this.getSubjects('');
             });
         },
         showModalDelete() {
@@ -261,6 +261,10 @@ export default {
 </script>
 
 <style scoped>
+h4 {
+    font-weight: 600;
+}
+
 .input-text:focus {
     box-shadow: 0px 0px 0px;
     border-color: #B4ADAD;
@@ -297,5 +301,14 @@ td, .th-middle {
 
 .form-group {
     margin-bottom: 10px;
+}
+
+@media (max-width: 575px) {
+    h4 {
+        font-size: 1rem !important;
+    }
+    .btn, .input-text, table {
+        font-size: 0.8rem !important;
+    }
 }
 </style>

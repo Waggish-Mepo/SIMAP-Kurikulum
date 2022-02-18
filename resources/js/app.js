@@ -36,7 +36,27 @@ Vue.filter('groupSubject', function(text) {
     let textWithDot = text.substring(0, 1) + "." + " " + text.substring(1, text.length);
     let updateText = textWithDot.replace('(', '');
     return updateText.replace(')', '');
-})
+});
+
+Vue.filter('dateFormat', function(date) {
+    if(date) {
+        let newDate = new Date(date);
+        // day
+        let day = newDate.getDate();
+        if (day < 10) {
+            day = '0'+day;
+        };
+        // month
+        let monthList = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        let month = monthList[newDate.getMonth()];
+        // year
+        let year = newDate.getFullYear();
+        
+        return  day + ' ' + month + ' ' + year;
+    } else {
+        return '-';
+    }
+});
 
 new Vue({
     router,
