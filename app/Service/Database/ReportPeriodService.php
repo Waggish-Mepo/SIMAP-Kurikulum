@@ -2,8 +2,8 @@
 
 namespace App\Service\Database;
 
-use App\Models\Subject;
 use App\Models\ReportPeriod;
+use App\Service\Functions\AcademicCalendar;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
@@ -37,7 +37,10 @@ class ReportPeriodService{
 
         $reportPeriod = new ReportPeriod;
 
+        $academicCalendarService = new AcademicCalendar;
+
         $reportPeriod->id = Uuid::uuid4()->toString();
+        $reportPeriod->school_year = $academicCalendarService->currentAcademicYear();
         $reportPeriod = $this->fill($reportPeriod, $payload);
         $reportPeriod->save();
 

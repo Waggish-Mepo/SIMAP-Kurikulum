@@ -119,13 +119,9 @@ export default {
             data: [],
             submitAddForm: {
                 title: null,
-                // sementara
-                school_year: '2022/2023'
             },
             submitEditForm: {
                 title: null,
-                // sementara
-                school_year: '2022/2023',
                 start_date: null,
                 end_date: null
             },
