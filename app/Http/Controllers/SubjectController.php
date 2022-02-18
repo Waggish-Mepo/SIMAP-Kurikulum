@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Service\Database\SubjectService;
+use App\Service\Database\TeacherService;
 
 class SubjectController extends Controller
 {
@@ -15,12 +16,42 @@ class SubjectController extends Controller
      */
     public function index(Request $request)
     {
-        $subjects = new SubjectService;
+        $subjectService = new SubjectService;
+        $teacherService = new TeacherService;
         $search = $request->search;
         if($search == "") {
-            return response()->json($subjects->index(['without_pagination' => true]));
+            $subjects = $subjectService->index(['without_pagination' => true, 'relation' => true]);
+
+            $subjectsWithTeacher = [];
+            foreach ($subjects as $subject) {
+                if(!$subject['subject_teacher']) {
+                    $subjectsWithTeacher[] = $subject;
+                    continue;
+                }
+
+                $teachers = $teacherService->bulkDetail($subject['subject_teacher']['teachers'])['data'];
+                $subject['teacher_details'] = $teachers;
+                $subject['teacher_details_string'] = collect($teachers)->pluck('name')->join(', ');
+                $subjectsWithTeacher[] = $subject;
+            }
+
+            return response()->json($subjectsWithTeacher);
         } else {
-            return response()->json($subjects->index(['name' => $search, 'page' => 50]));
+
+            $subjects = $subjectService->index(['name' => $search, 'page' => 50, 'relation' => true]);
+
+            $subjectsWithTeacher = [];
+            foreach ($subjects as $subject) {
+                if(!$subject['subject_teacher']) {
+                    continue;
+                }
+
+                $teachers = $teacherService->bulkDetail($subject['subject_teacher']['teachers'])['data'];
+                $subject['teacher_details_string'] = collect($teachers)->pluck('name')->join(', ');
+                $subjectsWithTeacher[] = $subject;
+            }
+
+            return response()->json($subjectsWithTeacher);
         }
     }
 
@@ -65,7 +96,18 @@ class SubjectController extends Controller
     public function show($id)
     {
         $subjectDB = new SubjectService;
-        return response()->json($subjectDB->detail($id));
+        $teacherService = new TeacherService;
+
+        $subject = $subjectDB->detail($id, true);
+
+        if(!$subject['subject_teacher']) {
+            return response()->json($subject);
+        }
+
+        $teachers = $teacherService->bulkDetail($subject['subject_teacher']['teachers'])['data'];
+        $subject['teachers'] = $teachers;
+
+        return response()->json($subject);
     }
 
     /**

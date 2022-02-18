@@ -40,9 +40,15 @@ class SubjectService{
         return $subjects;
     }
 
-    public function detail($subjectId) {
+    public function detail($subjectId, $withRelation = false) {
 
-        $subject = Subject::findOrFail($subjectId);
+        $query = Subject::where('id', $subjectId);
+
+        if($withRelation) {
+            $query->with('subjectTeacher');
+        }
+
+        $subject = $query->first();
 
         return $subject->toArray();
     }

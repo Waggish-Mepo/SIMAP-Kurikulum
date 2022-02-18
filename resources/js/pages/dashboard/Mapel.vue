@@ -7,10 +7,10 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <div class="input-group mb-3"> 
+            <div class="input-group mb-3">
                 <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Mapel...." @keyup="searchSubject()" v-model="search">
-                <div class="input-group-append"> 
-                    <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white" @click="searchSubject()"><i class="fa fa-search"></i></a> 
+                <div class="input-group-append">
+                    <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white" @click="searchSubject()"><i class="fa fa-search"></i></a>
                 </div>
             </div>
         </div>
@@ -39,16 +39,12 @@
                 <tr v-for="(subject,index) in filterSubjects(category)" :key="index">
                     <td class="text-center">:</td>
                     <td><a href="#" class="text-dark" @click="showSubject(subject.id)">{{subject.name}}</a></td>
-                    <td><a href="#" class="text-primary" @click="showSubject(subject.id)">pilih guru</a></td>
-                    <!-- ini yang tampil cuman si yg if teacher.teachers -->
-                    <!-- <td>
-                        <ul>
-                            <div v-for="(teacher,index) in filterSubjectTeachers(subject.id)" :key="index">
-                                <li v-if="!teacher.teachers"><a href="#" class="text-primary" @click="showSubject(subject.id)">pilih guru</a></li>
-                                <li v-if="teacher.teachers">{{teacher.teachers}}</li>
-                            </div>
-                        </ul>
-                    </td> -->
+                    <td v-if="subject.subject_teacher">
+                        <a href="#" class="text-primary" @click="showSubject(subject.id)">{{subject.teacher_details_string}}</a>
+                    </td>
+                    <td v-else>
+                        <a href="#" class="text-primary" @click="showSubject(subject.id)">pilih guru</a>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -173,7 +169,6 @@ export default {
     created() {
         this.getSubjects('');
         this.getTeachers();
-        // this.getSubjectTeachers();
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
@@ -200,19 +195,6 @@ export default {
                 return subject.group == category;
             });
         },
-        // ini buat ambil data semua dr subject-teacher
-        // kalau mau pake ini jan lupa di created nya di aktif in lagi
-        // getSubjectTeachers() {
-        //     this.indexSubjectTeacher().then((result) => {
-        //         this.dataSubjectTeacher = result;
-        //     });
-        // },
-        // ini nge filter biar tampil per subject_id
-        // filterSubjectTeachers(subjectId) {
-        //     return this.dataSubjectTeacher.filter(function(teacher) {
-        //         return teacher.subject_id == subjectId;
-        //     });
-        // },
         showSubject(id) {
             this.show(id).then((result) => {
                 this.teacherSubject.name = result.name;
