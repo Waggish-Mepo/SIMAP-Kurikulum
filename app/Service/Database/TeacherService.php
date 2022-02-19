@@ -3,6 +3,7 @@
 namespace App\Service\Database;
 
 use App\Models\Teacher;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
@@ -39,6 +40,21 @@ class TeacherService {
         $users = $query->simplePaginate(100);
 
         return $users->toArray();
+    }
+
+    public function accountStatistics() {
+
+        $teacherCount = User::where('role', User::TEACHER)->count();
+        $studentCount = User::where('role', User::STUDENT)->count();
+        $adminCount = User::where('role', User::ADMIN)->count();
+
+        $statistics = [
+            'teachers' => $teacherCount,
+            'students' => $studentCount,
+            'admin' => $adminCount
+        ];
+
+        return $statistics;
     }
 
     public function create($payload)

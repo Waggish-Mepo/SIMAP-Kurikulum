@@ -32,6 +32,8 @@ return [
     'user' => [
         'roles' => [
             User::ADMIN,
+            User::TEACHER,
+            User::STUDENT,
         ],
     ],
     'subject' => [

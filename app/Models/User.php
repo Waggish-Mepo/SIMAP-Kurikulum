@@ -12,6 +12,8 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     const ADMIN = 'ADMIN';
+    const TEACHER = 'TEACHER';
+    const STUDENT = 'STUDENT';
 
     public $incrementing = false;
 
