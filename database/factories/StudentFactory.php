@@ -16,7 +16,7 @@ class StudentFactory extends Factory
         return [
             'id' => $this->faker->uuid(),
             'name' => $this->faker->name(),
-            'jk' => $this->faker->randomElement(['male', 'female'])
+            'jk' => $this->faker->randomElement(config('constant.teacher.gender'))
         ];
     }
 }

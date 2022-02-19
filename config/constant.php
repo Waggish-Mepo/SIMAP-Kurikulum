@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Student;
 use App\Models\Subject;
 use App\Models\Teacher;
 use App\Models\User;
@@ -50,6 +51,12 @@ return [
         'gender' => [
             Teacher::LAKILAKI,
             Teacher::PEREMPUAN,
+        ],
+    ],
+    'student' => [
+        'gender' => [
+            Student::LAKILAKI,
+            Student::PEREMPUAN,
         ],
     ],
 ];
