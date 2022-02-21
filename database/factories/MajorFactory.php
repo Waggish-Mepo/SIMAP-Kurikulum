@@ -16,7 +16,7 @@ class MajorFactory extends Factory
         return [
             'id' => $this->faker->uuid(),
             'name' => $this->faker->firstName(),
-            'abbreviation' => $this->faker->regionAbbr(),
+            'abbreviation' => $this->faker->company(),
         ];
     }
 }
