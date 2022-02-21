@@ -29,6 +29,12 @@ return [
             '2028/2029',
             '2029/2030',
         ],
+        'curriculums' => [
+            'K13 Revisi 2017 | Permendikbud No. 37 Tahun 2018',
+            'K13 Revisi 2017 SMK | Perdirjen Dikdasmen No. 464/D.D5/KR/2018',
+            'K13 Pandemi 2020 | SK Balitbang Kemendikbud No. 018/H/KR/2020',
+            'K21 | Sekolah Penggerak',
+        ],
     ],
     'user' => [
         'roles' => [

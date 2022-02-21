@@ -21,16 +21,20 @@ class ReportPeriodService{
             $query->where('school_year', $schoolYear);
         }
 
-        $subjects = $query->paginate($perPage);
+        $reports = $query->paginate($perPage);
 
-        return $subjects;
+        return $reports;
     }
 
     public function detail($reportPeriodId) {
 
-        $subject = ReportPeriod::findOrFail($reportPeriodId);
+        $report = ReportPeriod::findOrFail($reportPeriodId);
 
-        return $subject->toArray();
+        return $report->toArray();
+    }
+
+    public function schoolYears() {
+        return config('constant.common.school_years');
     }
 
     public function create($payload) {
