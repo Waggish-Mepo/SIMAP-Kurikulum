@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Major;
+use App\Models\ReportPeriod;
 use App\Models\Student;
 use App\Models\Subject;
 use App\Models\Teacher;
@@ -76,5 +78,35 @@ class DatabaseSeeder extends Seeder
         Subject::factory(['name' => 'Bahasa Indonesia', 'group' => Subject::MUATAN_A])->create();
         Subject::factory(['name' => 'Bahasa Sunda', 'group' => Subject::MUATAN_B])->create();
         Subject::factory(['name' => 'Pemrograman Dasar', 'group' => Subject::MUATAN_C])->create();
+
+        $reportPeriods = [
+            [
+                'title' => 'Tengah Semester Ganjil',
+                'school_year' => '2021/2022',
+            ],
+            [
+                'title' => 'Semester Ganjil',
+                'school_year' => '2021/2022',
+            ],
+            [
+                'title' => 'Tengah Semester Genap',
+                'school_year' => '2021/2022',
+            ],
+            [
+                'title' => 'Semester Genap',
+                'school_year' => '2021/2022',
+            ],
+        ];
+
+        foreach($reportPeriods as $reportPeriod){
+            ReportPeriod::factory($reportPeriod)->create();
+        }
+
+        $majors = [...config('constant.majors.wikrama_majors.K13'), ...config('constant.majors.wikrama_majors.K21')];
+
+        foreach($majors as $major) {
+            Major::factory($major)->create();
+        }
+
     }
 }
