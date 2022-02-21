@@ -16,10 +16,10 @@
         </div>
         <div class="col-md-6">
             <div class="d-flex">
-                <a href="#" class="btn btn-primary btn-block mt-1" @click="modalAdd = true">
+                <a href="#" class="btn btn-primary btn-block mt-md-1" @click="modalAdd = true">
                     <span class="fas fa-plus"></span> Tambah Mapel
                 </a>
-                <a href="#" class="btn btn-secondary btn-block mt-1" @click="search = ''; getSubjects('')">Refresh Data</a>
+                <a href="#" class="btn btn-secondary btn-block mt-md-1" @click="search = ''; getSubjects('')">Refresh Data</a>
             </div>
         </div>
     </div>
@@ -293,6 +293,9 @@ hr.hr-teachers {
     }
     .btn, .input-text, table {
         font-size: 0.8rem !important;
+    }
+    .btn {
+        padding: 0.2rem 0.5rem !important;
     }
 }
 </style>

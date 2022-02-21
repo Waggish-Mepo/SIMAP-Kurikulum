@@ -28,6 +28,8 @@ export default {
                 this.title = 'mata pelajaran';
             } else if(this.$route.params.page == 3) {
                 this.title = 'periode rapor';
+            } else if(this.$route.params.page == 4) {
+                this.title = 'pelajaran';
             } else {
                 this.title = 'dashboard';
             }

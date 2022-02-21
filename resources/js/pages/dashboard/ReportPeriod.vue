@@ -4,7 +4,7 @@
     <div class="alert alert-danger mb-3" v-if="errorMessage">
       {{ errorMessage }}
     </div>
-    <div class="card w-100 bg-white p-3 mb-5">
+    <div class="card w-100 bg-white p-3 mb-md-5 mb-3">
         <div class="d-flex flex-wrap">
             <h5 class="text-capitalize pt-2">lihat berdasarkan :</h5>
             <select class="form-select border-primary text-primary" @change="sortBySchoolYear">
@@ -25,8 +25,8 @@
                 <i class="far fa-calendar text-dark-gray"></i>
                 <div class="d-flex flex-column text-secondary">
                     <h5 class="text-capitalize font-weight-bold text-dark">{{report.title + ' - ' + report.school_year}}</h5>
-                    <span v-if="!report.start_date || !report.end_date">rentang waktu belum diatur</span>
-                    <span v-else>{{report.start_date | dateFormat}} - {{report.end_date | dateFormat}}</span>
+                    <span class="text-date" v-if="!report.start_date || !report.end_date">rentang waktu belum diatur</span>
+                    <span class="text-date" v-else>{{report.start_date | dateFormat}} - {{report.end_date | dateFormat}}</span>
                 </div>
             </div>
         </a>
@@ -189,13 +189,18 @@ a:hover {
 
 h5 {
     font-weight: 700;
+    font-size: 0.9rem !important;
     margin-bottom: 0.2rem !important;
 }
 
 i {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     margin-right: 15px !important;
     padding-top: 0.8rem;
+}
+
+.text-date {
+    font-size: 0.8rem;
 }
 
 .form-select {
@@ -232,12 +237,13 @@ i {
     .img {
         max-width: 80px;
     }
+    .p-3 {
+        padding: 0.8rem !important;
+    }
     .form-select {
         margin-left: 0;
         margin-top: 5px;
-    }
-    h5 {
-        font-size: 0.9rem;
+        padding: 0.2rem 2rem 0.2rem 0.5rem !important;
     }
     .text-secondary {
         font-size: 0.8rem !important;

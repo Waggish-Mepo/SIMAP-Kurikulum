@@ -5310,6 +5310,8 @@ __webpack_require__.r(__webpack_exports__);
         this.title = 'mata pelajaran';
       } else if (this.$route.params.page == 3) {
         this.title = 'periode rapor';
+      } else if (this.$route.params.page == 4) {
+        this.title = 'pelajaran';
       } else {
         this.title = 'dashboard';
       }
@@ -5396,6 +5398,12 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5683,6 +5691,10 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/:page/periode-rapor',
       name: 'periode_rapor',
       component: loadView('dashboard/ReportPeriod')
+    }, {
+      path: '/:page/courses',
+      name: 'courses',
+      component: loadView('dashboard/Course')
     }]
   }]
 });
@@ -29898,7 +29910,10 @@ var render = function () {
                     attrs: { href: "#" },
                   },
                   [
-                    _c("i", { staticClass: "fas fa-home nav_icon" }),
+                    _c("i", {
+                      staticClass: "fas fa-home nav_icon",
+                      attrs: { title: "Dashboard" },
+                    }),
                     _vm._v(" "),
                     _c("span", { staticClass: "nav_name" }, [
                       _vm._v("Dashboard"),
@@ -29923,7 +29938,10 @@ var render = function () {
                       attrs: { href: "#" },
                     },
                     [
-                      _c("i", { staticClass: "fas fa-stream nav_icon" }),
+                      _c("i", {
+                        staticClass: "fas fa-stream nav_icon",
+                        attrs: { title: "Mata Pelajaran" },
+                      }),
                       _vm._v(" "),
                       _c("span", { staticClass: "nav_name" }, [
                         _vm._v("Mata Pelajaran"),
@@ -29947,10 +29965,38 @@ var render = function () {
                       attrs: { href: "#" },
                     },
                     [
-                      _c("i", { staticClass: "fas fa-book-open nav_icon" }),
+                      _c("i", {
+                        staticClass: "fas fa-book-open nav_icon",
+                        attrs: { title: "Periode Rapor" },
+                      }),
                       _vm._v(" "),
                       _c("span", { staticClass: "nav_name" }, [
                         _vm._v("Periode Rapor"),
+                      ]),
+                    ]
+                  ),
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "router-link",
+                { attrs: { to: { name: "courses", params: { page: 4 } } } },
+                [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "nav_link",
+                      class: { active: _vm.$route.params.page == 4 },
+                      attrs: { href: "#" },
+                    },
+                    [
+                      _c("i", {
+                        staticClass: "fas fa-inbox nav_icon",
+                        attrs: { title: "Pelajaran" },
+                      }),
+                      _vm._v(" "),
+                      _c("span", { staticClass: "nav_name" }, [
+                        _vm._v("Pelajaran"),
                       ]),
                     ]
                   ),
@@ -46655,6 +46701,10 @@ var index = {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var map = {
+	"./dashboard/Course.vue": [
+		"./resources/js/pages/dashboard/Course.vue",
+		"resources_js_pages_dashboard_Course_vue"
+	],
 	"./dashboard/Home.vue": [
 		"./resources/js/pages/dashboard/Home.vue",
 		"resources_js_pages_dashboard_Home_vue"
@@ -46813,7 +46863,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_Course_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};
