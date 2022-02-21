@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Major;
 use App\Models\ReportPeriod;
 use App\Models\Student;
 use App\Models\Subject;
@@ -100,5 +101,12 @@ class DatabaseSeeder extends Seeder
         foreach($reportPeriods as $reportPeriod){
             ReportPeriod::factory($reportPeriod)->create();
         }
+
+        $majors = [...config('constant.majors.wikrama_majors.K13'), ...config('constant.majors.wikrama_majors.K21')];
+
+        foreach($majors as $major) {
+            Major::factory($major)->create();
+        }
+
     }
 }
