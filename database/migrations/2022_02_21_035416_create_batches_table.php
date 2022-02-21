@@ -17,7 +17,7 @@ class CreateBatchesTable extends Migration
             $table->uuid('id')->primary();
             $table->uuid('major_id');
             $table->string('entry_year')->nullable();
-            $table->string('bacth_name')->nullable();
+            $table->string('batch_name')->nullable();
             $table->timestamps();
         });
     }
