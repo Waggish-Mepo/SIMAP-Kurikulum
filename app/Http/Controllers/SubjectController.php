@@ -43,6 +43,7 @@ class SubjectController extends Controller
             $subjectsWithTeacher = [];
             foreach ($subjects as $subject) {
                 if(!$subject['subject_teacher']) {
+                    $subjectsWithTeacher[] = $subject;
                     continue;
                 }
 

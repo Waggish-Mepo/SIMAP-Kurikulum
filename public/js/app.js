@@ -5570,6 +5570,18 @@ vue__WEBPACK_IMPORTED_MODULE_4__["default"].filter('dateFormat', function (date)
     return '-';
   }
 });
+vue__WEBPACK_IMPORTED_MODULE_4__["default"].filter('numFormatter', function (num) {
+  if (num > 999 && num < 1000000) {
+    // convert to K for number from > 1000 < 1 million
+    return (num / 1000).toFixed(1) + 'K';
+  } else if (num > 1000000) {
+    // convert to M for number from > 1 million
+    return (num / 1000000).toFixed(1) + 'M';
+  } else if (num < 900) {
+    // if value < 1000, nothing to do
+    return num;
+  }
+});
 new vue__WEBPACK_IMPORTED_MODULE_4__["default"]({
   router: _router_js__WEBPACK_IMPORTED_MODULE_0__["default"],
   store: _store_js__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -6183,6 +6195,24 @@ var actions = {
     });
     return new Promise(function (resolve, reject) {
       axios__WEBPACK_IMPORTED_MODULE_0___default().get('/teachers').then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response, {
+          root: true
+        });
+      });
+    });
+  },
+  getStatistics: function getStatistics(_ref2) {
+    var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/teachers/statistics').then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true

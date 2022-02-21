@@ -18,6 +18,12 @@ class TeacherController extends Controller
         return response()->json($teachers->index(['without_pagination' => true]));
     }
 
+    public function accountStatistics()
+    {
+        $teachersDB = new TeacherService;
+        return response()->json($teachersDB->accountStatistics());
+    }
+
     /**
      * Show the form for creating a new resource.
      *

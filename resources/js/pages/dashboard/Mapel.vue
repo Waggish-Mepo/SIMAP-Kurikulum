@@ -40,7 +40,9 @@
                     <td class="text-center">:</td>
                     <td><a href="#" class="text-dark" @click="showSubject(subject.id)">{{subject.name}}</a></td>
                     <td v-if="subject.subject_teacher">
-                        <a href="#" class="text-primary" @click="showSubject(subject.id)">{{subject.teacher_details_string}}</a>
+                        <a href="#" class="text-dark">{{subject.teacher_details_string}}</a>
+                        <hr class="hr-teachers">
+                        <a href="#" class="text-primary" @click="showSubject(subject.id)">tambah guru</a>
                     </td>
                     <td v-else>
                         <a href="#" class="text-primary" @click="showSubject(subject.id)">pilih guru</a>
@@ -183,11 +185,7 @@ export default {
         },
         getSubjects(search) {
             this.index(search).then((result) => {
-                if(search != '') {
-                    this.dataSubject = result.data;
-                }else {
-                    this.dataSubject = result;
-                }
+                this.dataSubject = result;
             });
         },
         filterSubjects(category) {
@@ -283,6 +281,10 @@ td, .th-middle {
 
 .form-group {
     margin-bottom: 10px;
+}
+
+hr.hr-teachers {
+    margin: 0.3rem 0 !important;
 }
 
 @media (max-width: 575px) {

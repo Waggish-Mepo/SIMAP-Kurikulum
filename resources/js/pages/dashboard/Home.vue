@@ -14,7 +14,7 @@
             </div>
             <div class="d-flex flex-column"> 
               <h3 class="text-capitalize text-muted">admin</h3>
-              <p class="text-book font-weight-bold h3">5</p>
+              <p class="text-book font-weight-bold h3">{{accounts.admin | numFormatter}}</p>
             </div>
           </div>
         </div>
@@ -27,7 +27,7 @@
             </div>
             <div class="d-flex flex-column"> 
               <h3 class="text-capitalize text-muted">guru</h3>
-              <p class="text-book font-weight-bold h3">50</p>
+              <p class="text-book font-weight-bold h3">{{accounts.teachers | numFormatter}}</p>
             </div>
           </div>
         </div>
@@ -40,7 +40,7 @@
             </div>
             <div class="d-flex flex-column"> 
               <h3 class="text-capitalize text-muted">peserta didik</h3>
-              <p class="text-book font-weight-bold h3">1.5k</p>
+              <p class="text-book font-weight-bold h3">{{accounts.students | numFormatter}}</p>
             </div>
           </div>
         </div>
@@ -55,23 +55,30 @@ export default {
   name: "home",
   data() {
     return {
-      user: {}
+      user: {},
+      accounts: {}
     }
   },
   created(){
     this.getUser();
+    this.statistics();
   },
   computed: {
     ...mapState(['errorMessage', 'errors', 'isLoading']),
   },
   methods: {
     ...mapActions('auth', ['getMe']),
+    ...mapActions('teachers', ['getStatistics']),
 
     getUser() {
       this.getMe().then((result) => {
         this.user = result.data;
-        console.log(this.user);
       });
+    },
+    statistics() {
+      this.getStatistics().then((result) => {
+        this.accounts = result;
+      })
     }
   }
 }
