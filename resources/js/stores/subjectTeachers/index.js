@@ -16,7 +16,7 @@ const actions = {
                     commit('SET_GOOD', null, { root: true });
                 })
                 .catch((error) => {
-                    commit('SET_ERROR', error.response, { root: true });
+                    commit('SET_ERROR', error.response.data, { root: true });
                 })
         })
     },
@@ -29,7 +29,7 @@ const actions = {
                     commit('SET_GOOD', null, { root: true });
                 })
                 .catch((error) => {
-                    commit('SET_ERROR', error.response, { root: true });
+                    commit('SET_ERROR_VALIDATE', error.response.data, { root: true });
                 })
         })
     },

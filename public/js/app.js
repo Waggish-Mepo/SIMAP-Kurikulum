@@ -5590,6 +5590,17 @@ vue__WEBPACK_IMPORTED_MODULE_4__["default"].filter('numFormatter', function (num
     return num;
   }
 });
+vue__WEBPACK_IMPORTED_MODULE_4__["default"].filter('checkClass', function (year) {
+  if (year === "2021/2022") {
+    return 'Kelas 10';
+  } else if (year === "2020/2021") {
+    return 'Kelas 11';
+  } else if (year === "2019/2020") {
+    return 'Kelas 12';
+  } else {
+    return 'Not Selected';
+  }
+});
 new vue__WEBPACK_IMPORTED_MODULE_4__["default"]({
   router: _router_js__WEBPACK_IMPORTED_MODULE_0__["default"],
   store: _store_js__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -5726,13 +5737,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./stores/auth/index.js */ "./resources/js/stores/auth/index.js");
 /* harmony import */ var _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stores/subjects/index.js */ "./resources/js/stores/subjects/index.js");
 /* harmony import */ var _stores_teachers_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./stores/teachers/index.js */ "./resources/js/stores/teachers/index.js");
 /* harmony import */ var _stores_subjectTeachers_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./stores/subjectTeachers/index.js */ "./resources/js/stores/subjectTeachers/index.js");
 /* harmony import */ var _stores_reportPeriods_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./stores/reportPeriods/index.js */ "./resources/js/stores/reportPeriods/index.js");
+/* harmony import */ var _stores_courses_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./stores/courses/index.js */ "./resources/js/stores/courses/index.js");
+/* harmony import */ var _stores_majors_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./stores/majors/index.js */ "./resources/js/stores/majors/index.js");
 
  //IMPORT MODULE SECTION
 
@@ -5741,15 +5754,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_5__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_6__["default"]);
+
+
+vue__WEBPACK_IMPORTED_MODULE_7__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_8__["default"]);
 var debug = "development" !== 'production';
-var store = new vuex__WEBPACK_IMPORTED_MODULE_6__["default"].Store({
+var store = new vuex__WEBPACK_IMPORTED_MODULE_8__["default"].Store({
   modules: {
     auth: _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_0__["default"],
     subjects: _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_1__["default"],
     teachers: _stores_teachers_index_js__WEBPACK_IMPORTED_MODULE_2__["default"],
     subjectTeachers: _stores_subjectTeachers_index_js__WEBPACK_IMPORTED_MODULE_3__["default"],
-    reportPeriods: _stores_reportPeriods_index_js__WEBPACK_IMPORTED_MODULE_4__["default"]
+    reportPeriods: _stores_reportPeriods_index_js__WEBPACK_IMPORTED_MODULE_4__["default"],
+    courses: _stores_courses_index_js__WEBPACK_IMPORTED_MODULE_5__["default"],
+    majors: _stores_majors_index_js__WEBPACK_IMPORTED_MODULE_6__["default"]
   },
   state: {
     errors: [],
@@ -5778,6 +5795,10 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_6__["default"].Store({
       state.isLoading = false;
       state.errorMessage = Array.isArray(payload.message) ? payload.message[0] : payload.message;
       state.errors = !payload.errors ? [] : payload.errors;
+    },
+    SET_ERROR_VALIDATE: function SET_ERROR_VALIDATE(state, payload) {
+      state.isLoading = false;
+      state.errors = !payload ? [] : payload;
     },
     CLEAR_ERROR: function CLEAR_ERROR(state) {
       state.errors = [];
@@ -5835,7 +5856,7 @@ var actions = {
           });
           resolve(res.data);
         })["catch"](function (error) {
-          commit('SET_ERROR', error.response.data, {
+          commit('SET_ERROR_VALIDATE', error.response.data, {
             root: true
           });
         });
@@ -5906,6 +5927,176 @@ var actions = {
 
 /***/ }),
 
+/***/ "./resources/js/stores/courses/index.js":
+/*!**********************************************!*\
+  !*** ./resources/js/stores/courses/index.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var state = function state() {
+  return {};
+};
+
+var mutations = {};
+var actions = {
+  index: function index(_ref, payload) {
+    var commit = _ref.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/courses').then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  allCurriculums: function allCurriculums(_ref2) {
+    var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/courses/curriculums').then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  show: function show(_ref3, payload) {
+    var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/courses/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  create: function create(_ref4, payload) {
+    var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/courses', payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  edit: function edit(_ref5, payload) {
+    var commit = _ref5.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/courses/' + payload.id, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: state,
+  actions: actions,
+  mutations: mutations
+});
+
+/***/ }),
+
+/***/ "./resources/js/stores/majors/index.js":
+/*!*********************************************!*\
+  !*** ./resources/js/stores/majors/index.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var state = function state() {
+  return {};
+};
+
+var mutations = {};
+var actions = {
+  allData: function allData(_ref) {
+    var commit = _ref.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/majors').then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: state,
+  actions: actions,
+  mutations: mutations
+});
+
+/***/ }),
+
 /***/ "./resources/js/stores/reportPeriods/index.js":
 /*!****************************************************!*\
   !*** ./resources/js/stores/reportPeriods/index.js ***!
@@ -5939,37 +6130,19 @@ var actions = {
           root: true
         });
       })["catch"](function (error) {
-        commit('SET_ERROR', error.response, {
+        commit('SET_ERROR', error.response.data, {
           root: true
         });
       });
     });
   },
-  show: function show(_ref2, payload) {
+  schoolYears: function schoolYears(_ref2) {
     var commit = _ref2.commit;
     commit('SET_LOADING', true, {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/report-periods/' + payload).then(function (response) {
-        resolve(response.data);
-        commit('SET_GOOD', null, {
-          root: true
-        });
-      })["catch"](function (error) {
-        commit('SET_ERROR', error.response, {
-          root: true
-        });
-      });
-    });
-  },
-  create: function create(_ref3, payload) {
-    var commit = _ref3.commit;
-    commit('SET_LOADING', true, {
-      root: true
-    });
-    return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/report-periods', payload).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/report-periods/school-years').then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
@@ -5981,8 +6154,44 @@ var actions = {
       });
     });
   },
-  edit: function edit(_ref4, payload) {
+  show: function show(_ref3, payload) {
+    var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/report-periods/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  create: function create(_ref4, payload) {
     var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/report-periods', payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  edit: function edit(_ref5, payload) {
+    var commit = _ref5.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -5993,7 +6202,7 @@ var actions = {
           root: true
         });
       })["catch"](function (error) {
-        commit('SET_ERROR', error.response, {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
           root: true
         });
       });
@@ -6042,7 +6251,7 @@ var actions = {
           root: true
         });
       })["catch"](function (error) {
-        commit('SET_ERROR', error.response, {
+        commit('SET_ERROR', error.response.data, {
           root: true
         });
       });
@@ -6060,7 +6269,7 @@ var actions = {
           root: true
         });
       })["catch"](function (error) {
-        commit('SET_ERROR', error.response, {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
           root: true
         });
       });
@@ -6109,37 +6318,19 @@ var actions = {
           root: true
         });
       })["catch"](function (error) {
-        commit('SET_ERROR', error.response, {
+        commit('SET_ERROR', error.response.data, {
           root: true
         });
       });
     });
   },
-  show: function show(_ref2, payload) {
+  getAll: function getAll(_ref2) {
     var commit = _ref2.commit;
     commit('SET_LOADING', true, {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/subjects/' + payload).then(function (response) {
-        resolve(response.data);
-        commit('SET_GOOD', null, {
-          root: true
-        });
-      })["catch"](function (error) {
-        commit('SET_ERROR', error.response, {
-          root: true
-        });
-      });
-    });
-  },
-  create: function create(_ref3, payload) {
-    var commit = _ref3.commit;
-    commit('SET_LOADING', true, {
-      root: true
-    });
-    return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/subjects', payload).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/subjects/all').then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
@@ -6151,8 +6342,62 @@ var actions = {
       });
     });
   },
-  edit: function edit(_ref4, payload) {
+  searchByCourse: function searchByCourse(_ref3, payload) {
+    var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/subjects/courses/?search=' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  show: function show(_ref4, payload) {
     var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/subjects/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  create: function create(_ref5, payload) {
+    var commit = _ref5.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/subjects', payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  edit: function edit(_ref6, payload) {
+    var commit = _ref6.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -6163,7 +6408,7 @@ var actions = {
           root: true
         });
       })["catch"](function (error) {
-        commit('SET_ERROR', error.response, {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
           root: true
         });
       });
@@ -6212,7 +6457,7 @@ var actions = {
           root: true
         });
       })["catch"](function (error) {
-        commit('SET_ERROR', error.response, {
+        commit('SET_ERROR', error.response.data, {
           root: true
         });
       });
@@ -6230,7 +6475,7 @@ var actions = {
           root: true
         });
       })["catch"](function (error) {
-        commit('SET_ERROR', error.response, {
+        commit('SET_ERROR', error.response.data, {
           root: true
         });
       });
@@ -11314,7 +11559,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.vue-modal-mask[data-v-53ab54d2] {\r\n  position: fixed;\r\n  z-index: 9998;\r\n  top: 0;\r\n  left: 0;\r\n  padding-top: 3%;\r\n  width: 100%;\r\n  height: 100%;\r\n  background-color: rgba(0, 0, 0, 0.5);\r\n  display: table;\r\n  transition: opacity 0.3s ease;\n}\n.vue-modal-wrapper[data-v-53ab54d2] {\r\n  display: table-cell;\r\n  vertical-align: middle;\n}\n.modal-footer[data-v-53ab54d2]{\r\n\tborder-top:none;\r\n    margin-top: 15px;\r\n    justify-content: space-between !important;\r\n    padding-bottom: 15px !important;\n}\n.modal-header[data-v-53ab54d2]{\r\n\tborder-bottom:none;\n}\n.header[data-v-53ab54d2] {\r\n    font-weight: 700;\n}\n.modal-enter[data-v-53ab54d2] {\r\n  opacity: 0;\n}\n.modal-leave-active[data-v-53ab54d2] {\r\n  opacity: 0;\n}\n.modal-enter .modal-container[data-v-53ab54d2],\r\n.modal-leave-active .modal-container[data-v-53ab54d2] {\r\n  transform: scale(1.1);\n}\nul.timeline[data-v-53ab54d2] {\r\n    list-style-type: none;\r\n    position: relative;\r\n\tz-index: 0;\n}\nul.timeline[data-v-53ab54d2]:before {\r\n    content: ' ';\r\n    background: #d4d9df;\r\n    display: inline-block;\r\n    position: absolute;\r\n    left: 29px;\r\n    width: 2px;\r\n    height: 100%;\r\n    z-index: 50;\n}\nul.timeline > li[data-v-53ab54d2] {\r\n    margin: 20px 0;\r\n    padding-left: 20px;\n}\nul.timeline > li[data-v-53ab54d2]:before {\r\n    content: ' ';\r\n    background: white;\r\n    display: inline-block;\r\n    position: absolute;\r\n    border-radius: 50%;\r\n    border: 3px solid #104d5d;\r\n    left: 20px;\r\n    width: 20px;\r\n    height: 20px;\r\n    z-index: 50;\n}\n.btn-outline-blue[data-v-53ab54d2] {\r\n    margin-right: 10px;\n}\n.close[data-v-53ab54d2] {\r\n    border: 0;\r\n    outline: none;\r\n    background: transparent;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.vue-modal-mask[data-v-53ab54d2] {\r\n  position: fixed;\r\n  z-index: 9998;\r\n  top: 0;\r\n  left: 0;\r\n  padding-top: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  background-color: rgba(0, 0, 0, 0.5);\r\n  display: table;\r\n  transition: opacity 0.3s ease;\n}\n.vue-modal-wrapper[data-v-53ab54d2] {\r\n  display: table-cell;\r\n  vertical-align: middle;\n}\n.modal-footer[data-v-53ab54d2]{\r\n\tborder-top:none;\r\n    margin-top: 15px;\r\n    justify-content: space-between !important;\r\n    padding-bottom: 15px !important;\n}\n.modal-header[data-v-53ab54d2]{\r\n\tborder-bottom:none;\n}\n.header[data-v-53ab54d2] {\r\n    font-weight: 700;\n}\n.modal-enter[data-v-53ab54d2] {\r\n  opacity: 0;\n}\n.modal-leave-active[data-v-53ab54d2] {\r\n  opacity: 0;\n}\n.modal-enter .modal-container[data-v-53ab54d2],\r\n.modal-leave-active .modal-container[data-v-53ab54d2] {\r\n  transform: scale(1.1);\n}\nul.timeline[data-v-53ab54d2] {\r\n    list-style-type: none;\r\n    position: relative;\r\n\tz-index: 0;\n}\nul.timeline[data-v-53ab54d2]:before {\r\n    content: ' ';\r\n    background: #d4d9df;\r\n    display: inline-block;\r\n    position: absolute;\r\n    left: 29px;\r\n    width: 2px;\r\n    height: 100%;\r\n    z-index: 50;\n}\nul.timeline > li[data-v-53ab54d2] {\r\n    margin: 20px 0;\r\n    padding-left: 20px;\n}\nul.timeline > li[data-v-53ab54d2]:before {\r\n    content: ' ';\r\n    background: white;\r\n    display: inline-block;\r\n    position: absolute;\r\n    border-radius: 50%;\r\n    border: 3px solid #104d5d;\r\n    left: 20px;\r\n    width: 20px;\r\n    height: 20px;\r\n    z-index: 50;\n}\n.btn-outline-blue[data-v-53ab54d2] {\r\n    margin-right: 10px;\n}\n.close[data-v-53ab54d2] {\r\n    border: 0;\r\n    outline: none;\r\n    background: transparent;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

@@ -7,6 +7,8 @@ use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\SubjectTeacherController;
 use App\Http\Controllers\ReportPeriodController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\MajorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +33,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('subjects')->group(function () {
         Route::post('/', [SubjectController::class, 'store']);
         Route::get('/', [SubjectController::class, 'index']);
+        Route::get('/all', [SubjectController::class, 'getAll']);
+        Route::get('/courses', [SubjectController::class, 'searchByCourse']);
         Route::get('/{id}', [SubjectController::class, 'show']);
         Route::patch('/{id}', [SubjectController::class, 'update']);
     });
@@ -44,8 +48,19 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::prefix('report-periods')->group(function () {
         Route::get('/', [ReportPeriodController::class, 'index']);
+        Route::get('/school-years', [ReportPeriodController::class, 'schoolYears']);
         Route::post('/', [ReportPeriodController::class, 'store']);
         Route::get('/{id}', [ReportPeriodController::class, 'show']);
         Route::patch('/{id}', [ReportPeriodController::class, 'update']);
+    });
+    Route::prefix('courses')->group(function () {
+        Route::get('/', [CourseController::class, 'index']);
+        Route::get('/curriculums', [CourseController::class, 'getCurriculums']);
+        Route::post('/', [CourseController::class, 'store']);
+        Route::get('/{id}', [CourseController::class, 'show']);
+        Route::patch('/{id}', [CourseController::class, 'update']);
+    });
+    Route::prefix('majors')->group(function () {
+        Route::get('/', [MajorController::class, 'index']);
     });
 });

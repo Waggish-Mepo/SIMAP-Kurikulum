@@ -10,7 +10,7 @@ const actions = {
     index({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/subjects/?search='+payload)
+            axios.get('/courses')
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -20,23 +20,10 @@ const actions = {
                 })
         })
     },
-    getAll({ commit }) {
+    allCurriculums({ commit }) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/subjects/all')
-                .then((response) => {
-                    resolve(response.data);
-                    commit('SET_GOOD', null, { root: true });
-                })
-                .catch((error) => {
-                    commit('SET_ERROR', error.response.data, { root: true });
-                })
-        })
-    },
-    searchByCourse({ commit }, payload) {
-        commit('SET_LOADING', true, { root: true });
-        return new Promise((resolve, reject) => {
-            axios.get('/subjects/courses/?search='+payload)
+            axios.get('/courses/curriculums')
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -49,7 +36,7 @@ const actions = {
     show({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/subjects/'+payload)
+            axios.get('/courses/'+payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -62,7 +49,7 @@ const actions = {
     create({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.post('/subjects', payload)
+            axios.post('/courses', payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -75,7 +62,7 @@ const actions = {
     edit({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.patch('/subjects/'+payload.id, payload.data)
+            axios.patch('/courses/'+payload.id, payload.data)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });

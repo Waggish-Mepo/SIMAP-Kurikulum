@@ -62,7 +62,7 @@
             </div>
             <div class="form-group">
                 <label class="mb-2">Kelompok Mapel</label>
-                <select2 :options="categories" v-model="subject.group"></select2>
+                <select2 :options="categories" v-model="subject.group" :class="{'is-invalid': errors.group}"></select2>
                 <div class="invalid-feedback" v-if="errors.group">
                     {{ errors.group[0] }}
                 </div>
@@ -72,7 +72,7 @@
                     <label class="mb-1">Nama Mapel</label>
                     <small class="text-capitalize mb-2">pastikan mata pelajaran belum tersedia pada list table mapel</small>
                 </div>
-                <input type="text" class="form-control" v-model="subject.name">
+                <input type="text" class="form-control" v-model="subject.name" :class="{'is-invalid': errors.name}">
                 <div class="invalid-feedback" v-if="errors.name">
                     {{ errors.name[0] }}
                 </div>
@@ -88,21 +88,21 @@
             </div>
             <div class="form-group">
                 <label class="mb-2">Kelompok Mapel</label>
-                <select2 :options="categories" v-model="teacherSubject.group"></select2>
+                <select2 :options="categories" v-model="teacherSubject.group" :class="{'is-invalid': errors.group}"></select2>
                 <div class="invalid-feedback" v-if="errors.group">
                     {{ errors.group[0] }}
                 </div>
             </div>
             <div class="form-group">
                 <label class="mb-2">Nama Mapel</label>
-                <input type="text" class="form-control" v-model="teacherSubject.name">
+                <input type="text" class="form-control" v-model="teacherSubject.name" :class="{'is-invalid': errors.name}">
                 <div class="invalid-feedback" v-if="errors.name">
                     {{ errors.name[0] }}
                 </div>
             </div>
             <div class="form-group">
                 <label class="mb-2">Guru Mapel</label>
-                <select2 multiple :options="teachers" :reduce="name => name.id" label="name" v-model="teacherSubject.teachers"></select2>
+                <select2 multiple :options="teachers" :reduce="name => name.id" label="name" v-model="teacherSubject.teachers" :class="{'is-invalid': errors.teachers}"></select2>
                 <div class="invalid-feedback" v-if="errors.teachers">
                     {{ errors.teachers[0] }}
                 </div>
@@ -114,8 +114,8 @@
     <modal v-if="modalDelete" @close="modalDelete = false" :deleteOpt="deleteSubject">
         <h5 slot="header">Hapus Mapel</h5>
         <div slot="body">
-            <p>Yakin akan menghapus mata pelajaran <b class="text-capitalize">bahasa indonesia</b>?</p>
-            <p>Semua data nilai mata pelajaran <b class="text-capitalize">bahasa indonesia</b> dalam buku nilai akan terhapus.</p>
+            <p>Yakin akan menghapus mata pelajaran <b class="text-capitalize">{{teacherSubject.name}}</b>?</p>
+            <p>Semua data nilai mata pelajaran <b class="text-capitalize">{{teacherSubject.name}}</b> dalam buku nilai akan terhapus.</p>
         </div>
     </modal>
   </div>

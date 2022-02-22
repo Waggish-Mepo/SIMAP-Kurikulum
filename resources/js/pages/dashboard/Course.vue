@@ -1,37 +1,42 @@
 <template>
     <div class="mt-3">
+        <div class="loader" v-if="isLoading"></div>
+        <div class="alert alert-danger mb-3" v-if="errorMessage">
+        {{ errorMessage }}
+        </div>
         <div class="row">
             <div class="col-md-8">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Pelajaran....">
+                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Pelajaran...." @keyup="searchSubject" v-model="search">
                     <div class="input-group-append">
-                        <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white"><i class="fa fa-search"></i></a>
+                        <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white" @click="searchSubject"><i class="fa fa-search"></i></a>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <a href="#" class="btn btn-secondary btn-block mt-md-1">Refresh Data</a>
+                <a href="#" class="btn btn-secondary btn-block mt-md-1" @click="getDataSubjects('')">Refresh Data</a>
             </div>
         </div>
         <div class="card w-100 bg-white p-2 mt-3" @click="modalAdd = true">
-            <a href="#"><span class="fas fa-plus mr-3"></span> Tambah Mata Pelajaran</a>
+            <a href="#"><span class="fas fa-plus mr-3"></span> Tambah Pelajaran</a>
         </div>
         <div class="col-12 mt-3">
-            <div class="panel-group shadow-sm mb-2" id="subject-panel">
-                <div class="panel panel-default">
-                    <div class="panel-heading" @click="showPanelCollapse('subject1', 'title1')">
-                        <h4 class="panel-title"> 
-                            <a data-toggle="collapse" data-parent="#subject-panel" href="#subject1" aria-expanded="false" class="collapsed" id="title1"> <span class="fas fa-book"></span> Tentang Kami </a>
-                        </h4>
-                    </div>
-                    <div id="subject1" class="panel-collapse collapse" aria-expanded="false" role="tablist" style="height: 0px;">
-                        <div class="panel-body">
-                            <ul class="list-group">
-                                <li class="list-group-item" @click="modalEdit = true"><a href="#">Kelas 10 | RPL</a></li>
-                                <li class="list-group-item"><a href="#">Kelas 10 | MMD</a></li>
-                            </ul>
+            <div v-for="(subject, index) in dataSubjects" :key="index" class="mb-2">
+                <div class="card w-100 shadow-sm bg-white p-3" data-bs-toggle="collapse" aria-expanded="false" @click="showPanelCollapse(subject.id, index)">
+                    <div class="d-flex justify-content-between text-capitalize">
+                        <div><span class="fas fa-book"></span>
+                        {{subject.name}}</div>
+                        <div>
+                            <i class="fas fa-arrow-down" :id="index"></i>
                         </div>
                     </div>
+                </div>
+                <div class="collapse" :id="subject.id">
+                    <ul class="list-group">
+                        <li class="list-group-item" v-for="(course, index) in filterCourses(subject.id)" :key="index">
+                            <a href="#" class="text-capitalize" @click="showCourse(course.id)">{{course.entry_year | checkClass}} | {{course.caption}} | {{course.major_details_string}}</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -40,32 +45,50 @@
         <modal v-if="modalAdd" @close="modalAdd = false" :action="addCourse">
             <h5 slot="header">Tambah Pelajaran</h5>
             <div slot="body">
-                <!-- <div class="alert alert-danger mb-3" v-if="errorMessage">
+                <div class="alert alert-danger mb-3" v-if="errorMessage">
                     {{ errorMessage }}
-                </div> -->
+                </div>
+                <div class="form-group">
+                    <label class="mb-2">Kurikulum Acuan</label>
+                    <select2 :options="curriculums" v-model="submitForm.curriculum" :class="{'is-invalid': errors.curriculum}"></select2>
+                    <div class="invalid-feedback" v-if="errors.curriculum">
+                        {{ errors.curriculum[0] }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="mb-2">Jurusan</label>
+                    <select2 :options="majors" :reduce="major => major.id" label="abbreviation" v-model="submitForm.majors" :class="{'is-invalid': errors.majors}" multiple></select2>
+                    <div class="invalid-feedback" v-if="errors.majors">
+                        {{ errors.majors[0] }}
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="mb-2">Mata Pelajaran</label>
-                    <select2 :options="subjects"></select2>
-                    <!-- <div class="invalid-feedback" v-if="errors.title">
-                        {{ errors.title[0] }}
-                    </div> -->
+                    <select2 :options="subjects" :reduce="subject => subject.id" label="name" v-model="submitForm.subject_id" :class="{'is-invalid': errors.subject_id}"></select2>
+                    <div class="invalid-feedback" v-if="errors.subject_id">
+                        {{ errors.subject_id[0] }}
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="mb-2">Kelas/Angkatan Masuk</label>
+                    <small class="text-danger" v-if="errors.entry_year">
+                        {{ errors.entry_year[0] }}
+                    </small>
+                    <!-- entry year sementara -->
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" value="option1" checked>
+                        <input class="form-check-input" type="radio" value="2021/2022" v-model="submitForm.entry_year">
                         <label class="form-check-label text-capitalize">
                             kelas 10 | angkatan masuk 2021
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" value="option2">
+                        <input class="form-check-input" type="radio" value="2020/2021" v-model="submitForm.entry_year">
                         <label class="form-check-label text-capitalize">
                             Kelas 11 | angkatan masuk 2020
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" value="option3">
+                        <input class="form-check-input" type="radio" value="2019/2020" v-model="submitForm.entry_year">
                         <label class="form-check-label text-capitalize">
                             Kelas 12 | angkatan masuk 2019
                         </label>
@@ -73,21 +96,9 @@
                 </div>
                 <div class="form-group">
                     <label class="mb-2">Keterangan</label>
-                    <input type="text" class="form-control" placeholder="contoh : matematika IT">
-                </div>
-                <div class="form-group">
-                    <label class="mb-2">Kurikulum Acuan</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="option1" checked>
-                        <label class="form-check-label text-capitalize">
-                            k13
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="option2">
-                        <label class="form-check-label text-capitalize">
-                            k21
-                        </label>
+                    <input type="text" class="form-control" placeholder="contoh : matematika IT" v-model="submitForm.caption" :class="{'is-invalid': errors.caption}">
+                    <div class="invalid-feedback" v-if="errors.caption">
+                        {{ errors.caption[0] }}
                     </div>
                 </div>
             </div>
@@ -96,32 +107,50 @@
         <modal v-if="modalEdit" @close="modalEdit = false" :action="editCourse">
             <h5 slot="header">Edit Pelajaran</h5>
             <div slot="body">
-                <!-- <div class="alert alert-danger mb-3" v-if="errorMessage">
+                <div class="alert alert-danger mb-3" v-if="errorMessage">
                     {{ errorMessage }}
-                </div> -->
+                </div>
+                <div class="form-group">
+                    <label class="mb-2">Kurikulum Acuan</label>
+                    <select2 :options="curriculums" v-model="updateForm.curriculum" :class="{'is-invalid': errors.curriculum}"></select2>
+                    <div class="invalid-feedback" v-if="errors.curriculum">
+                        {{ errors.curriculum[0] }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="mb-2">Jurusan</label>
+                    <select2 :options="majors" :reduce="major => major.id" label="abbreviation" v-model="updateForm.majors" :class="{'is-invalid': errors.majors}" multiple></select2>
+                    <div class="invalid-feedback" v-if="errors.majors">
+                        {{ errors.majors[0] }}
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="mb-2">Mata Pelajaran</label>
-                    <select2 :options="subjects"></select2>
-                    <!-- <div class="invalid-feedback" v-if="errors.title">
-                        {{ errors.title[0] }}
-                    </div> -->
+                    <select2 :options="subjects" :reduce="subject => subject.id" label="name" v-model="updateForm.subject_id" :class="{'is-invalid': errors.subject_id}"></select2>
+                    <div class="invalid-feedback" v-if="errors.subject_id">
+                        {{ errors.subject_id[0] }}
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="mb-2">Kelas/Angkatan Masuk</label>
+                    <small class="text-danger" v-if="errors.entry_year">
+                        {{ errors.entry_year[0] }}
+                    </small>
+                    <!-- entry year sementara -->
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" value="option1" checked>
+                        <input class="form-check-input" type="radio" value="2021/2022" v-model="updateForm.entry_year">
                         <label class="form-check-label text-capitalize">
                             kelas 10 | angkatan masuk 2021
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" value="option2">
+                        <input class="form-check-input" type="radio" value="2020/2021" v-model="updateForm.entry_year">
                         <label class="form-check-label text-capitalize">
                             Kelas 11 | angkatan masuk 2020
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" value="option3">
+                        <input class="form-check-input" type="radio" value="2019/2020" v-model="updateForm.entry_year">
                         <label class="form-check-label text-capitalize">
                             Kelas 12 | angkatan masuk 2019
                         </label>
@@ -129,25 +158,20 @@
                 </div>
                 <div class="form-group">
                     <label class="mb-2">Keterangan</label>
-                    <input type="text" class="form-control" placeholder="contoh : matematika IT">
-                </div>
-                <div class="form-group">
-                    <label class="mb-2">Kurikulum Acuan</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="option1" checked>
-                        <label class="form-check-label text-capitalize">
-                            k13
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="option2">
-                        <label class="form-check-label text-capitalize">
-                            k21
-                        </label>
+                    <input type="text" class="form-control" placeholder="contoh : matematika IT" v-model="updateForm.caption" :class="{'is-invalid': errors.caption}">
+                    <div class="invalid-feedback" v-if="errors.caption">
+                        {{ errors.caption[0] }}
                     </div>
                 </div>
             </div>
-            <button type="button" class="btn btn-outline-danger" slot="button">Hapus</button>
+            <button type="button" class="btn btn-outline-danger" slot="button" @click="showModalDelete">Hapus</button>
+        </modal>
+
+        <modal v-if="modalDelete" @close="modalDelete = false" :deleteOpt="deleteCourse">
+            <h5 slot="header">Hapus Pelajaran</h5>
+            <div slot="body">
+                <span>Yakin untuk menghapus pelajaran <b>{{updateForm.caption}}</b>? Semua data terkait <b>{{updateForm.caption}}</b> akan terhapus.</span>
+            </div>
         </modal>
     </div>
 </template>
@@ -158,6 +182,8 @@ import modalComponent from '../../components/Modal.vue';
 // vue-select
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
+// vuex
+import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
 export default {
     name: "Courses",
     components: {
@@ -168,24 +194,105 @@ export default {
         return {
             modalAdd: false,
             modalEdit: false,
-            subjects: [
-                'Bahasa Indonesia',
-                'Bahasa Sunda'
-            ]
+            modalDelete: false,
+            subjects: [],
+            curriculums: [],
+            majors: [],
+            courses: [],
+            submitForm: {
+                curriculum: null,
+                caption: null,
+                entry_year: null,
+                majors: [],
+                subject_id: null
+            },
+            updateForm: {},
+            dataSubjects: [],
+            search: ''
         }
     },
+    created() {
+        this.getSubjects();
+        this.getDataSubjects(this.search);
+        this.getCurriculums();
+        this.getMajors();
+        this.getCourses();
+    },
+    computed: {
+        ...mapState(['errorMessage', 'errors', 'isLoading']),
+    },
     methods: {
+        ...mapActions('courses', ['create', 'index', 'show', 'edit', 'allCurriculums']),
+        ...mapActions('subjects', ['getAll', 'searchByCourse']),
+        ...mapActions('majors', ['allData']),
+
+        getMajors() {
+            this.allData().then((result) => {
+                this.majors = result;
+            })
+        },
+        getDataSubjects(search) {
+            this.searchByCourse(search).then((result) => {
+                this.dataSubjects = result;
+            });
+        },
+        searchSubject() {
+            this.getDataSubjects(this.search);
+        },
+        getSubjects() {
+            this.getAll().then((result) => {
+                this.subjects = result;
+            })
+        },
+        getCurriculums() {
+            this.allCurriculums().then((result) => {
+                this.curriculums = result;
+            })
+        },
         showPanelCollapse(PBody, PTitle) {
             let panelBody = document.getElementById(PBody);
             panelBody.classList.toggle('show');
             let iconTitle = document.getElementById(PTitle);
-            iconTitle.classList.toggle('collapsed');
+            iconTitle.classList.toggle('fa-arrow-down');
+            iconTitle.classList.toggle('fa-arrow-up');
+        },
+        getCourses() {
+            this.index().then((result) => {
+                this.courses = result;
+            });
+        },
+        filterCourses(subject) {
+            return this.courses.filter(function(course) {
+                return course.subject_id == subject;
+            });
         },
         addCourse() {
-            console.log('add');
+            this.create(this.submitForm).then((result) => {
+                this.modalAdd = false;
+                this.getDataSubjects(this.search);
+                this.getCourses();
+            });
+        },
+        showCourse(id) {
+            this.show(id).then((result) => {
+                this.updateForm = result;
+                this.modalEdit = true;
+            });
         },
         editCourse() {
-            console.log('edit');
+            let payload = {id: this.updateForm.id, data: this.updateForm};
+            this.edit(payload).then((result) => {
+                this.modalEdit = false;
+                this.getDataSubjects(this.search);
+                this.getCourses();
+            })
+        },
+        showModalDelete() {
+            this.modalEdit = false;
+            this.modalDelete = true;
+        },
+        deleteCourse() {
+            console.log('delete');
         }
     }
 }
@@ -222,61 +329,6 @@ a:hover {
     font-size: 16px;
 }
 
-.panel-group {
-    margin-bottom: 0;
-}
-
-.panel {
-    background-color: transparent;
-    box-shadow: none;
-    border-bottom: 10px solid transparent;
-    border-radius: 0;
-    margin: 0;
-}
-
-.panel-default {
-    border: 0;
-}
-
-.accordion-wrap .panel-heading {
-    padding: 0px;
-    border-radius: 0px;
-    cursor: pointer;
-}
-
-.panel-title {
-    margin-top: 0;
-    margin-bottom: 0;
-    font-size: 16px;
-    font-weight: 500;
-    color: inherit;
-}
-
-.panel .panel-heading a.collapsed,
-.panel .panel-heading a {
-    color: #000;
-    background-color: #fff;
-    display: block;
-    padding: 16px 20px;
-}
-
-span.fas.fa-book,
-span.fas.fa-plus {
-    margin-right: 10px;
-}
-
-span.fas.fa-book {
-    color: #333;
-}
-
-.panel-body {
-    border-top: 0;
-    padding: 0;
-    background: #dadada;
-    color: #333;
-    font-size: 14px;
-}
-
 .list-group {
     border-radius: 0 !important;
 }
@@ -296,25 +348,8 @@ span.fas.fa-book {
     text-decoration: underline;
 }
 
-.panel .panel-heading a:after {
-    content: "\21A5";
-}
-
-.panel .panel-heading a:after,
-.panel .panel-heading a.collapsed:after {
-    float: right;
-    width: 21px;
-    display: block;
-    height: 21px;
-    line-height: 21px;
-    text-align: center;
-    color: #333;
-    background: transparent;
-    font-weight: 700;
-}
-
-.panel .panel-heading a.collapsed:after {
-    content: "\21A7";
+span.fas.fa-book {
+    margin-right: 5px;
 }
 
 .form-group {
@@ -327,8 +362,7 @@ label.mb-2 {
 
 @media (max-width: 470px) {
     .input-text,
-    .card a,
-    .panel-title {
+    .card a {
         font-size: 0.9rem;
     }
 
@@ -343,11 +377,6 @@ label.mb-2 {
 
     .list-group-item {
         font-size: 0.8rem;
-    }
-
-    .panel .panel-heading a.collapsed,
-    .panel .panel-heading a {
-        padding: 14px 18px;
     }
 
     .card a {
