@@ -16,16 +16,31 @@ class StudentGroupService {
         $schoolYear = $filter['school_year'] ?? null;
         $perPage = $filter['page'] ?? 20;
         $withBatch = $filter['with_batch'] ?? false;
+        $withMajor = $filter['with_major'] ?? false;
+        $groupByMajor = $filter['group_by_major'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = StudentGroup::orderBy('created_at', $orderBy);
+
+        if ($schoolYear) {
+            $query->where('school_year', $schoolYear);
+        }
 
         if ($withBatch) {
             $query->with('batch');
         }
 
-        if ($schoolYear) {
-            $query->where('school_year', $schoolYear);
+        if ($withMajor) {
+            $query->with('major');
+
+            if ($groupByMajor) {
+                $studentGroups = collect($query->get())->mapToGroups(function($item, $key) {
+                    return [$item['major']['id'] => $item];
+                });
+
+                return $studentGroups
+            }
+
         }
 
         if ($withoutPagination) {
