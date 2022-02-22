@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Gradebook;
 use App\Models\Student;
 use App\Models\Subject;
 use App\Models\Teacher;
@@ -197,6 +198,13 @@ return [
                     'abbreviation' => 'KLNR'
                 ],
             ],
+        ]
+    ],
+    'gradebook' => [
+        'components' => [
+            Gradebook::KNOWLEDGE,
+            Gradebook::SKILL,
+            Gradebook::GENERAL,
         ]
     ]
 ];
