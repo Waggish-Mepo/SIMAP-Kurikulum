@@ -7,6 +7,8 @@ import subjects from './stores/subjects/index.js'
 import teachers from './stores/teachers/index.js'
 import subjectTeachers from './stores/subjectTeachers/index.js'
 import reportPeriods from './stores/reportPeriods/index.js'
+import courses from './stores/courses/index.js'
+import majors from './stores/majors/index.js'
 
 Vue.use(Vuex);
 
@@ -18,7 +20,9 @@ const store = new Vuex.Store({
         subjects,
         teachers,
         subjectTeachers,
-        reportPeriods
+        reportPeriods,
+        courses,
+        majors
     },
     state: {
         errors: [],
@@ -45,6 +49,10 @@ const store = new Vuex.Store({
             state.isLoading = false;
             state.errorMessage = Array.isArray(payload.message) ? payload.message[0] : payload.message;
             state.errors = !payload.errors ? [] : payload.errors;
+        },
+        SET_ERROR_VALIDATE(state, payload) {
+            state.isLoading = false;
+            state.errors = !payload ? [] : payload;
         },
         CLEAR_ERROR(state) {
             state.errors = []

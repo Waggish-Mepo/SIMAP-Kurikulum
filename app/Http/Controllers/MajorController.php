@@ -3,26 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Service\Database\ReportPeriodService;
+use App\Service\Database\MajorService;
 
-class ReportPeriodController extends Controller
+class MajorController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $orderBy = $request->orderBy;
-        $search = $request->search;
-        $reportPeriodDB = new ReportPeriodService;
-
-        if ($orderBy == '') {
-            return response()->json($reportPeriodDB->index());
-        } else {
-            return response()->json($reportPeriodDB->index(['school_year' => $search]));
-        }
+        $majorDB = new MajorService;
+        return response()->json($majorDB->index(['without_pagination' => true]));
     }
 
     /**
@@ -43,8 +36,7 @@ class ReportPeriodController extends Controller
      */
     public function store(Request $request)
     {
-        $reportPeriodDB = new ReportPeriodService;
-        return response()->json($reportPeriodDB->create($request->all()));
+        //
     }
 
     /**
@@ -55,15 +47,9 @@ class ReportPeriodController extends Controller
      */
     public function show($id)
     {
-        $reportPeriodDB = new ReportPeriodService;
-        return response()->json($reportPeriodDB->detail($id));
+        //
     }
 
-    public function schoolYears()
-    {
-        $reportPeriodDB = new ReportPeriodService;
-        return response()->json($reportPeriodDB->schoolYears());
-    }
     /**
      * Show the form for editing the specified resource.
      *
@@ -84,8 +70,7 @@ class ReportPeriodController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $reportPeriodDB = new ReportPeriodService;
-        return response()->json($reportPeriodDB->update($id, $request->all()));
+        //
     }
 
     /**
