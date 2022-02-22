@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Batch;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class StudentGroupFactory extends Factory
@@ -16,7 +17,7 @@ class StudentGroupFactory extends Factory
         return [
             'id' => $this->faker->uuid(),
             'name' => $this->faker->firstName(),
-            'batch_id' => $this->faker->uuid(),
+            'batch_id' => Batch::factory()->create()->id,
             'school_year' => $this->faker->randomElement(config('constant.common.school_years')),
         ];
     }

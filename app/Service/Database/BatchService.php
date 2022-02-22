@@ -16,12 +16,17 @@ class BatchService {
         $entryYear = $filter['entry_year'] ?? null;
         $perPage = $filter['page'] ?? 20;
         $withMajor = $filter['with_major'] ?? false;
+        $withStudentGroups = $filter['with_student_groups'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = Batch::orderBy('created_at', $orderBy);
 
         if ($withMajor) {
             $query->with('major');
+        }
+
+        if ($withStudentGroups) {
+            $query->with('studentGroups');
         }
 
         if ($batchName) {
