@@ -11,16 +11,22 @@
                         <form action="#" @submit.prevent="handleLogin">
                             <div class="mt-4 text-center">
                                 <div class="alert alert-danger mb-3" v-if="errorMessage">
-                                    {{ errorMessage }}
+                                    {{ errorMessage }} <span v-if="errorMessage == 'Unauthenticated.'" class="font-weight-bold">Silahkan login kembali!</span>
                                 </div>
                                 <h1 class="text-blue1 text-capitalize font-weight-bold">welcome</h1>
                                 <p class="text-dark-gray mb-5">Login to your account to continue</p>
                                 <div class="mt-3 inputbox">
-                                    <input type="text" class="form-control" v-model="formData.username" placeholder="Username"><i class="fa fa-user"></i>
+                                    <input type="text" class="form-control" v-model="formData.username" placeholder="Username" :class="{'is-invalid': errors.username}"><i class="fa fa-user"></i>
+                                    <div class="invalid-feedback" v-if="errors.username">
+                                        {{ errors.username[0] }}
+                                    </div>
                                 </div>
                                 <div class="inputbox">
-                                    <input type="password" class="form-control" v-model="formData.password"  placeholder="Password" id="myInput"><i class="fa fa-lock"></i>
+                                    <input type="password" class="form-control" v-model="formData.password"  placeholder="Password" id="myInput" :class="{'is-invalid': errors.password}"><i class="fa fa-lock"></i>
                                     <i class="fas fa-eye" @click="seePassword"></i>
+                                    <div class="invalid-feedback" v-if="errors.password">
+                                        {{ errors.password[0] }}
+                                    </div>
                                 </div>
                             </div>
                             <div class="d-flex justify-content-between position-relative pb-5">

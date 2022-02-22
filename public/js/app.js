@@ -5761,15 +5761,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./stores/auth/index.js */ "./resources/js/stores/auth/index.js");
-/* harmony import */ var _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stores/subjects/index.js */ "./resources/js/stores/subjects/index.js");
-/* harmony import */ var _stores_teachers_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./stores/teachers/index.js */ "./resources/js/stores/teachers/index.js");
-/* harmony import */ var _stores_subjectTeachers_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./stores/subjectTeachers/index.js */ "./resources/js/stores/subjectTeachers/index.js");
-/* harmony import */ var _stores_reportPeriods_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./stores/reportPeriods/index.js */ "./resources/js/stores/reportPeriods/index.js");
-/* harmony import */ var _stores_courses_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./stores/courses/index.js */ "./resources/js/stores/courses/index.js");
-/* harmony import */ var _stores_majors_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./stores/majors/index.js */ "./resources/js/stores/majors/index.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _router_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./router.js */ "./resources/js/router.js");
+/* harmony import */ var _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stores/auth/index.js */ "./resources/js/stores/auth/index.js");
+/* harmony import */ var _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./stores/subjects/index.js */ "./resources/js/stores/subjects/index.js");
+/* harmony import */ var _stores_teachers_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./stores/teachers/index.js */ "./resources/js/stores/teachers/index.js");
+/* harmony import */ var _stores_subjectTeachers_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./stores/subjectTeachers/index.js */ "./resources/js/stores/subjectTeachers/index.js");
+/* harmony import */ var _stores_reportPeriods_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./stores/reportPeriods/index.js */ "./resources/js/stores/reportPeriods/index.js");
+/* harmony import */ var _stores_courses_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./stores/courses/index.js */ "./resources/js/stores/courses/index.js");
+/* harmony import */ var _stores_majors_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./stores/majors/index.js */ "./resources/js/stores/majors/index.js");
+/* harmony import */ var _stores_batches_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./stores/batches/index.js */ "./resources/js/stores/batches/index.js");
+/* harmony import */ var _stores_StudentGroups_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./stores/StudentGroups/index.js */ "./resources/js/stores/StudentGroups/index.js");
+
 
  //IMPORT MODULE SECTION
 
@@ -5780,17 +5784,21 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_7__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_8__["default"]);
+
+
+vue__WEBPACK_IMPORTED_MODULE_10__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_11__["default"]);
 var debug = "development" !== 'production';
-var store = new vuex__WEBPACK_IMPORTED_MODULE_8__["default"].Store({
+var store = new vuex__WEBPACK_IMPORTED_MODULE_11__["default"].Store({
   modules: {
-    auth: _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_0__["default"],
-    subjects: _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_1__["default"],
-    teachers: _stores_teachers_index_js__WEBPACK_IMPORTED_MODULE_2__["default"],
-    subjectTeachers: _stores_subjectTeachers_index_js__WEBPACK_IMPORTED_MODULE_3__["default"],
-    reportPeriods: _stores_reportPeriods_index_js__WEBPACK_IMPORTED_MODULE_4__["default"],
-    courses: _stores_courses_index_js__WEBPACK_IMPORTED_MODULE_5__["default"],
-    majors: _stores_majors_index_js__WEBPACK_IMPORTED_MODULE_6__["default"]
+    auth: _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_1__["default"],
+    subjects: _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_2__["default"],
+    teachers: _stores_teachers_index_js__WEBPACK_IMPORTED_MODULE_3__["default"],
+    subjectTeachers: _stores_subjectTeachers_index_js__WEBPACK_IMPORTED_MODULE_4__["default"],
+    reportPeriods: _stores_reportPeriods_index_js__WEBPACK_IMPORTED_MODULE_5__["default"],
+    courses: _stores_courses_index_js__WEBPACK_IMPORTED_MODULE_6__["default"],
+    majors: _stores_majors_index_js__WEBPACK_IMPORTED_MODULE_7__["default"],
+    batches: _stores_batches_index_js__WEBPACK_IMPORTED_MODULE_8__["default"],
+    StudentGroups: _stores_StudentGroups_index_js__WEBPACK_IMPORTED_MODULE_9__["default"]
   },
   state: {
     errors: [],
@@ -5817,12 +5825,26 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_8__["default"].Store({
     },
     SET_ERROR: function SET_ERROR(state, payload) {
       state.isLoading = false;
+
+      if (payload.message == "Unauthenticated.") {
+        localStorage.clear();
+        _router_js__WEBPACK_IMPORTED_MODULE_0__["default"].push({
+          name: 'login'
+        });
+      }
+
       state.errorMessage = Array.isArray(payload.message) ? payload.message[0] : payload.message;
       state.errors = !payload.errors ? [] : payload.errors;
     },
     SET_ERROR_VALIDATE: function SET_ERROR_VALIDATE(state, payload) {
       state.isLoading = false;
-      state.errors = !payload ? [] : payload;
+
+      if (payload.errors) {
+        state.errorMessage = Array.isArray(payload.message) ? payload.message[0] : payload.message;
+        state.errors = !payload.errors ? [] : payload.errors;
+      } else {
+        state.errors = !payload ? [] : payload;
+      }
     },
     CLEAR_ERROR: function CLEAR_ERROR(state) {
       state.errors = [];
@@ -5833,6 +5855,109 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_8__["default"].Store({
   strict: debug
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (store);
+
+/***/ }),
+
+/***/ "./resources/js/stores/StudentGroups/index.js":
+/*!****************************************************!*\
+  !*** ./resources/js/stores/StudentGroups/index.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var state = function state() {
+  return {};
+};
+
+var mutations = {};
+var actions = {
+  index: function index(_ref, payload) {
+    var commit = _ref.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/student-groups/?search=' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  show: function show(_ref2, payload) {
+    var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/student-groups/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  create: function create(_ref3, payload) {
+    var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/student-groups', payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  edit: function edit(_ref4, payload) {
+    var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/student-groups/' + payload.id, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: state,
+  actions: actions,
+  mutations: mutations
+});
 
 /***/ }),
 
@@ -5880,7 +6005,7 @@ var actions = {
           });
           resolve(res.data);
         })["catch"](function (error) {
-          commit('SET_ERROR_VALIDATE', error.response.data, {
+          commit('SET_ERROR', error.response.data, {
             root: true
           });
         });
@@ -5932,10 +6057,113 @@ var actions = {
           root: true
         });
       })["catch"](function (error) {
-        commit('SET_ERRORS', error.response.data, {
+        commit('SET_ERROR', error.response.data, {
           root: true
         });
         commit('SET_LOADING', false, {
+          root: true
+        });
+      });
+    });
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: state,
+  actions: actions,
+  mutations: mutations
+});
+
+/***/ }),
+
+/***/ "./resources/js/stores/batches/index.js":
+/*!**********************************************!*\
+  !*** ./resources/js/stores/batches/index.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var state = function state() {
+  return {};
+};
+
+var mutations = {};
+var actions = {
+  index: function index(_ref, payload) {
+    var commit = _ref.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/batches/?search=' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  show: function show(_ref2, payload) {
+    var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/batches/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  create: function create(_ref3, payload) {
+    var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/batches', payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  edit: function edit(_ref4, payload) {
+    var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/batches/' + payload.id, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
           root: true
         });
       });

@@ -1,5 +1,6 @@
 <template>
     <div class="mt-2">
+        <div class="loader" v-if="isLoading"></div>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">data siswa</a></li>
@@ -7,10 +8,9 @@
             </ol>
         </nav>
 
-        <!-- <div class="loader" v-if="isLoading"></div>
         <div class="alert alert-danger my-3" v-if="errorMessage">
         {{ errorMessage }}
-        </div> -->
+        </div>
         <div class="row my-3">
             <div class="col-md-6">
                 <div class="input-group mb-3">
@@ -44,8 +44,36 @@
 </template>
 
 <script>
+// vuex
+import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
+// modal
+import modalComponent from '../../../components/Modal.vue';
 export default {
-    name: "studentGroup"
+    name: "studentGroup",
+    components: {
+        "modal": modalComponent
+    },
+    data() {
+        return {
+            studentGroups: [],
+            search: ''
+        }
+    },
+    created() {
+        this.getStudentGroups(this.search);
+    },
+    computed: {
+        ...mapState(['errorMessage', 'errors', 'isLoading']),
+    },
+    methods: {
+        ...mapActions('StudentGroups', ['create', 'index', 'show', 'edit']),
+
+        getStudentGroups(search) {
+            this.index(search).then((result) => {
+                this.studentGroups = result;
+            })
+        }
+    }
 }
 </script>
 

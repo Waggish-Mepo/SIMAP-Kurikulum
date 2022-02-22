@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <a href="#" class="btn btn-secondary btn-block mt-md-1" @click="getDataSubjects('')">Refresh Data</a>
+                <a href="#" class="btn btn-secondary btn-block mt-md-1" @click="refreshDataSubjects">Refresh Data</a>
             </div>
         </div>
         <div class="card w-100 bg-white p-2 mt-3" @click="modalAdd = true">
@@ -39,6 +39,12 @@
                     </ul>
                 </div>
             </div>
+        </div>
+
+        <!-- if data null -->
+        <div v-if="dataSubjects.length < 1" class="w-100 card-not-found">
+            <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
+            <h5 class="text-center text-capitalize mt-4">data terkait tidak ditemukan</h5>
         </div>
 
         <!-- modal -->
@@ -239,6 +245,10 @@ export default {
         searchSubject() {
             this.getDataSubjects(this.search);
         },
+        refreshDataSubjects() {
+            this.search = '';
+            this.getDataSubjects(this.search);
+        },
         getSubjects() {
             this.getAll().then((result) => {
                 this.subjects = result;
@@ -362,6 +372,15 @@ span.fas.fa-book {
 
 label.mb-2 {
     font-weight: 600;
+}
+
+.card-not-found {
+    margin-top: 25px;
+}
+
+.img {
+    max-width: 130px;
+    width: 100%;
 }
 
 @media (max-width: 470px) {
