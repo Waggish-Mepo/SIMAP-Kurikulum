@@ -2,12 +2,16 @@
 
 namespace Database\Seeders;
 
+use App\Models\Batch;
 use App\Models\Major;
 use App\Models\ReportPeriod;
 use App\Models\Student;
+use App\Models\StudentGroup;
 use App\Models\Subject;
 use App\Models\Teacher;
 use App\Models\User;
+use App\Service\Functions\AcademicCalendar;
+use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -20,6 +24,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+
+        $faker = Factory::create();
+
         $users = [
             [
                 'name' => 'Admin Kurikulum',
@@ -104,8 +111,47 @@ class DatabaseSeeder extends Seeder
 
         $majors = [...config('constant.majors.wikrama_majors.K13'), ...config('constant.majors.wikrama_majors.K21')];
 
+        $createdMajors = [];
         foreach($majors as $major) {
-            Major::factory($major)->create();
+            $createdMajors[] = Major::factory($major)->create();
+        }
+
+        $batches = [
+            [
+                'batch_name' => 'Angkatan 23',
+                'entry_year' => '2019/2020'
+            ],
+            [
+                'batch_name' => 'Angkatan 24',
+                'entry_year' => '2020/2021'
+            ],
+            [
+                'batch_name' => 'Angkatan 25',
+                'entry_year' => '2021/2022'
+            ],
+        ];
+
+        $createdBatches = [];
+        foreach ($batches as $batch) {
+            $createdBatches[] = Batch::factory($batch)->create();
+        }
+
+        $academicCalendar = new AcademicCalendar;
+
+        foreach ($createdBatches as $batch) {
+            $major = $faker->randomElement($createdMajors);
+
+            $grade = $academicCalendar->gradeByAcademicYear($batch->entry_year, true);
+            $randomNum = $faker->numberBetween(1, 5);
+
+            $studentGroup = [
+                'name' => "$major->abbreviation $grade-$randomNum",
+                'batch_id' => $batch->id,
+                'school_year' => $academicCalendar->currentAcademicYear(),
+                'major_id' => $major->id,
+            ];
+
+            StudentGroup::factory($studentGroup)->create();
         }
 
     }

@@ -172,27 +172,28 @@ class AcademicCalendar
         return $year[$grade];
     }
 
-    public function gradeByAcademicYear($academicCalendar)
+    public function gradeByAcademicYear($academicCalendar, $romans = false)
     {
-        $sessionSelectedYear = session()->get('school_year') ?? null;
-
         $currDate = Carbon::now();
-
         $nextDate = Carbon::now();
         $nextDate->setDay(19);
         $nextDate->setMonth(6);
-        // TEMPORARY
-        // $nextDate->setMonth(6);
 
         $yearNow = Carbon::now()->year;
         if ($currDate <= $nextDate) {
             $yearNow -= 1;
         }
 
-        if ($sessionSelectedYear !== null) {
-            $explodeYear = explode('-', $sessionSelectedYear);
-            $yearNow = (int) $explodeYear[0];
+        if($romans) {
+            $grade = [
+                $yearNow . '/' . ($yearNow + 1) => 'X',
+                ($yearNow - 1) . '/' . $yearNow => 'XI',
+                ($yearNow - 2) . '/' . ($yearNow - 1) => 'XII',
+            ];
+
+            return $grade[$academicCalendar];
         }
+
         $grade = [
             $yearNow . '/' . ($yearNow + 1) => '10',
             ($yearNow - 1) . '/' . $yearNow => '11',
@@ -201,4 +202,54 @@ class AcademicCalendar
 
         return $grade[$academicCalendar];
     }
+    public function batchStudentGroupEntryYears($entryYear, $useGrades = false)
+    {
+        $firstYear = explode('/', $entryYear)[0];
+        $secondYear = explode('/', $entryYear)[1];
+
+        if ($useGrades === true) {
+            return [
+                1 => $firstYear . '/' . $secondYear,
+                2 => ($firstYear - 1) . '/' . ($secondYear - 1),
+                3 => ($firstYear - 2) . '/' . ($secondYear - 2),
+                4 => ($firstYear - 3) . '/' . ($secondYear - 3),
+                5 => ($firstYear - 4) . '/' . ($secondYear - 4),
+                6 => ($firstYear - 5) . '/' . ($secondYear - 5),
+                7 => $firstYear . '/' . $secondYear,
+                8 => ($firstYear - 1) . '/' . ($secondYear - 1),
+                9 => ($firstYear - 2) . '/' . ($secondYear - 2),
+                10 => $firstYear . '/' . $secondYear,
+                11 => ($firstYear - 1) . '/' . ($secondYear - 1),
+                12 => ($firstYear - 2) . '/' . ($secondYear - 2),
+            ];
+        }
+
+        return [
+            $firstYear . '/' . $secondYear,
+            ($firstYear - 1) . '/' . ($secondYear - 1),
+            ($firstYear - 2) . '/' . ($secondYear - 2),
+        ];
+    }
+
+    public function academicYears($useDash = false)
+    {
+        $currDate = Carbon::now();
+
+        $nextDate = Carbon::now();
+        $nextDate->setDay(19);
+        $nextDate->setMonth(6);
+
+        $yearNow = Carbon::now()->year;
+
+        if ($currDate <= $nextDate) {
+            $yearNow -= 1;
+        }
+
+        return [
+            0 => $yearNow . ($useDash === true ? ' - ' : ' / ') . ($yearNow + 1),
+            1 => ($yearNow - 1) . ($useDash === true ? ' - ' : ' / ') . $yearNow,
+            2 => ($yearNow - 2) . ($useDash === true ? ' - ' : ' / ') . ($yearNow - 1),
+        ];
+    }
 }
+

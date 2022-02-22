@@ -11,10 +11,6 @@ class Batch extends Model
 
     public $incrementing = false;
 
-    public function major() {
-        return $this->belongsTo(Major::class);
-    }
-
     public function studentGroups() {
         return $this->hasMany(StudentGroup::class);
     }

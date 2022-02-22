@@ -14,4 +14,8 @@ class StudentGroup extends Model
     public function batch() {
         return $this->belongsTo(Batch::class);
     }
+
+    public function major() {
+        return $this->belongsTo(Major::class);
+    }
 }
