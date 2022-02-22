@@ -10,4 +10,8 @@ class Major extends Model
     use HasFactory;
 
     public $incrementing = false;
+
+    public function studentGroups() {
+        return $this->hasMany(StudentGroup::class);
+    }
 }
