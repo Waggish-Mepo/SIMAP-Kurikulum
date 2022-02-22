@@ -24,7 +24,7 @@ class SubjectService{
         }
 
         if ($name) {
-            $query->where('name', 'ilike','%'.$name.'%');
+            $query->where('name', 'LIKE','%'.$name.'%');
         }
 
         if($withRelation) {

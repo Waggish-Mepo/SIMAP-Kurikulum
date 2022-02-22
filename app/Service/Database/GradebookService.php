@@ -24,7 +24,7 @@ class GradebookService{
         }
 
         if ($title !== null) {
-            $query->where('title', 'ilike', "%$title%");
+            $query->where('title', 'LIKE', "%$title%");
         }
 
         $gradebooks = $query->paginate($perPage);
