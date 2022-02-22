@@ -74,23 +74,10 @@
                     <small class="text-danger" v-if="errors.entry_year">
                         {{ errors.entry_year[0] }}
                     </small>
-                    <!-- entry year sementara -->
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="2021/2022" v-model="submitForm.entry_year">
+                    <div v-for="(year, index) in entry_years" :key="index" class="form-check">
+                        <input class="form-check-input" type="radio" :value="year" v-model="submitForm.entry_year">
                         <label class="form-check-label text-capitalize">
-                            kelas 10 | angkatan masuk 2021
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="2020/2021" v-model="submitForm.entry_year">
-                        <label class="form-check-label text-capitalize">
-                            Kelas 11 | angkatan masuk 2020
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="2019/2020" v-model="submitForm.entry_year">
-                        <label class="form-check-label text-capitalize">
-                            Kelas 12 | angkatan masuk 2019
+                            {{ "Kelas " +  index + " | Angkatan Masuk " + year.substr(0, 4) }}
                         </label>
                     </div>
                 </div>
@@ -136,29 +123,16 @@
                     <small class="text-danger" v-if="errors.entry_year">
                         {{ errors.entry_year[0] }}
                     </small>
-                    <!-- entry year sementara -->
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="2021/2022" v-model="updateForm.entry_year">
+                    <div v-for="(year, index) in entry_years" :key="index" class="form-check">
+                        <input class="form-check-input" type="radio" :value="year" v-model="submitForm.entry_year">
                         <label class="form-check-label text-capitalize">
-                            kelas 10 | angkatan masuk 2021
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="2020/2021" v-model="updateForm.entry_year">
-                        <label class="form-check-label text-capitalize">
-                            Kelas 11 | angkatan masuk 2020
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="2019/2020" v-model="updateForm.entry_year">
-                        <label class="form-check-label text-capitalize">
-                            Kelas 12 | angkatan masuk 2019
+                            {{ "Kelas " +  index + " | Angkatan Masuk " + year.substr(0, 4) }}
                         </label>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="mb-2">Keterangan</label>
-                    <input type="text" class="form-control" placeholder="contoh : matematika IT" v-model="updateForm.caption" :class="{'is-invalid': errors.caption}">
+                    <input type="text" class="form-control" placeholder="contoh : Matematika IT" v-model="updateForm.caption" :class="{'is-invalid': errors.caption}">
                     <div class="invalid-feedback" v-if="errors.caption">
                         {{ errors.caption[0] }}
                     </div>
@@ -208,7 +182,8 @@ export default {
             },
             updateForm: {},
             dataSubjects: [],
-            search: ''
+            search: '',
+            entry_years: [],
         }
     },
     created() {
@@ -217,18 +192,24 @@ export default {
         this.getCurriculums();
         this.getMajors();
         this.getCourses();
+        this.getEntryYears();
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
     },
     methods: {
-        ...mapActions('courses', ['create', 'index', 'show', 'edit', 'allCurriculums']),
+        ...mapActions('courses', ['create', 'index', 'show', 'edit', 'allCurriculums', 'entryYears']),
         ...mapActions('subjects', ['getAll', 'searchByCourse']),
         ...mapActions('majors', ['allData']),
 
         getMajors() {
             this.allData().then((result) => {
                 this.majors = result;
+            })
+        },
+        getEntryYears() {
+            this.entryYears().then((result) => {
+                this.entry_years = result;
             })
         },
         getDataSubjects(search) {

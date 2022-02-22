@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Service\Database\CourseService;
 use App\Service\Database\MajorService;
+use App\Service\Functions\AcademicCalendar;
 
 class CourseController extends Controller
 {
@@ -38,6 +39,25 @@ class CourseController extends Controller
     {
         $courseDB = new CourseService;
         return response()->json($courseDB->curriculums());
+    }
+
+    public function entryYears()
+    {
+        $academicCalendar = new AcademicCalendar;
+
+        $grades = [
+            'first' => 10,
+            'second' => 11,
+            'third' => 12,
+        ];
+
+        $academicYearByGrade = [
+            $grades['first'] => $academicCalendar->academicYearByGrade($grades['first']),
+            $grades['second'] => $academicCalendar->academicYearByGrade($grades['second']),
+            $grades['third'] => $academicCalendar->academicYearByGrade($grades['third']),
+        ];
+
+        return response()->json($academicYearByGrade);
     }
 
     /**
