@@ -3,8 +3,7 @@ import Router from 'vue-router'
 import Root from './pages/dashboard/Root'
 
 function loadView(view) {
-    return () =>
-        import (`./pages/${view}.vue`);
+    return () => import(`./pages/${view}.vue`);
 }
 
 Vue.use(Router);
@@ -12,15 +11,20 @@ Vue.use(Router);
 //DEFINE ROUTE
 const router = new Router({
     mode: 'history',
-    routes: [{
+    routes: [
+        {
             path: '/',
             component: Root,
-            redirect: '/dashboard'
+            redirect: '/dashboard',
+        },
+        {
+            path: '*',
+            component: loadView('errors/404'),
         },
         {
             path: '/login',
             name: 'login',
-            component: loadView('dashboard/Login')
+            component: loadView('dashboard/Login'),
         },
         {
             path: '/dashboard',
@@ -48,18 +52,18 @@ const router = new Router({
             },
             ]
         },
-    ]
+    ],
 });
 
 router.beforeEach((to, from, next) => {
     // const loggedIn = localStorage.getItem('user');
-    const token = localStorage.getItem('token_kurikulum');
+    const token = localStorage.getItem("token_kurikulum");
 
-    if (to.matched.some(record => record.meta.auth) && !token) {
-        next('/login')
-        return
+    if (to.matched.some((record) => record.meta.auth) && !token) {
+        next("/login");
+        return;
     }
-    next()
+    next();
 });
 
 export default router;

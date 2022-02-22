@@ -5681,6 +5681,9 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
     component: _pages_dashboard_Root__WEBPACK_IMPORTED_MODULE_0__["default"],
     redirect: '/dashboard'
   }, {
+    path: '*',
+    component: loadView('errors/404')
+  }, {
     path: '/login',
     name: 'login',
     component: loadView('dashboard/Login')
@@ -5711,12 +5714,12 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
 });
 router.beforeEach(function (to, from, next) {
   // const loggedIn = localStorage.getItem('user');
-  var token = localStorage.getItem('token_kurikulum');
+  var token = localStorage.getItem("token_kurikulum");
 
   if (to.matched.some(function (record) {
     return record.meta.auth;
   }) && !token) {
-    next('/login');
+    next("/login");
     return;
   }
 
@@ -46968,6 +46971,10 @@ var map = {
 	],
 	"./dashboard/Root.vue": [
 		"./resources/js/pages/dashboard/Root.vue"
+	],
+	"./errors/404.vue": [
+		"./resources/js/pages/errors/404.vue",
+		"resources_js_pages_errors_404_vue"
 	]
 };
 function webpackAsyncContext(req) {
@@ -47108,7 +47115,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_pages_dashboard_Course_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_Course_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};
