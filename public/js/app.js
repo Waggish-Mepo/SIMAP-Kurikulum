@@ -5312,6 +5312,8 @@ __webpack_require__.r(__webpack_exports__);
         this.title = 'periode rapor';
       } else if (this.$route.params.page == 4) {
         this.title = 'pelajaran';
+      } else if (this.$route.params.page == 5) {
+        this.title = 'data siswa';
       } else {
         this.title = 'dashboard';
       }
@@ -5398,6 +5400,12 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5541,6 +5549,7 @@ axios__WEBPACK_IMPORTED_MODULE_3___default().interceptors.request.use(function (
     _router_js__WEBPACK_IMPORTED_MODULE_0__["default"].push({
       name: 'login'
     });
+    console.log(this.error);
   } // Do something with request error
 
 
@@ -5709,6 +5718,18 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/:page/courses',
       name: 'courses',
       component: loadView('dashboard/Course')
+    }, {
+      path: '/:page/batches',
+      name: 'batches',
+      component: loadView('dashboard/batches/Batch')
+    }, {
+      path: '/:page/batches/:batch/student-groups',
+      name: 'student_groups',
+      component: loadView('dashboard/batches/StudentGroup')
+    }, {
+      path: '/:page/batches/:batch/student-groups/:group/students',
+      name: 'students',
+      component: loadView('dashboard/batches/StudentData')
     }]
   }]
 });
@@ -30250,6 +30271,31 @@ var render = function () {
                   ),
                 ]
               ),
+              _vm._v(" "),
+              _c(
+                "router-link",
+                { attrs: { to: { name: "batches", params: { page: 5 } } } },
+                [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "nav_link",
+                      class: { active: _vm.$route.params.page == 5 },
+                      attrs: { href: "#" },
+                    },
+                    [
+                      _c("i", {
+                        staticClass: "fas fa-users nav_icon",
+                        attrs: { title: "Data Siswa" },
+                      }),
+                      _vm._v(" "),
+                      _c("span", { staticClass: "nav_name" }, [
+                        _vm._v("Data Siswa"),
+                      ]),
+                    ]
+                  ),
+                ]
+              ),
             ],
             1
           ),
@@ -46972,6 +47018,18 @@ var map = {
 	"./dashboard/Root.vue": [
 		"./resources/js/pages/dashboard/Root.vue"
 	],
+	"./dashboard/batches/Batch.vue": [
+		"./resources/js/pages/dashboard/batches/Batch.vue",
+		"resources_js_pages_dashboard_batches_Batch_vue"
+	],
+	"./dashboard/batches/StudentData.vue": [
+		"./resources/js/pages/dashboard/batches/StudentData.vue",
+		"resources_js_pages_dashboard_batches_StudentData_vue"
+	],
+	"./dashboard/batches/StudentGroup.vue": [
+		"./resources/js/pages/dashboard/batches/StudentGroup.vue",
+		"resources_js_pages_dashboard_batches_StudentGroup_vue"
+	],
 	"./errors/404.vue": [
 		"./resources/js/pages/errors/404.vue",
 		"resources_js_pages_errors_404_vue"
@@ -47115,7 +47173,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_pages_dashboard_Course_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_Course_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

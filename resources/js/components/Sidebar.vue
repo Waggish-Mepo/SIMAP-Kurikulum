@@ -29,6 +29,12 @@
                         <span class="nav_name">Pelajaran</span>
                     </a>
                     </router-link>
+                    <router-link v-bind:to="{ name: 'batches', params: {page: 5} }">
+                    <a href="#" class="nav_link" :class="{active: $route.params.page == 5}"> 
+                        <i class="fas fa-users nav_icon" title="Data Siswa"></i> 
+                        <span class="nav_name">Data Siswa</span>
+                    </a>
+                    </router-link>
                 </div> 
             </div>
             <a href="#" class="nav_link" @click="modalShow = true">

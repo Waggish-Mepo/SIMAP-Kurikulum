@@ -30,6 +30,8 @@ export default {
                 this.title = 'periode rapor';
             } else if(this.$route.params.page == 4) {
                 this.title = 'pelajaran';
+            } else if(this.$route.params.page == 5) {
+                this.title = 'data siswa';
             } else {
                 this.title = 'dashboard';
             }

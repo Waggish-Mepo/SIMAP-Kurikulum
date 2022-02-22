@@ -21,7 +21,8 @@ axios.interceptors.request.use(function(config) {
     return config;
 }, function(error) {
     if (error.response.status === 401) {
-        router.push({ name: 'login' })
+        router.push({ name: 'login' });
+        console.log(this.error);
     }
     // Do something with request error
     return Promise.reject(error);

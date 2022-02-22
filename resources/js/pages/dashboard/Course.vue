@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Pelajaran...." @keyup="searchSubject" v-model="search">
+                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Mata Pelajaran...." @keyup="searchSubject" v-model="search">
                     <div class="input-group-append">
                         <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white" @click="searchSubject"><i class="fa fa-search"></i></a>
                     </div>
@@ -22,7 +22,7 @@
         </div>
         <div class="col-12 mt-3">
             <div v-for="(subject, index) in dataSubjects" :key="index" class="mb-2">
-                <div class="card w-100 shadow-sm bg-white p-3" data-bs-toggle="collapse" aria-expanded="false" @click="showPanelCollapse(subject.id, index)">
+                <div class="card card-subject w-100 shadow-sm bg-white p-3" data-bs-toggle="collapse" aria-expanded="false" @click="showPanelCollapse(subject.id, index)">
                     <div class="d-flex justify-content-between text-capitalize">
                         <div><span class="fas fa-book"></span>
                         {{subject.name}}</div>
@@ -321,6 +321,10 @@ a:hover {
 
 .card {
     border: 0 !important;
+}
+
+.card-subject {
+    cursor: pointer;
 }
 
 .card a {

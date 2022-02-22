@@ -13,7 +13,7 @@
             </select>
         </div>
     </div>
-    <div class="card w-100 shadow-sm bg-white p-3 mb-3" @click="modalAdd = true">
+    <div class="card w-100 card-add bg-white p-3 mb-3" @click="modalAdd = true">
         <a href="#"><span class="fas fa-plus mr-3"></span> Tambah Periode Rapor</a>
     </div>
     <div v-if="data.length > 0">
@@ -186,6 +186,10 @@ export default {
 .card {
     font-size: 1rem;
     margin-bottom: 10px;
+}
+
+.card-add {
+    border: none !important;
 }
 
 a:hover {
