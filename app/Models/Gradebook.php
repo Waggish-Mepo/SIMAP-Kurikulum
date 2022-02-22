@@ -17,7 +17,7 @@ class Gradebook extends Model
         'scorebar' => 'decimal:2',
     ];
 
-    // Weight Type
+    // Weight Type or Components
     public const KNOWLEDGE = 'KNOWLEDGE';
     public const SKILL = 'SKILL';
     public const GENERAL = 'GENERAL';
