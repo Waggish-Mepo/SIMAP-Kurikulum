@@ -50,8 +50,4 @@ class User extends Authenticatable
     public function teacher() {
         return $this->hasOne(Teacher::class, 'id', 'userable_id');
     }
-
-    public function student() {
-        return $this->hasOne(Student::class, 'id', 'userable_id');
-    }
 }
