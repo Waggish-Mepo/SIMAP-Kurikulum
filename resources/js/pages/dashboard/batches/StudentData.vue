@@ -15,18 +15,18 @@
         <div class="row my-3">
             <div class="col-md-6">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Siswa....">
+                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Nama Siswa...." v-model="payload.search" @keyup="searchStudents">
                     <div class="input-group-append">
-                        <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white"><i class="fas fa-search"></i></a>
+                        <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white" @click="searchStudents"><i class="fas fa-search"></i></a>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="d-flex">
-                    <a href="#" class="btn btn-primary btn-block mt-md-1">
+                    <a href="#" class="btn btn-primary btn-block mt-md-1" @click="modalAddStudent = true">
                         <span class="fas fa-plus"></span> Tambah Siswa
                     </a>
-                    <a href="#" class="btn btn-secondary btn-block mt-md-1">Refresh Data</a>
+                    <a href="#" class="btn btn-secondary btn-block mt-md-1" @click="refreshData">Refresh Data</a>
                 </div>
             </div>
         </div>
@@ -35,32 +35,34 @@
             <div class="col-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">Data siswa rombel RPL XII-2</h4>
-                        <p class="card-description">Angkatan 22</p>
+                        <h4 class="card-title">Data siswa rombel {{studentGroup}}</h4>
+                        <p class="card-description">{{batchName}}</p>
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
                                         <th>Nama</th>
                                         <th>NIS</th>
+                                        <th>Jenis Kelamin</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Hitesh Chauhan</td>
-                                        <td>Engine</td>
+                                    <tr v-for="(student, index) in students" :key="index">
+                                        <td>{{student.name}}</td>
+                                        <td>{{student.nis}}</td>
+                                        <td>{{student.jk}}</td>
                                         <td>
-                                            <label class="badge bg-danger">Hapus</label>
-                                            <label class="badge bg-green1 text-white">Edit</label>
+                                            <label class="badge bg-green1 text-white" @click="showStudent(student.id)">Edit</label>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>Samso Palto</td>
-                                        <td>Brakes</td>
-                                        <td>
-                                            <label class="badge bg-danger">Hapus</label>
-                                            <label class="badge bg-green1 text-white">Edit</label>
+                                    <!-- if data null -->
+                                    <tr v-if="students.length < 1">
+                                        <td colspan="4">
+                                            <div class="w-100 card-not-found">
+                                                <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
+                                                <h5 class="text-center text-capitalize mt-4">data terkait tidak ditemukan</h5>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -102,6 +104,88 @@
                 <span><b>Semua data</b> yang berkaitan dengan <b class="text-capitalize">{{studentGroup}}</b> juga akan <b>terhapus</b> dan <b>tidak dapat diakses kembali</b>. Yakin tetap menghapus data <b class="text-capitalize">{{studentGroup}}</b>?</span>
             </div>
         </modal>
+
+        <modal v-if="modalEditStudent" @close="modalEditStudent = false" :action="editStudent">
+            <h5 slot="header">Edit Siswa</h5>
+            <div slot="body">
+                <div class="alert alert-danger mb-3" v-if="errorMessage">
+                    {{ errorMessage }}
+                </div>
+                <div class="form-group">
+                    <label class="mb-2">Nama</label>
+                    <input type="text" class="form-control" v-model="studentEditForm.name" :class="{'is-invalid': errors.name}" placeholder="Levi Ackerman">
+                    <div class="invalid-feedback" v-if="errors.name">
+                        {{ errors.name[0] }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="mb-2">NIS</label>
+                    <input type="number" class="form-control" v-model="studentEditForm.nis" :class="{'is-invalid': errors.nis}">
+                    <div class="invalid-feedback" v-if="errors.nis">
+                        {{ errors.nis[0] }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="mb-2">Jenis Kelamin</label>
+                    <small class="text-danger" v-if="errors.jk">
+                        {{ errors.jk[0] }}
+                    </small>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" value="Laki-Laki" v-model="studentEditForm.jk">
+                        <label class="form-check-label text-capitalize">Laki-Laki</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" value="Perempuan" v-model="studentEditForm.jk">
+                        <label class="form-check-label text-capitalize">Perempuan</label>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-outline-danger" slot="button" @click="showModalDeleteStudent">Hapus</button>
+        </modal>
+
+        <modal v-if="modalAddStudent" @close="modalAddStudent = false" :action="addStudent">
+            <h5 slot="header">Tambah Siswa</h5>
+            <div slot="body">
+                <div class="alert alert-danger mb-3" v-if="errorMessage">
+                    {{ errorMessage }}
+                </div>
+                <div class="form-group">
+                    <label class="mb-2">Nama</label>
+                    <input type="text" class="form-control" v-model="studentAddForm.name" :class="{'is-invalid': errors.name}" placeholder="Levi Ackerman">
+                    <div class="invalid-feedback" v-if="errors.name">
+                        {{ errors.name[0] }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="mb-2">NIS</label>
+                    <input type="number" class="form-control" v-model="studentAddForm.nis" :class="{'is-invalid': errors.nis}">
+                    <div class="invalid-feedback" v-if="errors.nis">
+                        {{ errors.nis[0] }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="mb-2">Jenis Kelamin</label>
+                    <small class="text-danger" v-if="errors.jk">
+                        {{ errors.jk[0] }}
+                    </small>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" value="Laki-Laki" v-model="studentAddForm.jk">
+                        <label class="form-check-label text-capitalize">Laki-Laki</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" value="Perempuan" v-model="studentAddForm.jk">
+                        <label class="form-check-label text-capitalize">Perempuan</label>
+                    </div>
+                </div>
+            </div>
+        </modal>
+
+        <modal v-if="modalDeleteStudent" @close="modalDeleteStudent = false" :deleteOpt="deleteStudent">
+            <h5 slot="header">Hapus Siswa</h5>
+            <div slot="body">
+                <span><b>Semua data</b> siswa <b class="text-capitalize">{{studentEditForm.name}} - {{studentEditForm.nis}}</b> akan <b>terhapus</b> dan <b>tidak dapat diakses kembali</b>. Yakin tetap menghapus siswa <b class="text-capitalize">{{studentEditForm.name}} - {{studentEditForm.nis}}</b> beserta datanya?</span>
+            </div>
+        </modal>
     </div>
 </template>
 
@@ -127,21 +211,38 @@ export default {
             editForm: {},
             batch: {},
             modalEdit: false,
-            modalDeleteStudentGroup: false
+            modalDeleteStudentGroup: false,
+            payload: {
+                search: '',
+                studentGroup: this.$route.params.group
+            },
+            students: [],
+            modalDeleteStudent: false,
+            studentEditForm: {},
+            modalEditStudent: false,
+            modalAddStudent: false,
+            studentAddForm: {
+                name: null,
+                nis: null,
+                jk: null,
+                student_group_id: this.$route.params.group,
+            }
         }
     },
     created() {
         this.getMajors();
         this.showStudentGroup(this.$route.params.group);
         this.showBatch(this.$route.params.batch);
+        this.getStudents(this.payload);
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
     },
     methods: {
         ...mapActions('majors', ['allData']),
-        ...mapActions('StudentGroups', ['detail', 'edit']),
+        ...mapActions('studentGroups', ['detail', 'edit']),
         ...mapActions('batches', ['show']),
+        ...mapActions('students', ['create', 'index', 'studentDetail', 'update']),
 
         getMajors() {
             this.allData().then((result) => {
@@ -173,7 +274,45 @@ export default {
                 this.batch = result;
                 this.batchName = result.batch_name;
             })
-        }
+        },
+        getStudents(payload) {
+            this.index(payload).then((result) => {
+                this.students = result;
+            })
+        },
+        searchStudents() {
+            this.getStudents(this.payload);
+        },
+        refreshData() {
+            this.payload.search = '';
+            this.getStudents(this.payload);
+        },
+        showModalDeleteStudent() {
+            this.modalEditStudent = false;
+            this.modalDeleteStudent = true;
+        },
+        showStudent(id) {
+            this.studentDetail(id).then((result) => {
+                this.studentEditForm = result;
+                this.modalEditStudent = true;
+            })
+        },
+        editStudent() {
+            let payload = {id: this.studentEditForm.id, data: this.studentEditForm};
+            this.update(payload).then((result) => {
+                this.modalEditStudent = false;
+                this.getStudents(this.payload);
+            })
+        },
+        addStudent() {
+            this.create(this.studentAddForm).then((result) => {
+                this.modalAddStudent = false;
+                this.getStudents(this.payload);
+            })
+        },
+        deleteStudent() {
+            console.log('delete');
+        },
     }
 }
 </script>
@@ -205,6 +344,10 @@ export default {
 
 .form-control {
     border: 1px solid #B4ADAD;
+}
+
+.form-group {
+    margin-bottom: 10px;
 }
 
 .btn-outline-muted {
@@ -273,6 +416,7 @@ export default {
 .table td {
     font-size: 1rem;
     padding: 0.5rem;
+    text-transform: capitalize;
 }
 
 .badge {
@@ -282,6 +426,15 @@ export default {
     padding: 0.3rem 0.5rem;
     font-weight: normal;
     cursor: pointer;
+}
+
+.card-not-found {
+    margin-top: 25px;
+}
+
+.img {
+    max-width: 130px;
+    width: 100%;
 }
 
 @media (max-width: 575px) {

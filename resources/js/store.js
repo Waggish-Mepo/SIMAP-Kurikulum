@@ -11,7 +11,8 @@ import reportPeriods from './stores/reportPeriods/index.js'
 import courses from './stores/courses/index.js'
 import majors from './stores/majors/index.js'
 import batches from './stores/batches/index.js'
-import StudentGroups from './stores/StudentGroups/index.js'
+import studentGroups from './stores/studentGroups/index.js'
+import students from './stores/students/index.js'
 
 Vue.use(Vuex);
 
@@ -27,7 +28,8 @@ const store = new Vuex.Store({
         courses,
         majors,
         batches,
-        StudentGroups
+        studentGroups,
+        students
     },
     state: {
         errors: [],

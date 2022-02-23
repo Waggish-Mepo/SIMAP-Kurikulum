@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Service\Database\StudentService;
 
 class StudentController extends Controller
 {
@@ -11,16 +12,17 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->search;
+        $studentGroup = $request->studentGroup;
         $students = new StudentService;
-        return response()->json($students->index(['without_pagination' => true]));
-    }
 
-    public function accountStatistics()
-    {
-        $studentsDB = new StudentService;
-        return response()->json($studentsDB->accountStatistics());
+        if ($search == "") {
+            return response()->json($students->index(['student_group_id' => $studentGroup, 'without_pagination' => true]));
+        } else {
+            return response()->json($students->index(['student_group_id' => $studentGroup, 'name' => $search, 'without_pagination' => true]));
+        }
     }
 
     /**
@@ -41,7 +43,8 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $studentDB = new StudentService;
+        return response()->json($studentDB->create($request->all()));
     }
 
     /**
@@ -52,7 +55,8 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        //
+        $studentDB = new StudentService;
+        return response()->json($studentDB->detail($id));
     }
 
     /**
@@ -75,7 +79,8 @@ class StudentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $studentDB = new StudentService;
+        return response()->json($studentDB->update($id, $request->all()));
     }
 
     /**

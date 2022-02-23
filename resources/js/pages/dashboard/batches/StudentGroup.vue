@@ -153,7 +153,7 @@ export default {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
     },
     methods: {
-        ...mapActions('StudentGroups', ['create', 'index']),
+        ...mapActions('studentGroups', ['create', 'index']),
         ...mapActions('batches', ['show', 'edit']),
         ...mapActions('majors', ['allData']),
 
