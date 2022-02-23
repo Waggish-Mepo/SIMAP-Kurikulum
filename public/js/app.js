@@ -6236,8 +6236,26 @@ var actions = {
       });
     });
   },
-  show: function show(_ref3, payload) {
+  entryYears: function entryYears(_ref3) {
     var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/courses/entry-years').then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  show: function show(_ref4, payload) {
+    var commit = _ref4.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -6254,8 +6272,8 @@ var actions = {
       });
     });
   },
-  create: function create(_ref4, payload) {
-    var commit = _ref4.commit;
+  create: function create(_ref5, payload) {
+    var commit = _ref5.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -6272,8 +6290,8 @@ var actions = {
       });
     });
   },
-  edit: function edit(_ref5, payload) {
-    var commit = _ref5.commit;
+  edit: function edit(_ref6, payload) {
+    var commit = _ref6.commit;
     commit('SET_LOADING', true, {
       root: true
     });
