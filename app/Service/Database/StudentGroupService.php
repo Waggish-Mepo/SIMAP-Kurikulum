@@ -17,6 +17,7 @@ class StudentGroupService {
         $perPage = $filter['page'] ?? 20;
         $withBatch = $filter['with_batch'] ?? false;
         $withMajor = $filter['with_major'] ?? false;
+        $withStudent = $filter['with_student'] ?? false;
         $groupByMajor = $filter['group_by_major'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
@@ -30,6 +31,10 @@ class StudentGroupService {
             $query->with('batch');
         }
 
+        if ($withStudent) {
+            $query->with('students');
+        }
+
         if ($withMajor) {
             $query->with('major');
 
@@ -41,6 +46,11 @@ class StudentGroupService {
                 return $studentGroups
             }
 
+            if ($withoutPagination) {
+                return $query->get()->toArray();
+            }
+
+            return $query->paginate($perPage);
         }
 
         if ($withoutPagination) {

@@ -18,4 +18,8 @@ class StudentGroup extends Model
     public function major() {
         return $this->belongsTo(Major::class);
     }
+
+    public function students() {
+        return $this->hasMany(Student::class);
+    }
 }
