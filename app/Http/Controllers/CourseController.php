@@ -18,6 +18,7 @@ class CourseController extends Controller
     {
         $courseDB = new CourseService;
         $majorDB = new MajorService;
+        $academicCalendar = new AcademicCalendar;
 
         $courses = $courseDB->index(['without_pagination' => true]);
         $coursesWithMajors = [];
@@ -30,6 +31,7 @@ class CourseController extends Controller
             $majors = $majorDB->bulkDetail($course['majors'])['data'];
             $course['major_details'] = $majors;
             $course['major_details_string'] = collect($majors)->pluck('abbreviation')->join(', ');
+            $course['entry_year_with_class'] = $academicCalendar->gradeByAcademicYear($course['entry_year']);
             $coursesWithMajors[] = $course;
         }
         return response()->json($coursesWithMajors);

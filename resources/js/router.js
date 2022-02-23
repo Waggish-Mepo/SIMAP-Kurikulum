@@ -50,6 +50,21 @@ const router = new Router({
                 name: 'courses',
                 component: loadView('dashboard/Course')
             },
+            {
+                path: '/:page/batches',
+                name: 'batches',
+                component: loadView('dashboard/batches/Batch')
+            },
+            {
+                path: '/:page/batches/:batch/student-groups',
+                name: 'student_groups',
+                component: loadView('dashboard/batches/StudentGroup')
+            },
+            {
+                path: '/:page/batches/:batch/student-groups/:group/students',
+                name: 'students',
+                component: loadView('dashboard/batches/StudentData')
+            },
             ]
         },
     ],

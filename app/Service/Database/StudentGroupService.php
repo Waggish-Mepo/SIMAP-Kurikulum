@@ -14,23 +14,38 @@ class StudentGroupService {
     public function index($filter = []) {
         $orderBy = $filter['order_by'] ?? 'ASC';
         $schoolYear = $filter['school_year'] ?? null;
+        $name= $filter['name'] ?? null;
+        $majorId= $filter['major_id'] ?? null;
         $perPage = $filter['page'] ?? 20;
+        $batch = $filter['batch_id'] ?? null;
         $withBatch = $filter['with_batch'] ?? false;
         $withMajor = $filter['with_major'] ?? false;
         $withStudent = $filter['with_student'] ?? false;
         $groupByMajor = $filter['group_by_major'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
-        $query = StudentGroup::orderBy('created_at', $orderBy);
+        $query = StudentGroup::orderBy('name', $orderBy);
 
         if ($schoolYear) {
             $query->where('school_year', $schoolYear);
+        }
+
+        if ($batch) {
+            $query->where('batch_id', $batch);
+        }
+        
+        if ($majorId) {
+            $query->where('major_id', $majorId);
         }
 
         if ($withBatch) {
             $query->with('batch');
         }
 
+        if ($name) {
+            $query->where('name', 'LIKE', '%' . $name . '%');
+        }
+        
         if ($withStudent) {
             $query->with('students');
         }
@@ -43,7 +58,7 @@ class StudentGroupService {
                     return [$item['major']['id'] => $item];
                 });
 
-                return $studentGroups
+                return $studentGroups;
             }
 
             if ($withoutPagination) {
@@ -72,7 +87,10 @@ class StudentGroupService {
 
         $studentGroup = new StudentGroup;
 
+        $academicCalendarService = new AcademicCalendar;
+
         $studentGroup->id = Uuid::uuid4()->toString();
+        $studentGroup->school_year = $academicCalendarService->currentAcademicYear();
         $studentGroup = $this->fill($studentGroup, $payload);
         $studentGroup->save();
 
@@ -99,6 +117,7 @@ class StudentGroupService {
             'name' => 'required|string',
             'school_year' => ['required', Rule::in(config('constant.common.school_years'))],
             'batch_id' => 'required',
+            'major_id' => 'required',
         ]);
 
         if($validate->fails()) {

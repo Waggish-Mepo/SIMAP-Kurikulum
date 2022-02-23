@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Service\Database\StudentService;
+use App\Service\Database\BatchService;
 
-class StudentController extends Controller
+class BatchController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,14 +14,13 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
+        $batchDB = new BatchService;
         $search = $request->search;
-        $studentGroup = $request->studentGroup;
-        $students = new StudentService;
 
         if ($search == "") {
-            return response()->json($students->index(['student_group_id' => $studentGroup, 'without_pagination' => true]));
+            return response()->json($batchDB->index(['without_pagination' => true]));
         } else {
-            return response()->json($students->index(['student_group_id' => $studentGroup, 'name' => $search, 'without_pagination' => true]));
+            return response()->json($batchDB->index(['batch_name' => $search, 'without_pagination' => true]));
         }
     }
 
@@ -43,8 +42,8 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        $studentDB = new StudentService;
-        return response()->json($studentDB->create($request->all()));
+        $batchDB = new BatchService;
+        return response()->json($batchDB->create($request->all()));
     }
 
     /**
@@ -55,8 +54,8 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        $studentDB = new StudentService;
-        return response()->json($studentDB->detail($id));
+        $batchDB = new BatchService;
+        return response()->json($batchDB->detail($id));
     }
 
     /**
@@ -79,8 +78,8 @@ class StudentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $studentDB = new StudentService;
-        return response()->json($studentDB->update($id, $request->all()));
+        $batchDB = new BatchService;
+        return response()->json($batchDB->update($id, $request->all()));
     }
 
     /**
