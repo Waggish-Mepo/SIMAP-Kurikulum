@@ -85,7 +85,10 @@ class StudentService {
 
         $validate = Validator::make($student->toArray(), [
             'name' => 'required|string',
-            'jk' => ['required', Rule::in(config('constant.student.gender'))],
+            'nis' => 'required',
+            'nisn' => 'nullable',
+            'jk' => ['nullable', Rule::in(config('constant.student.gender'))],
+            'student_group_id' => 'nullable',
         ]);
 
         if($validate->fails()) {
