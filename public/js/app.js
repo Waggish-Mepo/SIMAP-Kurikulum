@@ -5599,17 +5599,6 @@ vue__WEBPACK_IMPORTED_MODULE_4__["default"].filter('numFormatter', function (num
     return num;
   }
 });
-vue__WEBPACK_IMPORTED_MODULE_4__["default"].filter('checkClass', function (year) {
-  if (year === "2021/2022") {
-    return 'Kelas 10';
-  } else if (year === "2020/2021") {
-    return 'Kelas 11';
-  } else if (year === "2019/2020") {
-    return 'Kelas 12';
-  } else {
-    return 'Not Selected';
-  }
-});
 new vue__WEBPACK_IMPORTED_MODULE_4__["default"]({
   router: _router_js__WEBPACK_IMPORTED_MODULE_0__["default"],
   store: _store_js__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -5897,7 +5886,7 @@ var actions = {
       });
     });
   },
-  show: function show(_ref2, payload) {
+  detail: function detail(_ref2, payload) {
     var commit = _ref2.commit;
     commit('SET_LOADING', true, {
       root: true

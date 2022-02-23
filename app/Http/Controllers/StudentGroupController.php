@@ -66,7 +66,8 @@ class StudentGroupController extends Controller
      */
     public function show($id)
     {
-        //
+        $studentGroupDB = new StudentGroupService;
+        return response()->json($studentGroupDB->detail($id));
     }
 
     /**
@@ -89,7 +90,8 @@ class StudentGroupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $studentGroupDB = new StudentGroupService;
+        return response()->json($studentGroupDB->update($id, $request->all()));
     }
 
     /**

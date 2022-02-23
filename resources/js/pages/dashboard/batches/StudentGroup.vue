@@ -221,6 +221,10 @@ export default {
     color: #333;
 }
 
+.breadcrumb .breadcrumb-item.active {
+    cursor: pointer;
+}
+
 .breadcrumb-item span {
     font-size: 0.9rem;
     margin-left: 5px;

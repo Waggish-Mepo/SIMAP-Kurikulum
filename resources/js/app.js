@@ -72,18 +72,6 @@ Vue.filter('numFormatter', function(num) {
     }
 });
 
-Vue.filter('checkClass', function(year) {
-    if (year === "2021/2022") {
-        return 'Kelas 10';
-    } else if (year === "2020/2021") {
-        return 'Kelas 11';
-    } else if (year === "2019/2020") {
-        return 'Kelas 12';
-    } else {
-        return 'Not Selected';
-    }
-});
-
 new Vue({
     router,
     store,

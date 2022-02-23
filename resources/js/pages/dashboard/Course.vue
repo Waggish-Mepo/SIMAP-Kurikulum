@@ -34,7 +34,7 @@
                 <div class="collapse" :id="subject.id">
                     <ul class="list-group">
                         <li class="list-group-item" v-for="(course, index) in filterCourses(subject.id)" :key="index">
-                            <a href="#" class="text-capitalize" @click="showCourse(course.id)">{{course.entry_year | checkClass}} | {{course.caption}} | {{course.major_details_string}}</a>
+                            <a href="#" class="text-capitalize" @click="showCourse(course.id)">Kelas {{course.entry_year_with_class}} | {{course.caption}} | {{course.major_details_string}}</a>
                         </li>
                     </ul>
                 </div>
@@ -130,7 +130,7 @@
                         {{ errors.entry_year[0] }}
                     </small>
                     <div v-for="(year, index) in entry_years" :key="index" class="form-check">
-                        <input class="form-check-input" type="radio" :value="year" v-model="submitForm.entry_year">
+                        <input class="form-check-input" type="radio" :value="year" v-model="updateForm.entry_year">
                         <label class="form-check-label text-capitalize">
                             {{ "Kelas " +  index + " | Angkatan Masuk " + year.substr(0, 4) }}
                         </label>
