@@ -1,6 +1,6 @@
-import Vue from "vue";
-import Router from "vue-router";
-import Root from "./pages/dashboard/Root";
+import Vue from 'vue'
+import Router from 'vue-router'
+import Root from './pages/dashboard/Root'
 
 function loadView(view) {
     return () => import(`./pages/${view}.vue`);
@@ -10,43 +10,57 @@ Vue.use(Router);
 
 //DEFINE ROUTE
 const router = new Router({
-    mode: "history",
+    mode: 'history',
     routes: [
         {
-            path: "/",
+            path: '/',
             component: Root,
-            redirect: "/dashboard",
+            redirect: '/dashboard',
         },
         {
-            path: "*",
-            component: loadView("errors/404"),
+            path: '*',
+            component: loadView('errors/404'),
         },
         {
-            path: "/login",
-            name: "login",
-            component: loadView("dashboard/Login"),
+            path: '/login',
+            name: 'login',
+            component: loadView('dashboard/Login'),
         },
         {
-            path: "/dashboard",
+            path: '/dashboard',
             component: Root,
             meta: { auth: true },
-            children: [
-                {
-                    path: "/",
-                    name: "dashboard",
-                    component: loadView("dashboard/Home"),
-                },
-                {
-                    path: "/:page/mata-pelajaran",
-                    name: "mata_pelajaran",
-                    component: loadView("dashboard/Mapel"),
-                },
-                {
-                    path: "/:page/periode-rapor",
-                    name: "periode_rapor",
-                    component: loadView("dashboard/ReportPeriod"),
-                },
-            ],
+            children: [{ 
+                path: '/',
+                name: 'dashboard',
+                component: loadView('dashboard/Home')
+            },
+            {
+                path: '/:page/mata-pelajaran',
+                name: 'mata_pelajaran',
+                component: loadView('dashboard/Mapel')
+            },
+            {
+                path: '/:page/periode-rapor',
+                name: 'periode_rapor',
+                component: loadView('dashboard/ReportPeriod')
+            },
+            {
+                path: '/:page/courses',
+                name: 'courses',
+                component: loadView('dashboard/Course')
+            },
+            {
+                path: '/:page/gradebook',
+                name: 'gradebook',
+                component: loadView('dashboard/GradeBook')
+            },
+            {
+                path: '/:page/gradebook/nextgradebook',
+                name: 'nextgradebook',
+                component: loadView('dashboard/GradeBooks/NextGradeBook')
+            },
+            ]
         },
     ],
 });

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Major;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class BatchFactory extends Factory
@@ -15,7 +16,6 @@ class BatchFactory extends Factory
     {
         return [
             'id' => $this->faker->uuid(),
-            'major_id' => $this->faker->uuid(),
             'entry_year' => $this->faker->randomElement(config('constant.common.entry_years')),
             'batch_name' => $this->faker->name(),
         ];

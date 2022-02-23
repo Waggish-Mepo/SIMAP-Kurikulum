@@ -10,4 +10,12 @@ class StudentGroup extends Model
     use HasFactory;
 
     public $incrementing = false;
+
+    public function batch() {
+        return $this->belongsTo(Batch::class);
+    }
+
+    public function major() {
+        return $this->belongsTo(Major::class);
+    }
 }

@@ -22,7 +22,7 @@ const actions = {
                     router.push({ name: 'dashboard' });
                     resolve(res.data);
                 }).catch((error) => {
-                    commit('SET_ERROR', error.response.data, { root: true });
+                    commit('SET_ERROR_VALIDATE', error.response.data, { root: true });
                 });
             });
         })

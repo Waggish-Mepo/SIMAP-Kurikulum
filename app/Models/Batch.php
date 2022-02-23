@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Batch extends Model
 {
     use HasFactory;
-    
+
     public $incrementing = false;
+
+    public function studentGroups() {
+        return $this->hasMany(StudentGroup::class);
+    }
 }

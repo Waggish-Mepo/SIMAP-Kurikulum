@@ -3,26 +3,41 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Service\Database\ReportPeriodService;
+use App\Service\Database\CourseService;
+use App\Service\Database\MajorService;
 
-class ReportPeriodController extends Controller
+class CourseController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $orderBy = $request->orderBy;
-        $search = $request->search;
-        $reportPeriodDB = new ReportPeriodService;
+        $courseDB = new CourseService;
+        $majorDB = new MajorService;
 
-        if ($orderBy == '') {
-            return response()->json($reportPeriodDB->index());
-        } else {
-            return response()->json($reportPeriodDB->index(['school_year' => $search]));
+        $courses = $courseDB->index(['without_pagination' => true]);
+        $coursesWithMajors = [];
+        foreach ($courses as $course) {
+            if (!$course['majors']) {
+                $coursesWithMajors[] = $course;
+                continue;
+            }
+
+            $majors = $majorDB->bulkDetail($course['majors'])['data'];
+            $course['major_details'] = $majors;
+            $course['major_details_string'] = collect($majors)->pluck('abbreviation')->join(', ');
+            $coursesWithMajors[] = $course;
         }
+        return response()->json($coursesWithMajors);
+    }
+
+    public function getCurriculums()
+    {
+        $courseDB = new CourseService;
+        return response()->json($courseDB->curriculums());
     }
 
     /**
@@ -43,8 +58,8 @@ class ReportPeriodController extends Controller
      */
     public function store(Request $request)
     {
-        $reportPeriodDB = new ReportPeriodService;
-        return response()->json($reportPeriodDB->create($request->all()));
+        $courseDB = new CourseService;
+        return response()->json($courseDB->create($request->all()));
     }
 
     /**
@@ -55,15 +70,10 @@ class ReportPeriodController extends Controller
      */
     public function show($id)
     {
-        $reportPeriodDB = new ReportPeriodService;
-        return response()->json($reportPeriodDB->detail($id));
+        $courseDB = new CourseService;
+        return response()->json($courseDB->detail($id));
     }
 
-    public function schoolYears()
-    {
-        $reportPeriodDB = new ReportPeriodService;
-        return response()->json($reportPeriodDB->schoolYears());
-    }
     /**
      * Show the form for editing the specified resource.
      *
@@ -84,8 +94,8 @@ class ReportPeriodController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $reportPeriodDB = new ReportPeriodService;
-        return response()->json($reportPeriodDB->update($id, $request->all()));
+        $courseDB = new CourseService;
+        return response()->json($courseDB->update($id, $request->all()));
     }
 
     /**

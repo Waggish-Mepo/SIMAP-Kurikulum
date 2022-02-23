@@ -17,7 +17,7 @@ class MajorService {
         $query = Major::orderBy('expertise', $orderBy);
 
         if ($expertise) {
-            $query->where('expert$expertise', $expertise);
+            $query->where('expertise', $expertise);
         }
 
         if ($name) {
@@ -42,9 +42,9 @@ class MajorService {
     }
 
     public function detail($majorId) {
-        $teacher = Major::findOrFail($majorId);
+        $major = Major::findOrFail($majorId);
 
-        return $teacher->toArray();
+        return $major->toArray();
     }
 
     public function bulkDetail($majorIds)

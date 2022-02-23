@@ -4,15 +4,12 @@
     <div class="alert alert-danger mb-3" v-if="errorMessage">
       {{ errorMessage }}
     </div>
-    <div class="card w-100 bg-white p-3 mb-5">
+    <div class="card w-100 bg-white p-3 mb-md-5 mb-3">
         <div class="d-flex flex-wrap">
             <h5 class="text-capitalize pt-2">lihat berdasarkan :</h5>
             <select class="form-select border-primary text-primary" @change="sortBySchoolYear">
                 <option selected hidden>Tahun Ajaran</option>
-                <!-- sementara -->
-                <option value="2021/2022">2021/2022</option>
-                <option value="2022/2023">2022/2023</option>
-                <option value="2023/2024">2023/2024</option>
+                <option v-for="(year, index) in schoolYearList" :key="index" :value="year">{{year}}</option>
             </select>
         </div>
     </div>
@@ -20,13 +17,13 @@
         <a href="#"><span class="fas fa-plus mr-3"></span> Tambah Periode Rapor</a>
     </div>
     <div v-if="data.length > 0">
-        <a v-for="(report, index) in data" :key="index" href="#" class="card w-100 bg-white shadow-sm p-3 d-flex" @click="editReportPeriod(report.id)">
+        <a v-for="(report, index) in data" :key="index" href="#" class="card w-100 bg-white shadow-sm p-3 d-flex" @click="showReportPeriod(report.id)">
             <div class="d-flex">
                 <i class="far fa-calendar text-dark-gray"></i>
                 <div class="d-flex flex-column text-secondary">
                     <h5 class="text-capitalize font-weight-bold text-dark">{{report.title + ' - ' + report.school_year}}</h5>
-                    <span v-if="!report.start_date || !report.end_date">rentang waktu belum diatur</span>
-                    <span v-else>{{report.start_date | dateFormat}} - {{report.end_date | dateFormat}}</span>
+                    <span class="text-date" v-if="!report.start_date || !report.end_date">rentang waktu belum diatur</span>
+                    <span class="text-date" v-else>{{report.start_date | dateFormat}} - {{report.end_date | dateFormat}}</span>
                 </div>
             </div>
         </a>
@@ -47,7 +44,7 @@
             </div>
             <div class="form-group">
                 <label class="mb-2">Periode Rapor</label>
-                <input type="text" class="form-control" v-model="submitAddForm.title">
+                <input type="text" class="form-control" v-model="submitAddForm.title" :class="{'is-invalid': errors.title}">
                 <div class="invalid-feedback" v-if="errors.title">
                     {{ errors.title[0] }}
                 </div>
@@ -63,7 +60,7 @@
             </div>
             <div class="form-group mb-2">
                 <label class="mb-2">Periode Rapor</label>
-                <input type="text" class="form-control" v-model="submitEditForm.title">
+                <input type="text" class="form-control" v-model="submitEditForm.title" :class="{'is-invalid': errors.title}">
                 <div class="invalid-feedback" v-if="errors.title">
                     {{ errors.title[0] }}
                 </div>
@@ -71,14 +68,14 @@
             <div class="row">
                 <div class="form-group col-sm-6">
                     <label>Tanggal Mulai</label>
-                    <input type="date" class="form-control" v-model="submitEditForm.start_date">
+                    <input type="date" class="form-control" v-model="submitEditForm.start_date" :class="{'is-invalid': errors.start_date}">
                     <div class="invalid-feedback" v-if="errors.start_date">
                         {{ errors.start_date[0] }}
                     </div>
                 </div>
                 <div class="form-group col-sm-6">
                     <label>Tanggal Selesai</label>
-                    <input type="date" class="form-control" v-model="submitEditForm.end_date">
+                    <input type="date" class="form-control" v-model="submitEditForm.end_date" :class="{'is-invalid': errors.end_date}">
                     <div class="invalid-feedback" v-if="errors.end_date">
                         {{ errors.end_date[0] }}
                     </div>
@@ -91,7 +88,7 @@
     <modal v-if="modalDelete" @close="modalDelete = false" :deleteOpt="deleteReportPeriod">
         <h5 slot="header">Hapus Periode Rapor</h5>
         <div slot="body">
-            <span><b>Semua data</b> yang berkaitan dengan periode <b class="text-capitalize">semester 1</b> juga akan <b>terhapus</b> dan <b>tidak dapat diakses kembali</b>. Yakin tetap menghapus periode rapor <b class="text-capitalize">semester 1</b>?</span>
+            <span><b>Semua data</b> yang berkaitan dengan periode <b class="text-capitalize">{{submitEditForm.title}}</b> juga akan <b>terhapus</b> dan <b>tidak dapat diakses kembali</b>. Yakin tetap menghapus periode rapor <b class="text-capitalize">{{submitEditForm.title}}</b>?</span>
         </div>
     </modal>
   </div>
@@ -125,17 +122,24 @@ export default {
                 start_date: null,
                 end_date: null
             },
+            schoolYearList: []
         }
     },
     created() {
         this.getReportPeriods(this.payloadGet);
+        this.getSchoolYears();
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
     },
     methods: {
-        ...mapActions('reportPeriods', ['create', 'index', 'show', 'edit']),
+        ...mapActions('reportPeriods', ['create', 'index', 'show', 'edit', 'schoolYears']),
 
+        getSchoolYears() {
+            this.schoolYears().then((result) => {
+                this.schoolYearList = result;
+            })
+        },
         getReportPeriods(payload) {
             this.index(payload).then((result) => {
                 this.data = result.data;
@@ -153,7 +157,7 @@ export default {
                 this.getReportPeriods(this.payloadGet);
             });
         },
-        editReportPeriod(id) {
+        showReportPeriod(id) {
             this.show(id).then((result) => {
                 this.submitEditForm = result;
                 this.modalEdit = true;
@@ -181,6 +185,7 @@ export default {
 <style scoped>
 .card {
     font-size: 1rem;
+    margin-bottom: 10px;
 }
 
 a:hover {
@@ -189,13 +194,18 @@ a:hover {
 
 h5 {
     font-weight: 700;
+    font-size: 0.9rem !important;
     margin-bottom: 0.2rem !important;
 }
 
 i {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     margin-right: 15px !important;
     padding-top: 0.8rem;
+}
+
+.text-date {
+    font-size: 0.8rem;
 }
 
 .form-select {
@@ -232,12 +242,13 @@ i {
     .img {
         max-width: 80px;
     }
+    .p-3 {
+        padding: 0.8rem !important;
+    }
     .form-select {
         margin-left: 0;
         margin-top: 5px;
-    }
-    h5 {
-        font-size: 0.9rem;
+        padding: 0.2rem 2rem 0.2rem 0.5rem !important;
     }
     .text-secondary {
         font-size: 0.8rem !important;

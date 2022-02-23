@@ -16,7 +16,20 @@ const actions = {
                     commit('SET_GOOD', null, { root: true });
                 })
                 .catch((error) => {
-                    commit('SET_ERROR', error.response, { root: true });
+                    commit('SET_ERROR', error.response.data, { root: true });
+                })
+        })
+    },
+    schoolYears({ commit }) {
+        commit('SET_LOADING', true, { root: true });
+        return new Promise((resolve, reject) => {
+            axios.get('/report-periods/school-years')
+                .then((response) => {
+                    resolve(response.data);
+                    commit('SET_GOOD', null, { root: true });
+                })
+                .catch((error) => {
+                    commit('SET_ERROR', error.response.data, { root: true });
                 })
         })
     },
@@ -29,7 +42,7 @@ const actions = {
                     commit('SET_GOOD', null, { root: true });
                 })
                 .catch((error) => {
-                    commit('SET_ERROR', error.response, { root: true });
+                    commit('SET_ERROR', error.response.data, { root: true });
                 })
         })
     },
@@ -42,7 +55,7 @@ const actions = {
                     commit('SET_GOOD', null, { root: true });
                 })
                 .catch((error) => {
-                    commit('SET_ERROR', error.response.data, { root: true });
+                    commit('SET_ERROR_VALIDATE', error.response.data, { root: true });
                 })
         })
     },
@@ -55,7 +68,7 @@ const actions = {
                     commit('SET_GOOD', null, { root: true });
                 })
                 .catch((error) => {
-                    commit('SET_ERROR', error.response, { root: true });
+                    commit('SET_ERROR_VALIDATE', error.response.data, { root: true });
                 })
         })
     },

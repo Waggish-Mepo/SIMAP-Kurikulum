@@ -7,20 +7,32 @@
                 <div class="nav_list"> 
                     <router-link v-bind:to="{ name: 'dashboard' }">
                     <a href="#" class="nav_link" :class="{active: !$route.params.page}"> 
-                        <i class="fas fa-home nav_icon"></i> 
+                        <i class="fas fa-home nav_icon" title="Dashboard"></i> 
                         <span class="nav_name">Dashboard</span> 
                     </a> 
                     </router-link>
                     <router-link v-bind:to="{ name: 'mata_pelajaran', params: {page: 2} }">
                     <a href="#" class="nav_link" :class="{active: $route.params.page == 2}"> 
-                        <i class="fas fa-stream nav_icon"></i> 
+                        <i class="fas fa-stream nav_icon" title="Mata Pelajaran"></i> 
                         <span class="nav_name">Mata Pelajaran</span> 
                     </a> 
                     </router-link>
                     <router-link v-bind:to="{ name: 'periode_rapor', params: {page: 3} }">
                     <a href="#" class="nav_link" :class="{active: $route.params.page == 3}"> 
-                        <i class="fas fa-book-open nav_icon"></i> 
+                        <i class="fas fa-book-open nav_icon" title="Periode Rapor"></i> 
                         <span class="nav_name">Periode Rapor</span>
+                    </a>
+                    </router-link>
+                    <router-link v-bind:to="{ name: 'courses', params: {page: 4} }">
+                    <a href="#" class="nav_link" :class="{active: $route.params.page == 4}"> 
+                        <i class="fas fa-inbox nav_icon" title="Pelajaran"></i> 
+                        <span class="nav_name">Pelajaran</span>
+                    </a>
+                    </router-link>
+                    <router-link v-bind:to="{ name: 'gradebook', params: {page: 5} }">
+                    <a href="#" class="nav_link" :class="{active: $route.params.page == 5}"> 
+                        <i class="fas fa-book nav_icon" title="Buku Nilai"></i> 
+                        <span class="nav_name">Buku Nilai</span>
                     </a>
                     </router-link>
                 </div> 
