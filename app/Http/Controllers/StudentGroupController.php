@@ -15,12 +15,25 @@ class StudentGroupController extends Controller
     public function index(Request $request)
     {
         $search = $request->search;
-
-        // ini testing belum ada search
+        $sort = $request->sort;
+        $batch = $request->batch;
         $studentGroupDB = new StudentGroupService;
-        $studentGroups = $studentGroupDB->index(['with_major' => true, 'group_by_major' => true, 'without_pagination' => true]);
-        
-        return response()->json($studentGroups);
+
+        if ($search == "" && $sort == "") {
+            $studentGroups = $studentGroupDB->index(['batch_id' => $batch, 'with_major' => true, 'group_by_major' => true, 'without_pagination' => true]);
+
+            return response()->json($studentGroups);
+        } 
+        else if ($search != "") {
+            $studentGroups = $studentGroupDB->index(['batch_id' => $batch, 'name' => $search, 'with_major' => true, 'group_by_major' => true, 'without_pagination' => true]);
+
+            return response()->json($studentGroups);
+        } 
+        else if ($sort != "") {
+            $studentGroups = $studentGroupDB->index(['batch_id' => $batch, 'major_id' => $sort, 'with_major' => true, 'group_by_major' => true, 'without_pagination' => true]);
+
+            return response()->json($studentGroups);
+        }
     }
 
     /**
@@ -41,7 +54,8 @@ class StudentGroupController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $studentGroupDB = new StudentGroupService;
+        return response()->json($studentGroupDB->create($request->all()));
     }
 
     /**

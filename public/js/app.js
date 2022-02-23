@@ -5885,7 +5885,7 @@ var actions = {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/student-groups/?search=' + payload).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/student-groups/?batch=' + payload.batch + '&search=' + payload.search + '&sort=' + payload.sort).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
