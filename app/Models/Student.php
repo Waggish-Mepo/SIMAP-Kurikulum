@@ -14,4 +14,8 @@ class Student extends Model
      //gender
     public const LAKILAKI = "Laki-Laki";
     public const PEREMPUAN = "Perempuan";
+
+    public function studentGroup() {
+        return $this->belongsTo(StudentGroup::class);
+    }
 }
