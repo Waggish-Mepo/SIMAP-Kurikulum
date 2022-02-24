@@ -21,4 +21,8 @@ class Gradebook extends Model
     public const KNOWLEDGE = 'KNOWLEDGE';
     public const SKILL = 'SKILL';
     public const GENERAL = 'GENERAL';
+
+    public function predicateLetters() {
+        return $this->belongsTo(PredicateLetter::class);
+    }
 }
