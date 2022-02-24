@@ -24,7 +24,7 @@
         </div>
 
         <div class="card bg-white w-100 shadow-sm p-3 mb-2 text-capitalize" v-for="(batch, index) in batches" :key="index">
-            <router-link v-bind:to="{ name: 'student_groups', params: {page: 5, batch: batch.id} }" class="router">
+            <router-link v-bind:to="{ name: 'student_groups', params: {page: 4, batch: batch.id} }" class="router">
             <div class="d-flex align-items-center text-dark">
                 <span class="fas fa-trophy"></span> {{batch.batch_name}}
             </div>
@@ -108,16 +108,6 @@ export default {
 </script>
 
 <style scoped>
-.input-text:focus {
-    box-shadow: 0px 0px 0px;
-    border-color: #B4ADAD;
-    outline: 0px;
-}
-
-.form-control {
-    border: 1px solid #B4ADAD;
-}
-
 .btn-outline-muted {
     color: #535353;
     border-color: #B4ADAD;

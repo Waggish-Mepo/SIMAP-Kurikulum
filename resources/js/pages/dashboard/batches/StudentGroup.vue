@@ -3,7 +3,7 @@
         <div class="loader" v-if="isLoading"></div>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'batches', params: {page: 5} }"><a href="#">data siswa</a></router-link></li>
+                <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'batches', params: {page: 4} }"><a href="#">data siswa</a></router-link></li>
                 <li class="breadcrumb-item active" aria-current="page" @click="modalEdit = true">{{batch}} <span class="fas fa-pen"></span></li>
             </ol>
         </nav>
@@ -44,7 +44,7 @@
         <div class="mb-2" v-for="(sg, index) in studentGroups" :key="index">
             <div v-for="(rombel, index) in sg" :key="index">
                 <div class="card bg-white w-100 shadow-sm p-3 mb-3 text-capitalize">
-                    <router-link v-bind:to="{ name: 'students', params: {page: 5, batch: $route.params.batch, group: rombel.id} }" class="router">
+                    <router-link v-bind:to="{ name: 'students', params: {page: 4, batch: $route.params.batch, group: rombel.id} }" class="router">
                     <div class="d-flex align-items-center text-dark text-uppercase">
                         <span class="fas fa-chalkboard"></span> {{rombel.name}}
                     </div>
@@ -212,34 +212,6 @@ export default {
 </script>
 
 <style scoped>
-.breadcrumb {
-    font-size: 1.2rem;
-    text-transform: capitalize;
-}
-
-.breadcrumb .breadcrumb-item a {
-    color: #333;
-}
-
-.breadcrumb .breadcrumb-item.active {
-    cursor: pointer;
-}
-
-.breadcrumb-item span {
-    font-size: 0.9rem;
-    margin-left: 5px;
-}
-
-.input-text:focus {
-    box-shadow: 0px 0px 0px;
-    border-color: #B4ADAD;
-    outline: 0px;
-}
-
-.form-control {
-    border: 1px solid #B4ADAD;
-}
-
 .btn-outline-muted {
     color: #535353;
     border-color: #B4ADAD;
@@ -308,9 +280,6 @@ h5 {
     }
     .form-select {
         font-size: 0.8rem !important;
-    }
-    .breadcrumb {
-        font-size: 1rem;
     }
 }
 </style>

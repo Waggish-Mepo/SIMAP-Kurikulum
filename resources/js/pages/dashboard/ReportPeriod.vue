@@ -17,7 +17,7 @@
         <a href="#"><span class="fas fa-plus mr-3"></span> Tambah Periode Rapor</a>
     </div>
     <div v-if="data.length > 0">
-        <a v-for="(report, index) in data" :key="index" href="#" class="card w-100 bg-white shadow-sm p-3 d-flex" @click="showReportPeriod(report.id)">
+        <a v-for="(report, index) in data" :key="index" href="#" class="card w-100 bg-white shadow-sm p-3" @click="showReportPeriod(report.id)">
             <div class="d-flex">
                 <i class="far fa-calendar text-dark-gray"></i>
                 <div class="d-flex flex-column text-secondary">
@@ -111,6 +111,7 @@ export default {
             modalDelete: false,
             payloadGet: {
                 orderBy: '',
+                schoolYear: '',
                 search: ''
             },
             data: [],
@@ -142,18 +143,18 @@ export default {
         },
         getReportPeriods(payload) {
             this.index(payload).then((result) => {
-                this.data = result.data;
+                this.data = result;
             })
         },
         sortBySchoolYear(e) {
-            this.payloadGet.search = e.target.value;
+            this.payloadGet.schoolYear = e.target.value;
             this.payloadGet.orderBy = 'school_year';
             this.getReportPeriods(this.payloadGet);
         },
         addReportPeriod() {
             this.create(this.submitAddForm).then((result) => {
                 this.modalAdd = false;
-                this.payloadGet.search = '';
+                this.payloadGet.schoolYear = '';
                 this.getReportPeriods(this.payloadGet);
             });
         },
@@ -167,7 +168,7 @@ export default {
             let payload = {id: this.submitEditForm.id, data: this.submitEditForm};
             this.edit(payload).then((result) => {
                 this.modalEdit = false;
-                this.payloadGet.search = '';
+                this.payloadGet.schoolYear = '';
                 this.getReportPeriods(this.payloadGet);
             });
         },
