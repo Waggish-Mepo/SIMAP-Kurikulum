@@ -1,6 +1,6 @@
 <template>
     <header class="header header-md shadow" id="header">
-        <div class="header_toggle"><i class="fas fa-bars" id="header-toggle"></i></div>
+        <div class="header_toggle"><i class="fas fa-bars" id="header-toggle" @click="toggleSidebar"></i></div>
         <div class="header_text text-capitalize">{{title}}</div>
     </header>
 </template>
@@ -29,12 +29,30 @@ export default {
             } else if(this.$route.params.page == 3) {
                 this.title = 'periode rapor';
             } else if(this.$route.params.page == 4) {
-                this.title = 'pelajaran';
-            } else if(this.$route.params.page == 5) {
                 this.title = 'data siswa';
+            } else if(this.$route.params.page == 5) {
+                this.title = 'pelajaran';
+            } else if(this.$route.params.page == 6) {
+                this.title = 'buku nilai';
             } else {
                 this.title = 'dashboard';
             }
+        },
+        toggleSidebar() {
+            const toggle = document.getElementById('header-toggle');
+            const nav = document.getElementById('nav-bar');
+            const bodypd = document.getElementById('body-pd');
+            const headerpd = document.getElementById('header');
+            // show navbar
+            nav.classList.toggle('show');
+            // change icon
+            toggle.classList.toggle('fa-times');
+            toggle.classList.toggle('fa-bars');
+            // add padding to body
+            bodypd.classList.toggle('body-pd');
+            // add padding to header
+            headerpd.classList.toggle('header-pd');
+            headerpd.classList.toggle('header-md');
         }
     }
 }

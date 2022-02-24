@@ -65,6 +65,16 @@ const router = new Router({
                 name: 'students',
                 component: loadView('dashboard/batches/StudentData')
             },
+            {
+                path: '/:page/gradebooks/periods',
+                name: 'gradebooks.period',
+                component: loadView('dashboard/gradeBook/Period')
+            },
+            {
+                path: '/:page/gradebooks/periods/:period',
+                name: 'gradebooks.course',
+                component: loadView('dashboard/gradeBook/PeriodCourse')
+            },
             ]
         },
     ],

@@ -15,13 +15,20 @@ class ReportPeriodController extends Controller
     public function index(Request $request)
     {
         $orderBy = $request->orderBy;
+        $schoolYear = $request->schoolYear;
         $search = $request->search;
         $reportPeriodDB = new ReportPeriodService;
 
-        if ($orderBy == '') {
-            return response()->json($reportPeriodDB->index());
-        } else {
-            return response()->json($reportPeriodDB->index(['school_year' => $search]));
+        if ($orderBy == '' && $search == '') {
+            return response()->json($reportPeriodDB->index(['without_pagination' => true]));
+        } 
+
+        if ($search != '') {
+            return response()->json($reportPeriodDB->index(['title' => $search, 'without_pagination' => true]));
+        }
+        
+        if ($orderBy != '' && $schoolYear != '') {
+            return response()->json($reportPeriodDB->index(['school_year' => $schoolYear, 'without_pagination' => true]));
         }
     }
 

@@ -3,8 +3,8 @@
         <div class="loader" v-if="isLoading"></div>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'batches', params: {page: 5} }"><a href="#">data siswa</a></router-link></li>
-                <li class="breadcrumb-item" aria-current="page"><router-link v-bind:to="{ name: 'student_groups', params: {page: 5, batch: $route.params.batch} }"><a href="#">{{batchName}}</a></router-link></li>
+                <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'batches', params: {page: 4} }"><a href="#">data siswa</a></router-link></li>
+                <li class="breadcrumb-item" aria-current="page"><router-link v-bind:to="{ name: 'student_groups', params: {page: 4, batch: $route.params.batch} }"><a href="#">{{batchName}}</a></router-link></li>
                 <li class="breadcrumb-item active" aria-current="page" @click="modalEdit = true">{{studentGroup}} <span class="fas fa-pen"></span></li>
             </ol>
         </nav>
@@ -318,34 +318,6 @@ export default {
 </script>
 
 <style scoped>
-.breadcrumb {
-    font-size: 1.2rem;
-    text-transform: capitalize;
-}
-
-.breadcrumb .breadcrumb-item a {
-    color: #333;
-}
-
-.breadcrumb .breadcrumb-item.active {
-    cursor: pointer;
-}
-
-.breadcrumb-item span {
-    font-size: 0.9rem;
-    margin-left: 5px;
-}
-
-.input-text:focus {
-    box-shadow: 0px 0px 0px;
-    border-color: #B4ADAD;
-    outline: 0px;
-}
-
-.form-control {
-    border: 1px solid #B4ADAD;
-}
-
 .form-group {
     margin-bottom: 10px;
 }
@@ -443,9 +415,6 @@ export default {
     }
     .btn {
         padding: 0.2rem 0.5rem !important;
-    }
-    .breadcrumb {
-        font-size: 1rem;
     }
 }
 </style>

@@ -5311,12 +5311,30 @@ __webpack_require__.r(__webpack_exports__);
       } else if (this.$route.params.page == 3) {
         this.title = 'periode rapor';
       } else if (this.$route.params.page == 4) {
-        this.title = 'pelajaran';
-      } else if (this.$route.params.page == 5) {
         this.title = 'data siswa';
+      } else if (this.$route.params.page == 5) {
+        this.title = 'pelajaran';
+      } else if (this.$route.params.page == 6) {
+        this.title = 'buku nilai';
       } else {
         this.title = 'dashboard';
       }
+    },
+    toggleSidebar: function toggleSidebar() {
+      var toggle = document.getElementById('header-toggle');
+      var nav = document.getElementById('nav-bar');
+      var bodypd = document.getElementById('body-pd');
+      var headerpd = document.getElementById('header'); // show navbar
+
+      nav.classList.toggle('show'); // change icon
+
+      toggle.classList.toggle('fa-times');
+      toggle.classList.toggle('fa-bars'); // add padding to body
+
+      bodypd.classList.toggle('body-pd'); // add padding to header
+
+      headerpd.classList.toggle('header-pd');
+      headerpd.classList.toggle('header-md');
     }
   }
 });
@@ -5400,6 +5418,12 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5719,6 +5743,14 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/:page/batches/:batch/student-groups/:group/students',
       name: 'students',
       component: loadView('dashboard/batches/StudentData')
+    }, {
+      path: '/:page/gradebooks/periods',
+      name: 'gradebooks.period',
+      component: loadView('dashboard/gradeBook/Period')
+    }, {
+      path: '/:page/gradebooks/periods/:period',
+      name: 'gradebooks.course',
+      component: loadView('dashboard/gradeBook/PeriodCourse')
     }]
   }]
 });
@@ -6143,8 +6175,26 @@ var actions = {
       });
     });
   },
-  show: function show(_ref4, payload) {
+  byEntryYears: function byEntryYears(_ref4, payload) {
     var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/courses/entry-year/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  show: function show(_ref5, payload) {
+    var commit = _ref5.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -6161,8 +6211,8 @@ var actions = {
       });
     });
   },
-  create: function create(_ref5, payload) {
-    var commit = _ref5.commit;
+  create: function create(_ref6, payload) {
+    var commit = _ref6.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -6179,8 +6229,8 @@ var actions = {
       });
     });
   },
-  edit: function edit(_ref6, payload) {
-    var commit = _ref6.commit;
+  edit: function edit(_ref7, payload) {
+    var commit = _ref7.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -6283,7 +6333,7 @@ var actions = {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/report-periods/?orderBy=' + payload.orderBy + '&search=' + payload.search).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/report-periods/?orderBy=' + payload.orderBy + '&schoolYear=' + payload.schoolYear + '&search=' + payload.search).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
@@ -30338,7 +30388,13 @@ var render = function () {
     "header",
     { staticClass: "header header-md shadow", attrs: { id: "header" } },
     [
-      _vm._m(0),
+      _c("div", { staticClass: "header_toggle" }, [
+        _c("i", {
+          staticClass: "fas fa-bars",
+          attrs: { id: "header-toggle" },
+          on: { click: _vm.toggleSidebar },
+        }),
+      ]),
       _vm._v(" "),
       _c("div", { staticClass: "header_text text-capitalize" }, [
         _vm._v(_vm._s(_vm.title)),
@@ -30346,16 +30402,7 @@ var render = function () {
     ]
   )
 }
-var staticRenderFns = [
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "header_toggle" }, [
-      _c("i", { staticClass: "fas fa-bars", attrs: { id: "header-toggle" } }),
-    ])
-  },
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -30590,13 +30637,38 @@ var render = function () {
               _vm._v(" "),
               _c(
                 "router-link",
-                { attrs: { to: { name: "courses", params: { page: 4 } } } },
+                { attrs: { to: { name: "batches", params: { page: 4 } } } },
                 [
                   _c(
                     "a",
                     {
                       staticClass: "nav_link",
                       class: { active: _vm.$route.params.page == 4 },
+                      attrs: { href: "#" },
+                    },
+                    [
+                      _c("i", {
+                        staticClass: "fas fa-users nav_icon",
+                        attrs: { title: "Data Siswa" },
+                      }),
+                      _vm._v(" "),
+                      _c("span", { staticClass: "nav_name" }, [
+                        _vm._v("Data Siswa"),
+                      ]),
+                    ]
+                  ),
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "router-link",
+                { attrs: { to: { name: "courses", params: { page: 5 } } } },
+                [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "nav_link",
+                      class: { active: _vm.$route.params.page == 5 },
                       attrs: { href: "#" },
                     },
                     [
@@ -30615,23 +30687,27 @@ var render = function () {
               _vm._v(" "),
               _c(
                 "router-link",
-                { attrs: { to: { name: "batches", params: { page: 5 } } } },
+                {
+                  attrs: {
+                    to: { name: "gradebooks.period", params: { page: 6 } },
+                  },
+                },
                 [
                   _c(
                     "a",
                     {
                       staticClass: "nav_link",
-                      class: { active: _vm.$route.params.page == 5 },
+                      class: { active: _vm.$route.params.page == 6 },
                       attrs: { href: "#" },
                     },
                     [
                       _c("i", {
-                        staticClass: "fas fa-users nav_icon",
-                        attrs: { title: "Data Siswa" },
+                        staticClass: "fas fa-book nav_icon",
+                        attrs: { title: "Buku Nilai" },
                       }),
                       _vm._v(" "),
                       _c("span", { staticClass: "nav_name" }, [
-                        _vm._v("Data Siswa"),
+                        _vm._v("Buku Nilai"),
                       ]),
                     ]
                   ),
@@ -47371,6 +47447,14 @@ var map = {
 		"./resources/js/pages/dashboard/batches/StudentGroup.vue",
 		"resources_js_pages_dashboard_batches_StudentGroup_vue"
 	],
+	"./dashboard/gradeBook/Period.vue": [
+		"./resources/js/pages/dashboard/gradeBook/Period.vue",
+		"resources_js_pages_dashboard_gradeBook_Period_vue"
+	],
+	"./dashboard/gradeBook/PeriodCourse.vue": [
+		"./resources/js/pages/dashboard/gradeBook/PeriodCourse.vue",
+		"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue"
+	],
 	"./errors/404.vue": [
 		"./resources/js/pages/errors/404.vue",
 		"resources_js_pages_errors_404_vue"
@@ -47514,7 +47598,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_pages_dashboard_Course_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_Course_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Service\Database\CourseService;
 use App\Service\Database\MajorService;
 use App\Service\Functions\AcademicCalendar;
+use App\Service\Database\ReportPeriodService;
 
 class CourseController extends Controller
 {
@@ -60,6 +61,24 @@ class CourseController extends Controller
         ];
 
         return response()->json($academicYearByGrade);
+    }
+
+    public function getByEntryYear($id)
+    {
+        $courseDB = new CourseService;
+        $academicCalendar = new AcademicCalendar;
+        $reportPeriodDB = new ReportPeriodService;
+
+        $reportPeriod = $reportPeriodDB->detail($id);
+        $year = $reportPeriod['school_year'];
+
+        $courses = $courseDB->index(['entry_year' => $year, 'without_pagination' => true]);
+        $courseWithClass = [];
+        foreach ($courses as $course) {
+            $course['entry_year_with_class'] = $academicCalendar->gradeByAcademicYear($course['entry_year']);
+            $courseWithClass[] = $course;
+        }
+        return response()->json($courseWithClass);
     }
 
     /**

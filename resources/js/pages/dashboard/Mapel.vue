@@ -245,16 +245,6 @@ h4 {
     font-weight: 600;
 }
 
-.input-text:focus {
-    box-shadow: 0px 0px 0px;
-    border-color: #B4ADAD;
-    outline: 0px;
-}
-
-.form-control {
-    border: 1px solid #B4ADAD;
-}
-
 .btn-outline-muted {
     color: #535353;
     border-color: #B4ADAD;

@@ -14,11 +14,21 @@ class ReportPeriodService{
         $orderBy = $filter['order_by'] ?? 'ASC';
         $perPage = $filter['page'] ?? 20;
         $schoolYear = $filter['school_year'] ?? null;
+        $title = $filter['title'] ?? null;
+        $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = ReportPeriod::orderBy('created_at', $orderBy);
 
         if ($schoolYear) {
             $query->where('school_year', $schoolYear);
+        }
+
+        if ($title) {
+            $query->where('title', 'LIKE', '%' . $title . '%');
+        }
+
+        if ($withoutPagination) {
+            return $query->get()->toArray();
         }
 
         $reports = $query->paginate($perPage);
