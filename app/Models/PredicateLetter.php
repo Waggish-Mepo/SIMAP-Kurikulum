@@ -10,4 +10,8 @@ class PredicateLetter extends Model
     use HasFactory;
 
     public $incrementing = false;
+    
+    public function predicateLetters() {
+        return $this->belongsTo(PredicateLetter::class);
+    }
 }
