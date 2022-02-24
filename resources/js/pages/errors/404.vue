@@ -13,8 +13,8 @@
             </router-link>
         </div>
         <img
-            src="assets/img/error_page.png"
-            alt="login"
+            src="/assets/img/error_page.png"
+            alt="error 404"
             class="img-error-404"
         />
     </div>

@@ -81,7 +81,7 @@ class CreateStudentsTable extends Migration
             $table->boolean('status')->nullable();
             $table->string('jenjang_pendidikan_anak')->nullable();
             $table->integer('nisn')->nullable();
-            $table->string('jk');
+            $table->string('jk')->nullable();
             $table->string('tempat_lahir_anak')->nullable();
             $table->timestamps();
         });

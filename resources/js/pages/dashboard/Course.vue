@@ -7,14 +7,14 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Pelajaran...." @keyup="searchSubject" v-model="search">
+                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Mata Pelajaran...." @keyup="searchSubject" v-model="search">
                     <div class="input-group-append">
                         <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white" @click="searchSubject"><i class="fa fa-search"></i></a>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <a href="#" class="btn btn-secondary btn-block mt-md-1" @click="getDataSubjects('')">Refresh Data</a>
+                <a href="#" class="btn btn-secondary btn-block mt-md-1" @click="refreshDataSubjects">Refresh Data</a>
             </div>
         </div>
         <div class="card w-100 bg-white p-2 mt-3" @click="modalAdd = true">
@@ -22,7 +22,7 @@
         </div>
         <div class="col-12 mt-3">
             <div v-for="(subject, index) in dataSubjects" :key="index" class="mb-2">
-                <div class="card w-100 shadow-sm bg-white p-3" data-bs-toggle="collapse" aria-expanded="false" @click="showPanelCollapse(subject.id, index)">
+                <div class="card card-subject w-100 shadow-sm bg-white p-3" data-bs-toggle="collapse" aria-expanded="false" @click="showPanelCollapse(subject.id, index)">
                     <div class="d-flex justify-content-between text-capitalize">
                         <div><span class="fas fa-book"></span>
                         {{subject.name}}</div>
@@ -34,11 +34,17 @@
                 <div class="collapse" :id="subject.id">
                     <ul class="list-group">
                         <li class="list-group-item" v-for="(course, index) in filterCourses(subject.id)" :key="index">
-                            <a href="#" class="text-capitalize" @click="showCourse(course.id)">{{course.entry_year | checkClass}} | {{course.caption}} | {{course.major_details_string}}</a>
+                            <a href="#" class="text-capitalize" @click="showCourse(course.id)">Kelas {{course.entry_year_with_class}} | {{course.caption}} | {{course.major_details_string}}</a>
                         </li>
                     </ul>
                 </div>
             </div>
+        </div>
+
+        <!-- if data null -->
+        <div v-if="dataSubjects.length < 1" class="w-100 card-not-found">
+            <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
+            <h5 class="text-center text-capitalize mt-4">data terkait tidak ditemukan</h5>
         </div>
 
         <!-- modal -->
@@ -124,7 +130,7 @@
                         {{ errors.entry_year[0] }}
                     </small>
                     <div v-for="(year, index) in entry_years" :key="index" class="form-check">
-                        <input class="form-check-input" type="radio" :value="year" v-model="submitForm.entry_year">
+                        <input class="form-check-input" type="radio" :value="year" v-model="updateForm.entry_year">
                         <label class="form-check-label text-capitalize">
                             {{ "Kelas " +  index + " | Angkatan Masuk " + year.substr(0, 4) }}
                         </label>
@@ -220,6 +226,10 @@ export default {
         searchSubject() {
             this.getDataSubjects(this.search);
         },
+        refreshDataSubjects() {
+            this.search = '';
+            this.getDataSubjects(this.search);
+        },
         getSubjects() {
             this.getAll().then((result) => {
                 this.subjects = result;
@@ -304,6 +314,10 @@ a:hover {
     border: 0 !important;
 }
 
+.card-subject {
+    cursor: pointer;
+}
+
 .card a {
     font-weight: 500;
     padding: 8px 10px;
@@ -339,6 +353,15 @@ span.fas.fa-book {
 
 label.mb-2 {
     font-weight: 600;
+}
+
+.card-not-found {
+    margin-top: 25px;
+}
+
+.img {
+    max-width: 130px;
+    width: 100%;
 }
 
 @media (max-width: 470px) {

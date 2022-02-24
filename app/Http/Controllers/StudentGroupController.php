@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Service\Database\StudentService;
+use App\Service\Database\StudentGroupService;
 
-class StudentController extends Controller
+class StudentGroupController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,13 +15,24 @@ class StudentController extends Controller
     public function index(Request $request)
     {
         $search = $request->search;
-        $studentGroup = $request->studentGroup;
-        $students = new StudentService;
+        $sort = $request->sort;
+        $batch = $request->batch;
+        $studentGroupDB = new StudentGroupService;
 
-        if ($search == "") {
-            return response()->json($students->index(['student_group_id' => $studentGroup, 'without_pagination' => true]));
-        } else {
-            return response()->json($students->index(['student_group_id' => $studentGroup, 'name' => $search, 'without_pagination' => true]));
+        if ($search == "" && $sort == "") {
+            $studentGroups = $studentGroupDB->index(['batch_id' => $batch, 'with_major' => true, 'group_by_major' => true, 'without_pagination' => true]);
+
+            return response()->json($studentGroups);
+        } 
+        else if ($search != "") {
+            $studentGroups = $studentGroupDB->index(['batch_id' => $batch, 'name' => $search, 'with_major' => true, 'group_by_major' => true, 'without_pagination' => true]);
+
+            return response()->json($studentGroups);
+        } 
+        else if ($sort != "") {
+            $studentGroups = $studentGroupDB->index(['batch_id' => $batch, 'major_id' => $sort, 'with_major' => true, 'group_by_major' => true, 'without_pagination' => true]);
+
+            return response()->json($studentGroups);
         }
     }
 
@@ -43,8 +54,8 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        $studentDB = new StudentService;
-        return response()->json($studentDB->create($request->all()));
+        $studentGroupDB = new StudentGroupService;
+        return response()->json($studentGroupDB->create($request->all()));
     }
 
     /**
@@ -55,8 +66,8 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        $studentDB = new StudentService;
-        return response()->json($studentDB->detail($id));
+        $studentGroupDB = new StudentGroupService;
+        return response()->json($studentGroupDB->detail($id));
     }
 
     /**
@@ -79,8 +90,8 @@ class StudentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $studentDB = new StudentService;
-        return response()->json($studentDB->update($id, $request->all()));
+        $studentGroupDB = new StudentGroupService;
+        return response()->json($studentGroupDB->update($id, $request->all()));
     }
 
     /**

@@ -13,9 +13,19 @@ class StudentService {
     {
         $orderBy = $filter['order_by'] ?? 'DESC';
         $per_page = $filter['per_page'] ?? 99;
+        $name = $filter['name'] ?? null;
+        $studentGroup = $filter['student_group_id'] ?? null;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = Student::orderBy('created_at', $orderBy);
+
+        if ($name) {
+            $query->where('name', 'LIKE', '%' . $name . '%');
+        }
+
+        if ($studentGroup) {
+            $query->where('student_group_id', $studentGroup);
+        }
 
         if ($withoutPagination) {
             return $query->get()->toArray();
@@ -85,7 +95,10 @@ class StudentService {
 
         $validate = Validator::make($student->toArray(), [
             'name' => 'required|string',
-            'jk' => ['required', Rule::in(config('constant.student.gender'))],
+            'nis' => 'required',
+            'nisn' => 'nullable',
+            'jk' => ['nullable', Rule::in(config('constant.student.gender'))],
+            'student_group_id' => 'nullable',
         ]);
 
         if($validate->fails()) {

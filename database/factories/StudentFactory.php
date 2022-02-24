@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\StudentGroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class StudentFactory extends Factory
@@ -16,7 +17,9 @@ class StudentFactory extends Factory
         return [
             'id' => $this->faker->uuid(),
             'name' => $this->faker->name(),
-            'jk' => $this->faker->randomElement(config('constant.teacher.gender'))
+            'nis' => $this->faker->numerify('#######'),
+            'jk' => $this->faker->randomElement(config('constant.teacher.gender')),
+            'student_group_id' => StudentGroup::factory()->create()->id,
         ];
     }
 }

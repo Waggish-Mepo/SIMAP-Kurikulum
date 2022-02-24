@@ -60,6 +60,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "login",
@@ -272,8 +278,13 @@ var render = function () {
                         _vm._v(
                           "\n                                " +
                             _vm._s(_vm.errorMessage) +
-                            "\n                            "
+                            " "
                         ),
+                        _vm.errorMessage == "Unauthenticated."
+                          ? _c("span", { staticClass: "font-weight-bold" }, [
+                              _vm._v("Silahkan login kembali!"),
+                            ])
+                          : _vm._e(),
                       ])
                     : _vm._e(),
                   _vm._v(" "),
@@ -301,6 +312,7 @@ var render = function () {
                         },
                       ],
                       staticClass: "form-control",
+                      class: { "is-invalid": _vm.errors.username },
                       attrs: { type: "text", placeholder: "Username" },
                       domProps: { value: _vm.formData.username },
                       on: {
@@ -317,6 +329,16 @@ var render = function () {
                       },
                     }),
                     _c("i", { staticClass: "fa fa-user" }),
+                    _vm._v(" "),
+                    _vm.errors.username
+                      ? _c("div", { staticClass: "invalid-feedback" }, [
+                          _vm._v(
+                            "\n                                    " +
+                              _vm._s(_vm.errors.username[0]) +
+                              "\n                                "
+                          ),
+                        ])
+                      : _vm._e(),
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "inputbox" }, [
@@ -330,6 +352,7 @@ var render = function () {
                         },
                       ],
                       staticClass: "form-control",
+                      class: { "is-invalid": _vm.errors.password },
                       attrs: {
                         type: "password",
                         placeholder: "Password",
@@ -355,6 +378,16 @@ var render = function () {
                       staticClass: "fas fa-eye",
                       on: { click: _vm.seePassword },
                     }),
+                    _vm._v(" "),
+                    _vm.errors.password
+                      ? _c("div", { staticClass: "invalid-feedback" }, [
+                          _vm._v(
+                            "\n                                    " +
+                              _vm._s(_vm.errors.password[0]) +
+                              "\n                                "
+                          ),
+                        ])
+                      : _vm._e(),
                   ]),
                 ]),
                 _vm._v(" "),

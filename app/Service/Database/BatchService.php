@@ -30,7 +30,7 @@ class BatchService {
         }
 
         if ($batchName) {
-            $query->where('batch_name', $batchName);
+            $query->where('batch_name','LIKE', '%'. $batchName . '%');
         }
 
         if ($entryYear) {
@@ -85,7 +85,6 @@ class BatchService {
         $validate = Validator::make($batch->toArray(), [
             'batch_name' => 'required|string',
             'entry_year' => ['required', Rule::in(config('constant.common.school_years'))],
-            'major_id' => 'required',
         ]);
 
         if($validate->fails()) {
