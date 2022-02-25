@@ -17,6 +17,7 @@ class BatchService {
         $perPage = $filter['page'] ?? 20;
         $withMajor = $filter['with_major'] ?? false;
         $withStudentGroups = $filter['with_student_groups'] ?? false;
+        $withStudentGroupsStudents = $filter['with_student_groups_students'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = Batch::orderBy('created_at', $orderBy);
@@ -27,6 +28,10 @@ class BatchService {
 
         if ($withStudentGroups) {
             $query->with('studentGroups');
+        }
+
+        if ($withStudentGroupsStudents) {
+            $query->with('studentGroups.students');
         }
 
         if ($batchName) {

@@ -33,7 +33,7 @@ class StudentGroupService {
         if ($batch) {
             $query->where('batch_id', $batch);
         }
-        
+
         if ($majorId) {
             $query->where('major_id', $majorId);
         }
@@ -45,7 +45,7 @@ class StudentGroupService {
         if ($name) {
             $query->where('name', 'LIKE', '%' . $name . '%');
         }
-        
+
         if ($withStudent) {
             $query->with('students');
         }
@@ -106,7 +106,6 @@ class StudentGroupService {
 
         return $studentGroup->toArray();
     }
-
 
     private function fill(StudentGroup $studentGroup, array $payload) {
         foreach ($payload as $key => $value) {
