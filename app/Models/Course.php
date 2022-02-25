@@ -22,4 +22,10 @@ class Course extends Model
     public function studentCourses() {
         return $this->hasMany(StudentCourse::class);
     }
+
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'student_courses')
+            ->withTimestamps();
+    }
 }
