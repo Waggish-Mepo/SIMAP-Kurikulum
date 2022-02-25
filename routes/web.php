@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ExampleStudentCourseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,6 +13,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+//ROUTE FOR BACK END TESTING
+Route::get('/test/{courseId}', [ ExampleStudentCourseController::class, 'selectStudents']);
 
 Route::get('/{any}', function () {
     return view('index');
