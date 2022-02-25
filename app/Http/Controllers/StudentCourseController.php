@@ -3,21 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Service\Database\StudentService;
 
-class StudentController extends Controller
+class StudentCourseController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $studentGroup = $request->studentGroup;
-        $students = new StudentService;
-
-        return response()->json($students->index(['student_group_id' => $studentGroup, 'without_pagination' => true]));
+        //
     }
 
     /**
@@ -38,8 +34,7 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        $studentDB = new StudentService;
-        return response()->json($studentDB->create($request->all()));
+        //
     }
 
     /**
@@ -50,8 +45,7 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        $studentDB = new StudentService;
-        return response()->json($studentDB->detail($id));
+        //
     }
 
     /**
@@ -74,8 +68,7 @@ class StudentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $studentDB = new StudentService;
-        return response()->json($studentDB->update($id, $request->all()));
+        //
     }
 
     /**

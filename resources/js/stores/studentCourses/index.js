@@ -10,7 +10,7 @@ const actions = {
     index({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/students/?studentGroup='+payload.studentGroup)
+            axios.get('/student-courses/?course='+payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -20,10 +20,10 @@ const actions = {
                 })
         })
     },
-    studentDetail({ commit }, payload) {
+    show({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/students/'+payload)
+            axios.get('/student-courses/'+payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -36,7 +36,7 @@ const actions = {
     create({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.post('/students', payload)
+            axios.post('/student-courses', payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -46,10 +46,10 @@ const actions = {
                 })
         })
     },
-    update({ commit }, payload) {
+    edit({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.patch('/students/'+payload.id, payload.data)
+            axios.patch('/student-courses/'+payload.id, payload.data)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });

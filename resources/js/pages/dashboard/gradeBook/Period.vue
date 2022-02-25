@@ -124,15 +124,6 @@ i.far.fa-calendar {
     font-size: 0.8rem;
 }
 
-.card-not-found {
-    margin-top: 25px;
-}
-
-.img {
-    max-width: 130px;
-    width: 100%;
-}
-
 @media (max-width: 575px) {
     a {
         font-size: 0.9rem !important;

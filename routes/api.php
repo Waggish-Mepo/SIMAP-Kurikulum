@@ -12,6 +12,7 @@ use App\Http\Controllers\MajorController;
 use App\Http\Controllers\BatchController;
 use App\Http\Controllers\StudentGroupController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentCourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,6 +65,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [CourseController::class, 'store']);
         Route::get('/{id}', [CourseController::class, 'show']);
         Route::patch('/{id}', [CourseController::class, 'update']);
+    });
+    Route::prefix('student-courses')->group(function () {
+        Route::get('/', [StudentCourseController::class, 'index']);
+        Route::post('/', [StudentCourseController::class, 'store']);
+        Route::get('/{id}', [StudentCourseController::class, 'show']);
+        Route::patch('/{id}', [StudentCourseController::class, 'update']);
     });
     Route::prefix('batches')->group(function () {
         Route::get('/', [BatchController::class, 'index']);

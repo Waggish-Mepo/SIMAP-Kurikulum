@@ -98,13 +98,4 @@ h5 {
 span.fas.fa-book {
     margin-right: 10px;
 }
-
-.card-not-found {
-    margin-top: 25px;
-}
-
-.img {
-    max-width: 130px;
-    width: 100%;
-}
 </style>

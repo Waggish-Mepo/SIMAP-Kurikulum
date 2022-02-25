@@ -124,15 +124,6 @@ export default {
     cursor: pointer;
 }
 
-.card-not-found {
-    margin-top: 25px;
-}
-
-.img {
-    max-width: 130px;
-    width: 100%;
-}
-
 a.router {
     text-decoration: none !important;
     color: #000 !important;

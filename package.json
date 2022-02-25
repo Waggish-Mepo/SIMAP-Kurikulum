@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
+        "vue-good-table": "^2.21.11",
         "vue-router": "^3.5.2",
         "vue-select": "^3.16.0",
         "vuex": "^3.6.2"

@@ -34,7 +34,9 @@
                 <div class="collapse" :id="subject.id">
                     <ul class="list-group">
                         <li class="list-group-item" v-for="(course, index) in filterCourses(subject.id)" :key="index">
-                            <a href="#" class="text-capitalize" @click="showCourse(course.id)">Kelas {{course.entry_year_with_class}} | {{course.caption}} | {{course.major_details_string}}</a>
+                            <router-link v-bind:to="{ name: 'courses.students', params: {page: 5, course: course.id} }" class="router">
+                            <a href="#" class="text-capitalize">Kelas {{course.entry_year_with_class}} | {{course.caption}} | {{course.major_details_string}}</a>
+                            </router-link>
                         </li>
                     </ul>
                 </div>
@@ -96,69 +98,12 @@
                 </div>
             </div>
         </modal>
-
-        <modal v-if="modalEdit" @close="modalEdit = false" :action="editCourse">
-            <h5 slot="header">Edit Pelajaran</h5>
-            <div slot="body">
-                <div class="alert alert-danger mb-3" v-if="errorMessage">
-                    {{ errorMessage }}
-                </div>
-                <div class="form-group">
-                    <label class="mb-2">Kurikulum Acuan</label>
-                    <select2 :options="curriculums" v-model="updateForm.curriculum" :class="{'is-invalid': errors.curriculum}"></select2>
-                    <div class="invalid-feedback" v-if="errors.curriculum">
-                        {{ errors.curriculum[0] }}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="mb-2">Jurusan</label>
-                    <select2 :options="majors" :reduce="major => major.id" label="abbreviation" v-model="updateForm.majors" :class="{'is-invalid': errors.majors}" multiple></select2>
-                    <div class="invalid-feedback" v-if="errors.majors">
-                        {{ errors.majors[0] }}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="mb-2">Mata Pelajaran</label>
-                    <select2 :options="subjects" :reduce="subject => subject.id" label="name" v-model="updateForm.subject_id" :class="{'is-invalid': errors.subject_id}"></select2>
-                    <div class="invalid-feedback" v-if="errors.subject_id">
-                        {{ errors.subject_id[0] }}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="mb-2">Kelas/Angkatan Masuk</label>
-                    <small class="text-danger" v-if="errors.entry_year">
-                        {{ errors.entry_year[0] }}
-                    </small>
-                    <div v-for="(year, index) in entry_years" :key="index" class="form-check">
-                        <input class="form-check-input" type="radio" :value="year" v-model="updateForm.entry_year">
-                        <label class="form-check-label text-capitalize">
-                            {{ "Kelas " +  index + " | Angkatan Masuk " + year.substr(0, 4) }}
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="mb-2">Keterangan</label>
-                    <input type="text" class="form-control" placeholder="contoh : Matematika IT" v-model="updateForm.caption" :class="{'is-invalid': errors.caption}">
-                    <div class="invalid-feedback" v-if="errors.caption">
-                        {{ errors.caption[0] }}
-                    </div>
-                </div>
-            </div>
-            <button type="button" class="btn btn-outline-danger" slot="button" @click="showModalDelete">Hapus</button>
-        </modal>
-
-        <modal v-if="modalDelete" @close="modalDelete = false" :deleteOpt="deleteCourse">
-            <h5 slot="header">Hapus Pelajaran</h5>
-            <div slot="body">
-                <span>Yakin untuk menghapus pelajaran <b>{{updateForm.caption}}</b>? Semua data terkait <b>{{updateForm.caption}}</b> akan terhapus.</span>
-            </div>
-        </modal>
     </div>
 </template>
 
 <script>
 // modal
-import modalComponent from '../../components/Modal.vue';
+import modalComponent from '../../../components/Modal.vue';
 // vue-select
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
@@ -173,8 +118,6 @@ export default {
     data() {
         return {
             modalAdd: false,
-            modalEdit: false,
-            modalDelete: false,
             subjects: [],
             curriculums: [],
             majors: [],
@@ -186,7 +129,6 @@ export default {
                 majors: [],
                 subject_id: null
             },
-            updateForm: {},
             dataSubjects: [],
             search: '',
             entry_years: [],
@@ -264,27 +206,6 @@ export default {
                 this.getCourses();
             });
         },
-        showCourse(id) {
-            this.show(id).then((result) => {
-                this.updateForm = result;
-                this.modalEdit = true;
-            });
-        },
-        editCourse() {
-            let payload = {id: this.updateForm.id, data: this.updateForm};
-            this.edit(payload).then((result) => {
-                this.modalEdit = false;
-                this.getDataSubjects(this.search);
-                this.getCourses();
-            })
-        },
-        showModalDelete() {
-            this.modalEdit = false;
-            this.modalDelete = true;
-        },
-        deleteCourse() {
-            console.log('delete');
-        }
     }
 }
 </script>
@@ -325,12 +246,17 @@ a:hover {
     padding-left: 3rem;
 }
 
-.list-group-item a {
+.list-group-item a.router {
     color: #333;
 }
 
-.list-group-item a:hover {
+.list-group-item a.router:hover {
     text-decoration: underline;
+}
+
+a.router {
+    text-decoration: none !important;
+    color: #000 !important;
 }
 
 span.fas.fa-book {
@@ -343,15 +269,6 @@ span.fas.fa-book {
 
 label.mb-2 {
     font-weight: 600;
-}
-
-.card-not-found {
-    margin-top: 25px;
-}
-
-.img {
-    max-width: 130px;
-    width: 100%;
 }
 
 @media (max-width: 470px) {
