@@ -18,17 +18,18 @@ class ReportPeriodController extends Controller
         $schoolYear = $request->schoolYear;
         $search = $request->search;
         $reportPeriodDB = new ReportPeriodService;
+        $perPage = $request->per_page;
 
         if ($orderBy == '' && $search == '') {
-            return response()->json($reportPeriodDB->index(['without_pagination' => true]));
+            return response()->json($reportPeriodDB->index(['page' => $perPage]));
         } 
 
         if ($search != '') {
-            return response()->json($reportPeriodDB->index(['title' => $search, 'without_pagination' => true]));
+            return response()->json($reportPeriodDB->index(['title' => $search, 'page' => $perPage]));
         }
         
         if ($orderBy != '' && $schoolYear != '') {
-            return response()->json($reportPeriodDB->index(['school_year' => $schoolYear, 'without_pagination' => true]));
+            return response()->json($reportPeriodDB->index(['school_year' => $schoolYear, 'page' => $perPage]));
         }
     }
 

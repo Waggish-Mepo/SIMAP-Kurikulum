@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Mata Pelajaran...." @keyup="searchSubject" v-model="search">
+                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Mata Pelajaran...." @keyup="searchSubject" v-model="payload.search">
                     <div class="input-group-append">
                         <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white" @click="searchSubject"><i class="fa fa-search"></i></a>
                     </div>
@@ -41,6 +41,7 @@
                     </ul>
                 </div>
             </div>
+            <pagination v-if="dataSubjects.length > 0" class="mt-3" :pagination="pages" @paginate="getDataSubjects" :offset="2" :data="payload"></pagination>
         </div>
 
         <!-- if data null -->
@@ -107,13 +108,16 @@ import modalComponent from '../../../components/Modal.vue';
 // vue-select
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
+// pagination
+import paginateComponent from '../../../components/Pagination.vue';
 // vuex
 import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
 export default {
     name: "Courses",
     components: {
         "modal": modalComponent,
-        "select2": vSelect
+        "select2": vSelect,
+        "pagination": paginateComponent
     },
     data() {
         return {
@@ -130,13 +134,25 @@ export default {
                 subject_id: null
             },
             dataSubjects: [],
-            search: '',
+            pages: {
+                total: 0,
+                per_page: 10,
+                from: 1,
+                to: 0,
+                current_page: 1,
+                last_page: 1,
+            },
+            payload: {
+                search: '',
+                page: 1,
+                per_page: 5
+            },
             entry_years: [],
         }
     },
     created() {
         this.getSubjects();
-        this.getDataSubjects(this.search);
+        this.getDataSubjects(this.payload);
         this.getCurriculums();
         this.getMajors();
         this.getCourses();
@@ -162,15 +178,21 @@ export default {
         },
         getDataSubjects(search) {
             this.searchByCourse(search).then((result) => {
-                this.dataSubjects = result;
+                this.dataSubjects = result.data;
+                this.pages.total = result.total;
+                this.pages.per_page = result.per_page;
+                this.pages.from = result.from;
+                this.pages.to = result.to;
+                this.pages.current_page = result.current_page;
+                this.pages.last_page = result.last_page;
             });
         },
         searchSubject() {
-            this.getDataSubjects(this.search);
+            this.getDataSubjects(this.payload);
         },
         refreshDataSubjects() {
-            this.search = '';
-            this.getDataSubjects(this.search);
+            this.payload.search = '';
+            this.getDataSubjects(this.payload);
         },
         getSubjects() {
             this.getAll().then((result) => {
@@ -202,7 +224,7 @@ export default {
         addCourse() {
             this.create(this.submitForm).then((result) => {
                 this.modalAdd = false;
-                this.getDataSubjects(this.search);
+                this.getDataSubjects(this.payload);
                 this.getCourses();
             });
         },

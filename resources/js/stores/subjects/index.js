@@ -36,7 +36,7 @@ const actions = {
     searchByCourse({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/subjects/courses/?search='+payload)
+            axios.get('/subjects/courses/?page='+payload.page+'&per_page='+payload.per_page+'&search='+payload.search)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });

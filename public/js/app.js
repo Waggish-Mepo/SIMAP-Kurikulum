@@ -6036,7 +6036,7 @@ var actions = {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/batches/?search=' + payload).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/batches/?page=' + payload.page + '&per_page=' + payload.per_page + '&search=' + payload.search).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
@@ -6345,7 +6345,7 @@ var actions = {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/report-periods/?orderBy=' + payload.orderBy + '&schoolYear=' + payload.schoolYear + '&search=' + payload.search).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/report-periods/?page=' + payload.page + '&per_page=' + payload.per_page + '&orderBy=' + payload.orderBy + '&schoolYear=' + payload.schoolYear + '&search=' + payload.search).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
@@ -6569,7 +6569,7 @@ var actions = {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/student-groups/?batch=' + payload.batch + '&search=' + payload.search + '&sort=' + payload.sort).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/student-groups/?page=' + payload.page + '&per_page=' + payload.per_page + '&batch=' + payload.batch + '&search=' + payload.search + '&sort=' + payload.sort).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
@@ -6878,7 +6878,7 @@ var actions = {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/subjects/courses/?search=' + payload).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/subjects/courses/?page=' + payload.page + '&per_page=' + payload.per_page + '&search=' + payload.search).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true

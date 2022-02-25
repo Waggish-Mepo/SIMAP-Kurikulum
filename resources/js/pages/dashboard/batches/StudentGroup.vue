@@ -42,16 +42,15 @@
         </div>
 
         <div class="mb-2" v-for="(sg, index) in studentGroups" :key="index">
-            <div v-for="(rombel, index) in sg" :key="index">
-                <div class="card bg-white w-100 shadow-sm p-3 mb-3 text-capitalize">
-                    <router-link v-bind:to="{ name: 'students', params: {page: 4, batch: $route.params.batch, group: rombel.id} }" class="router">
+            <div class="card bg-white w-100 shadow-sm p-3 mb-3 text-capitalize">
+                <router-link v-bind:to="{ name: 'students', params: {page: 4, batch: $route.params.batch, group: sg.id} }" class="router">
                     <div class="d-flex align-items-center text-dark text-uppercase">
-                        <span class="fas fa-chalkboard"></span> {{rombel.name}}
+                        <span class="fas fa-chalkboard"></span> {{sg.name}}
                     </div>
-                    </router-link>
-                </div>
+                </router-link>
             </div>
         </div>
+        <pagination v-if="studentGroups.length > 0" class="mt-3" :pagination="pages" @paginate="getStudentGroups" :offset="2" :data="payload"></pagination>
 
         <!-- if data null -->
         <div v-if="studentGroups.length < 1" class="w-100 card-not-found">
@@ -117,19 +116,32 @@ import modalComponent from '../../../components/Modal.vue';
 // vue-select
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
+// pagination
+import paginateComponent from '../../../components/Pagination.vue';
 export default {
     name: "studentGroup",
     components: {
         "modal": modalComponent,
-        "select2": vSelect
+        "select2": vSelect,
+        "pagination": paginateComponent
     },
     data() {
         return {
             studentGroups: [],
+            pages: {
+                total: 0,
+                per_page: 10,
+                from: 1,
+                to: 0,
+                current_page: 1,
+                last_page: 1,
+            },
             payload: {
                 search: '',
                 batch: this.$route.params.batch,
-                sort: ''
+                sort: '',
+                page: 1,
+                per_page: 5
             },
             modalEdit: false,
             editForm: {},
@@ -159,8 +171,13 @@ export default {
 
         getStudentGroups(payload) {
             this.index(payload).then((result) => {
-                this.studentGroups = result;
-                console.log(this.studentGroups);
+                this.studentGroups = result.data;
+                this.pages.total = result.total;
+                this.pages.per_page = result.per_page;
+                this.pages.from = result.from;
+                this.pages.to = result.to;
+                this.pages.current_page = result.current_page;
+                this.pages.last_page = result.last_page;
             })
         },
         searchStudentGroup() {

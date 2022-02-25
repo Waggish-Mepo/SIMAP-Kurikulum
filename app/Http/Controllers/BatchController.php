@@ -16,11 +16,12 @@ class BatchController extends Controller
     {
         $batchDB = new BatchService;
         $search = $request->search;
+        $perPage = $request->per_page;
 
         if ($search == "") {
-            return response()->json($batchDB->index(['without_pagination' => true]));
+            return response()->json($batchDB->index(['page' => $perPage]));
         } else {
-            return response()->json($batchDB->index(['batch_name' => $search, 'without_pagination' => true]));
+            return response()->json($batchDB->index(['batch_name' => $search, 'page' => $perPage]));
         }
     }
 

@@ -17,20 +17,21 @@ class StudentGroupController extends Controller
         $search = $request->search;
         $sort = $request->sort;
         $batch = $request->batch;
+        $perPage = $request->per_page;
         $studentGroupDB = new StudentGroupService;
 
         if ($search == "" && $sort == "") {
-            $studentGroups = $studentGroupDB->index(['batch_id' => $batch, 'with_major' => true, 'group_by_major' => true, 'without_pagination' => true]);
+            $studentGroups = $studentGroupDB->index(['batch_id' => $batch, 'with_major' => true, 'page' => $perPage]);
 
             return response()->json($studentGroups);
         } 
         else if ($search != "") {
-            $studentGroups = $studentGroupDB->index(['batch_id' => $batch, 'name' => $search, 'with_major' => true, 'group_by_major' => true, 'without_pagination' => true]);
+            $studentGroups = $studentGroupDB->index(['batch_id' => $batch, 'name' => $search, 'with_major' => true, 'group_by_major' => true, 'page' => $perPage]);
 
             return response()->json($studentGroups);
         } 
         else if ($sort != "") {
-            $studentGroups = $studentGroupDB->index(['batch_id' => $batch, 'major_id' => $sort, 'with_major' => true, 'group_by_major' => true, 'without_pagination' => true]);
+            $studentGroups = $studentGroupDB->index(['batch_id' => $batch, 'major_id' => $sort, 'with_major' => true, 'group_by_major' => true, 'page' => $perPage]);
 
             return response()->json($studentGroups);
         }

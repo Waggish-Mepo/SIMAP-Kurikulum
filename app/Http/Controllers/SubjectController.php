@@ -38,7 +38,7 @@ class SubjectController extends Controller
             return response()->json($subjectsWithTeacher);
         } else {
 
-            $subjects = $subjectService->index(['name' => $search, 'page' => 100, 'relation' => true]);
+            $subjects = $subjectService->index(['name' => $search,'without_pagination' => true, 'relation' => true]);
 
             $subjectsWithTeacher = [];
             foreach ($subjects as $subject) {
@@ -65,12 +65,13 @@ class SubjectController extends Controller
     public function searchByCourse(Request $request)
     {
         $search = $request->search;
+        $perPage = $request->per_page;
 
         $subjectDB = new SubjectService;
         if($search == "") {
-            return response()->json($subjectDB->index(['without_pagination' => true]));
+            return response()->json($subjectDB->index(['page' => $perPage]));
         } else {
-            return response()->json($subjectDB->index(['name' => $search, 'without_pagination' => true]));
+            return response()->json($subjectDB->index(['name' => $search, 'page' => $perPage]));
         }
     }
 

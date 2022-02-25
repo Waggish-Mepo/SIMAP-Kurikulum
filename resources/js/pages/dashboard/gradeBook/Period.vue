@@ -31,6 +31,7 @@
                 </div>
                 </router-link>
             </a>
+            <pagination class="mt-3" :pagination="pages" @paginate="getPeriods" :offset="2" :data="payload"></pagination>
         </div>
 
         <!-- data null -->
@@ -44,15 +45,30 @@
 <script>
 // vuex
 import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
+// pagination
+import paginateComponent from '../../../components/Pagination.vue';
 export default {
     name: 'periods',
+    components: {
+        "pagination": paginateComponent
+    },
     data() {
         return {
             periods: [],
+            pages: {
+                total: 0,
+                per_page: 10,
+                from: 1,
+                to: 0,
+                current_page: 1,
+                last_page: 1,
+            },
             payload: {
                 orderBy: '',
                 schoolYear: '',
-                search: ''
+                search: '',
+                page: 1,
+                per_page: 5
             }
         }
     },
@@ -67,7 +83,13 @@ export default {
 
         getPeriods(search) {
             this.index(search).then((result) => {
-                this.periods = result;
+                this.periods = result.data;
+                this.pages.total = result.total;
+                this.pages.per_page = result.per_page;
+                this.pages.from = result.from;
+                this.pages.to = result.to;
+                this.pages.current_page = result.current_page;
+                this.pages.last_page = result.last_page;
             })
         },
         searchPeriods() {
