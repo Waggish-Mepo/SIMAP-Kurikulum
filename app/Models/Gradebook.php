@@ -23,7 +23,7 @@ class Gradebook extends Model
     public const GENERAL = 'GENERAL';
   
     public function predicateLetters() {
-        return $this->belongsTo(PredicateLetter::class);
+        return $this->hasMany(PredicateLetter::class);
 
     public function components() {
         return $this->hasMany(GradebookComponent::class);
