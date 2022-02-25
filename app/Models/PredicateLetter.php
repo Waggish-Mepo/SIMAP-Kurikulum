@@ -11,7 +11,7 @@ class PredicateLetter extends Model
 
     public $incrementing = false;
     
-    public function predicateLetters() {
-        return $this->belongsTo(PredicateLetter::class);
+    public function gradeBooks() {
+        return $this->belongsTo(Gradebook::class);
     }
 }
