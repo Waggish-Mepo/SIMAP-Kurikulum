@@ -122,6 +122,7 @@ export default {
         addBatch() {
             this.create(this.submitAddForm).then((result) => {
                 this.modalAdd = false;
+                this.submitAddForm.batch_name = null;
                 this.getBatches(this.payload);
             });
         }

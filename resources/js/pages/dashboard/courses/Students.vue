@@ -11,14 +11,53 @@
         <div class="alert alert-danger my-3" v-if="errorMessage">
         {{ errorMessage }}
         </div>
-        <!-- <div class="card-body table-responsive p-0">
-            <table class="table table-borderless">
-                <tbody>
-                    <tr>
-                    </tr>
-                </tbody>
-            </table>
-        </div> -->
+        <div class="row my-3">
+            <div class="col-12">
+                <router-link v-bind:to="{ name: 'courses.students.add', params: {page: 5, course: $route.params.course} }" class="btn btn-primary btn-block mt-md-1">
+                    <span class="fas fa-plus"></span> Tambah Siswa
+                </router-link>
+            </div>
+        </div>
+
+        <div class="col-12 mt-3">
+            <div v-for="(sc, index) in studentCourses" :key="index" class="mb-2">
+                <div class="card card-course w-100 shadow-sm bg-white p-3" data-bs-toggle="collapse" aria-expanded="false" @click="showPanelCollapse(sc.id, index)">
+                    <div class="d-flex justify-content-between text-capitalize">
+                        <div><span class="fas fa-book"></span>
+                        {{sc.name}}</div>
+                        <div>
+                            <i class="fas fa-arrow-down" :id="index"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapse" :id="sc.id">
+                    <div class="card-table w-100">
+                        <div class="card-body">
+                            <h4 class="card-title">Data siswa rombel {{sc.name}}</h4>
+                            <p class="card-description">{{course.caption}}</p>
+                            <div class="table-responsive">
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <vue-good-table
+                                                :columns="columns"
+                                                :rows="sc.data"
+                                                :pagination-options="paginationOpts"
+                                                :sort-options="sortOpts"
+                                                :fixed-header="true"
+                                                max-height="800px"
+                                                styleClass="vgt-table condensed striped"
+                                            >
+                                            </vue-good-table>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- modal -->
         <modal v-if="modalEdit" @close="modalEdit = false" :action="editCourse">
@@ -104,14 +143,45 @@ export default {
             subjects: [],
             entry_years: [],
             updateForm: {},
-            // payload: {
-            //     course: ''
-            // },
-            // rows: []
+            studentCourses: [],
+            columns: [
+                {
+                    label: "NIS",
+                    field: "nis",
+                    filterOptions: { enabled: true },
+                },
+                {
+                    label: "Nama",
+                    field: "name",
+                    filterOptions: { enabled: true },
+                },
+                {
+                    label: "Jenis Kelamin",
+                    field: "jk",
+                    filterOptions: { enabled: true },
+                },
+            ],
+            sortOpts: { enabled: true },
+            paginationOpts: {
+                enabled: true,
+                mode: "records",
+                perPage: 5,
+                position: "bottom",
+                perPageDropdown: [10, 50, 100],
+                dropdownAllowAll: true,
+                setCurrentPage: 1,
+                nextLabel: "Next",
+                prevLabel: "Prev",
+                rowsPerPageLabel: "Rows per page",
+                ofLabel: "of",
+                pageLabel: "Page", // for 'pages' mode
+                allLabel: "All",
+            },
         }
     },
     created() {
         this.getCourse(this.$route.params.course);
+        this.getStudentCourse(this.$route.params.course);
         this.getSubjects();
         this.getCurriculums();
         this.getMajors();
@@ -124,18 +194,25 @@ export default {
         ...mapActions('courses', ['show', 'edit', 'allCurriculums', 'entryYears']),
         ...mapActions('majors', ['allData']),
         ...mapActions('subjects', ['getAll']),
-        // ...mapActions('studentCourses', ['index']),
+        ...mapActions('studentCourses', ['index']),
 
         getCourse(id) {
             this.show(id).then((result) => {
                 this.course = result;
             })
         },
-        // getStudentCourse(course) {
-        //     this.index(course).then((result) => {
-
-        //     })
-        // },
+        getStudentCourse(course) {
+            this.index(course).then((result) => {
+                this.studentCourses = result;
+            })
+        },
+        showPanelCollapse(PBody, PTitle) {
+            let panelBody = document.getElementById(PBody);
+            panelBody.classList.toggle('show');
+            let iconTitle = document.getElementById(PTitle);
+            iconTitle.classList.toggle('fa-arrow-down');
+            iconTitle.classList.toggle('fa-arrow-up');
+        },
         getCurriculums() {
             this.allCurriculums().then((result) => {
                 this.curriculums = result;
@@ -181,5 +258,73 @@ export default {
 </script>
 
 <style scoped>
+a:hover {
+    text-decoration: none;
+}
 
+.card {
+    border: 0 !important;
+}
+
+.card-course {
+    cursor: pointer;
+}
+
+span.fas.fa-book {
+    margin-right: 5px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label.mb-2 {
+    font-weight: 600;
+}
+
+/* table */
+.flex {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+
+.card-table {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: none;
+    border-radius: 0;
+    background-color: #eaeaea;
+}
+
+.card-table .card-title {
+    color: #000;
+    margin-bottom: 10px;
+    text-transform: capitalize;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.card-table .card-description {
+    color: #000;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 470px) {
+    .btn {
+        font-size: 0.8 !important;
+        padding: 0.2rem 0.5rem !important;
+    }
+
+    i {
+        font-size: 1rem;
+    }
+
+    .list-group-item {
+        font-size: 0.8rem;
+    }
+}
 </style>

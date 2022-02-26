@@ -175,6 +175,7 @@ export default {
             this.create(this.submitAddForm).then((result) => {
                 this.modalAdd = false;
                 this.payloadGet.schoolYear = '';
+                this.submitAddForm.title = null;
                 this.getReportPeriods(this.payloadGet);
             });
         },

@@ -221,6 +221,8 @@ export default {
         addStudentGroup() {
             this.create(this.addForm).then((result) => {
                 this.modalAdd = false;
+                this.addForm.name = null;
+                this.addForm.major_id = nill;
                 this.getStudentGroups(this.payload);
             })
         }

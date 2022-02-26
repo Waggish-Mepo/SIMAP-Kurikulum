@@ -59,7 +59,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::prefix('courses')->group(function () {
         Route::get('/', [CourseController::class, 'index']);
-        Route::get('/entry-year/{id}', [CourseController::class, 'getByEntryYear']);
         Route::get('/curriculums', [CourseController::class, 'getCurriculums']);
         Route::get('/entry-years', [CourseController::class, 'entryYears']);
         Route::post('/', [CourseController::class, 'store']);
@@ -69,7 +68,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('student-courses')->group(function () {
         Route::get('/', [StudentCourseController::class, 'index']);
         Route::post('/', [StudentCourseController::class, 'store']);
-        Route::get('/{id}', [StudentCourseController::class, 'show']);
+        Route::get('/add/{id}', [StudentCourseController::class, 'selectStudents']);
         Route::patch('/{id}', [StudentCourseController::class, 'update']);
     });
     Route::prefix('batches')->group(function () {

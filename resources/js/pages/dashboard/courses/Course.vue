@@ -21,7 +21,7 @@
             <a href="#"><span class="fas fa-plus mr-3"></span> Tambah Pelajaran</a>
         </div>
         <div class="col-12 mt-3">
-            <div v-for="(subject, index) in dataSubjects" :key="index" class="mb-2">
+            <div v-for="(subject, index) in courses" :key="index" class="mb-2">
                 <div class="card card-subject w-100 shadow-sm bg-white p-3" data-bs-toggle="collapse" aria-expanded="false" @click="showPanelCollapse(subject.id, index)">
                     <div class="d-flex justify-content-between text-capitalize">
                         <div><span class="fas fa-book"></span>
@@ -32,20 +32,22 @@
                     </div>
                 </div>
                 <div class="collapse" :id="subject.id">
-                    <ul class="list-group">
-                        <li class="list-group-item" v-for="(course, index) in filterCourses(subject.id)" :key="index">
+                    <ul class="list-group" v-if="subject.data.length > 0">
+                        <li class="list-group-item" v-for="(course, index) in subject.data" :key="index">
                             <router-link v-bind:to="{ name: 'courses.students', params: {page: 5, course: course.id} }" class="router">
                             <a href="#" class="text-capitalize">Kelas {{course.entry_year_with_class}} | {{course.caption}} | {{course.major_details_string}}</a>
                             </router-link>
                         </li>
                     </ul>
+                    <ul class="list-group" v-if="subject.data.length < 1">
+                        <li class="list-group-item text-capitalize text-center">belum terdapat data pelajaran</li>
+                    </ul>
                 </div>
             </div>
-            <pagination v-if="dataSubjects.length > 0" class="mt-3" :pagination="pages" @paginate="getDataSubjects" :offset="2" :data="payload"></pagination>
         </div>
 
         <!-- if data null -->
-        <div v-if="dataSubjects.length < 1" class="w-100 card-not-found">
+        <div v-if="courses.length < 1" class="w-100 card-not-found">
             <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
             <h5 class="text-center text-capitalize mt-4">data terkait tidak ditemukan</h5>
         </div>
@@ -108,8 +110,6 @@ import modalComponent from '../../../components/Modal.vue';
 // vue-select
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
-// pagination
-import paginateComponent from '../../../components/Pagination.vue';
 // vuex
 import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
 export default {
@@ -117,7 +117,6 @@ export default {
     components: {
         "modal": modalComponent,
         "select2": vSelect,
-        "pagination": paginateComponent
     },
     data() {
         return {
@@ -133,29 +132,18 @@ export default {
                 majors: [],
                 subject_id: null
             },
-            dataSubjects: [],
-            pages: {
-                total: 0,
-                per_page: 10,
-                from: 1,
-                to: 0,
-                current_page: 1,
-                last_page: 1,
-            },
             payload: {
                 search: '',
-                page: 1,
-                per_page: 5
+                period: ''
             },
             entry_years: [],
         }
     },
     created() {
         this.getSubjects();
-        this.getDataSubjects(this.payload);
         this.getCurriculums();
         this.getMajors();
-        this.getCourses();
+        this.getCourses(this.payload);
         this.getEntryYears();
     },
     computed: {
@@ -176,23 +164,12 @@ export default {
                 this.entry_years = result;
             })
         },
-        getDataSubjects(search) {
-            this.searchByCourse(search).then((result) => {
-                this.dataSubjects = result.data;
-                this.pages.total = result.total;
-                this.pages.per_page = result.per_page;
-                this.pages.from = result.from;
-                this.pages.to = result.to;
-                this.pages.current_page = result.current_page;
-                this.pages.last_page = result.last_page;
-            });
-        },
         searchSubject() {
-            this.getDataSubjects(this.payload);
+            this.getCourses(this.payload);
         },
         refreshDataSubjects() {
             this.payload.search = '';
-            this.getDataSubjects(this.payload);
+            this.getCourses(this.payload);
         },
         getSubjects() {
             this.getAll().then((result) => {
@@ -211,19 +188,19 @@ export default {
             iconTitle.classList.toggle('fa-arrow-down');
             iconTitle.classList.toggle('fa-arrow-up');
         },
-        getCourses() {
-            this.index().then((result) => {
+        getCourses(payload) {
+            this.index(payload).then((result) => {
                 this.courses = result;
-            });
-        },
-        filterCourses(subject) {
-            return this.courses.filter(function(course) {
-                return course.subject_id == subject;
             });
         },
         addCourse() {
             this.create(this.submitForm).then((result) => {
                 this.modalAdd = false;
+                this.submitForm.curriculum = null;
+                this.submitForm.caption = null;
+                this.submitForm.entry_year = null;
+                this.submitForm.majors = [];
+                this.submitForm.subject_id = null;
                 this.getDataSubjects(this.payload);
                 this.getCourses();
             });

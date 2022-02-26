@@ -5741,6 +5741,10 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       name: 'courses.students',
       component: loadView('dashboard/courses/Students')
     }, {
+      path: '/:page/courses/:course/add',
+      name: 'courses.students.add',
+      component: loadView('dashboard/courses/Add')
+    }, {
       path: '/:page/batches',
       name: 'batches',
       component: loadView('dashboard/batches/Batch')
@@ -6139,7 +6143,7 @@ var actions = {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/courses').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/courses/?search=' + payload.search + '&period=' + payload.period).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
@@ -6187,26 +6191,8 @@ var actions = {
       });
     });
   },
-  byEntryYears: function byEntryYears(_ref4, payload) {
+  show: function show(_ref4, payload) {
     var commit = _ref4.commit;
-    commit('SET_LOADING', true, {
-      root: true
-    });
-    return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/courses/entry-year/' + payload).then(function (response) {
-        resolve(response.data);
-        commit('SET_GOOD', null, {
-          root: true
-        });
-      })["catch"](function (error) {
-        commit('SET_ERROR', error.response.data, {
-          root: true
-        });
-      });
-    });
-  },
-  show: function show(_ref5, payload) {
-    var commit = _ref5.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -6223,8 +6209,8 @@ var actions = {
       });
     });
   },
-  create: function create(_ref6, payload) {
-    var commit = _ref6.commit;
+  create: function create(_ref5, payload) {
+    var commit = _ref5.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -6241,8 +6227,8 @@ var actions = {
       });
     });
   },
-  edit: function edit(_ref7, payload) {
-    var commit = _ref7.commit;
+  edit: function edit(_ref6, payload) {
+    var commit = _ref6.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -6478,13 +6464,13 @@ var actions = {
       });
     });
   },
-  show: function show(_ref2, payload) {
+  showSelected: function showSelected(_ref2, payload) {
     var commit = _ref2.commit;
     commit('SET_LOADING', true, {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/student-courses/' + payload).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/student-courses/add/' + payload).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
@@ -57872,6 +57858,10 @@ var map = {
 		"./resources/js/pages/dashboard/batches/StudentGroup.vue",
 		"resources_js_pages_dashboard_batches_StudentGroup_vue"
 	],
+	"./dashboard/courses/Add.vue": [
+		"./resources/js/pages/dashboard/courses/Add.vue",
+		"resources_js_pages_dashboard_courses_Add_vue"
+	],
 	"./dashboard/courses/Course.vue": [
 		"./resources/js/pages/dashboard/courses/Course.vue",
 		"resources_js_pages_dashboard_courses_Course_vue"
@@ -58031,7 +58021,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};
