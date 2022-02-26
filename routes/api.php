@@ -68,7 +68,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('student-courses')->group(function () {
         Route::get('/', [StudentCourseController::class, 'index']);
         Route::post('/', [StudentCourseController::class, 'store']);
-        Route::get('/add/{id}', [StudentCourseController::class, 'selectStudents']);
+        Route::get('/{id}', [StudentCourseController::class, 'selectStudents']);
         Route::patch('/{id}', [StudentCourseController::class, 'update']);
     });
     Route::prefix('batches')->group(function () {

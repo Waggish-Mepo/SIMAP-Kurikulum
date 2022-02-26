@@ -43,7 +43,7 @@
                                     <span v-if="props.column.field === 'id'">
                                         <a
                                         href="#"
-                                        title="Edit Banner"
+                                        title="Edit Siswa"
                                         @click="showStudent(props.row.id)"
                                         >
                                         <label class="badge bg-green1 text-white">Edit</label>

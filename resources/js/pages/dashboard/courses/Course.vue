@@ -201,8 +201,7 @@ export default {
                 this.submitForm.entry_year = null;
                 this.submitForm.majors = [];
                 this.submitForm.subject_id = null;
-                this.getDataSubjects(this.payload);
-                this.getCourses();
+                this.getCourses(this.payload);
             });
         },
     }

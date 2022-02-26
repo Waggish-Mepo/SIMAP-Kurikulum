@@ -126,7 +126,15 @@ class CourseController extends Controller
     public function show($id)
     {
         $courseDB = new CourseService;
-        return response()->json($courseDB->detail($id));
+        $academicCalendar = new AcademicCalendar;
+        $majorDB = new MajorService;
+
+        $course = $courseDB->detail($id);
+        $majors = $majorDB->bulkDetail($course['majors'])['data'];
+
+        $course['entry_year_with_class'] = $academicCalendar->gradeByAcademicYear($course['entry_year']);
+        $course['major_details_string'] = collect($majors)->pluck('abbreviation')->join(', ');
+        return response()->json($course);
     }
 
     /**
@@ -150,7 +158,13 @@ class CourseController extends Controller
     public function update(Request $request, $id)
     {
         $courseDB = new CourseService;
-        return response()->json($courseDB->update($id, $request->all()));
+        return response()->json($courseDB->update($id, [
+            'curriculum' => $request->curriculum,
+            'caption' => $request->caption,
+            'entry_year' => $request->entry_year,
+            'majors' => $request->majors,
+            'subject_id' => $request->subject_id,
+        ]));
     }
 
     /**

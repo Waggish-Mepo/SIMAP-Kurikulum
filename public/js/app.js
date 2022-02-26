@@ -6470,7 +6470,7 @@ var actions = {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/student-courses/add/' + payload).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/student-courses/' + payload).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true

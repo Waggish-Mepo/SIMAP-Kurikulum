@@ -4,7 +4,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'courses', params: {page: 5} }"><a href="#">Pelajaran</a></router-link></li>
-                <li class="breadcrumb-item active" aria-current="page" @click="showCourse(course.id)">{{course.caption}} <span class="fas fa-pen"></span></li>
+                <li class="breadcrumb-item active" aria-current="page" @click="showCourse(course.id)">{{course.caption}} Kelas {{course.entry_year_with_class}}<span class="fas fa-pen"></span></li>
             </ol>
         </nav>
 
@@ -19,9 +19,10 @@
             </div>
         </div>
 
+        <div class="alert alert-info mb-5">data berikut merupakan data siswa jurusan <strong>{{course.major_details_string}} kelas {{course.entry_year_with_class}}</strong> yang terdaftar pada pelajaran.</div>
         <div class="col-12 mt-3">
             <div v-for="(sc, index) in studentCourses" :key="index" class="mb-2">
-                <div class="card card-course w-100 shadow-sm bg-white p-3" data-bs-toggle="collapse" aria-expanded="false" @click="showPanelCollapse(sc.id, index)">
+                <div class="card card-course w-100 shadow-sm bg-white p-3" data-bs-toggle="collapse" aria-expanded="false" @click="showPanelCollapse(sc.id, index)" v-if="sc.data.length > 0">
                     <div class="d-flex justify-content-between text-capitalize">
                         <div><span class="fas fa-book"></span>
                         {{sc.name}}</div>
@@ -30,11 +31,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="collapse" :id="sc.id">
+                <div class="collapse" :id="sc.id" v-if="sc.data.length > 0">
                     <div class="card-table w-100">
                         <div class="card-body">
                             <h4 class="card-title">Data siswa rombel {{sc.name}}</h4>
-                            <p class="card-description">{{course.caption}}</p>
+                            <p class="card-description text-capitalize">{{course.caption}} Kelas {{course.entry_year_with_class}}</p>
                             <div class="table-responsive">
                                 <table class="table table-borderless">
                                     <tbody>
@@ -48,6 +49,17 @@
                                                 max-height="800px"
                                                 styleClass="vgt-table condensed striped"
                                             >
+                                            <template slot="table-row" slot-scope="props">
+                                                <span v-if="props.column.field === 'id'">
+                                                    <a
+                                                    href="#"
+                                                    title="Hapus Siswa"
+                                                    @click="showModalDeleteStudent(props.row.id, props.row.name)"
+                                                    >
+                                                    <label class="badge bg-danger text-white">Hapus</label>
+                                                    </a>
+                                                </span>
+                                            </template>
                                             </vue-good-table>
                                         </tr>
                                     </tbody>
@@ -57,6 +69,12 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- if data null -->
+        <div v-if="studentCourses.length < 1" class="w-100 card-not-found">
+            <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
+            <h5 class="text-center text-capitalize mt-4">data terkait tidak ditemukan</h5>
         </div>
 
         <!-- modal -->
@@ -116,6 +134,13 @@
                 <span>Yakin untuk menghapus pelajaran <b>{{updateForm.caption}}</b>? Semua data terkait <b>{{updateForm.caption}}</b> akan terhapus.</span>
             </div>
         </modal>
+
+        <modal v-if="modalDeleteStudent" @close="modalDeleteStudent = false" :deleteOpt="deleteStudent">
+            <h5 slot="header">Hapus Siswa Dari Pelajaran</h5>
+            <div slot="body">
+                <span>Yakin untuk menghapus siswa <b>{{payloadDelete.name}}</b>? siswa tidak akan terdaftar dalam pelajaran lagi, dan semua data terkait akan terhapus</span>
+            </div>
+        </modal>
     </div>
 </template>
 
@@ -138,6 +163,11 @@ export default {
             course: {},
             modalEdit: false,
             modalDelete: false,
+            modalDeleteStudent: false,
+            payloadDelete: {
+                id: null,
+                name: null
+            },
             curriculums: [],
             majors: [],
             subjects: [],
@@ -159,6 +189,12 @@ export default {
                     label: "Jenis Kelamin",
                     field: "jk",
                     filterOptions: { enabled: true },
+                },
+                {
+                    label: "Aksi",
+                    field: "id",
+                    tdClass: "text-center",
+                    sortable: false,
                 },
             ],
             sortOpts: { enabled: true },
@@ -252,6 +288,14 @@ export default {
         },
         deleteCourse() {
             console.log('delete');
+        },
+        showModalDeleteStudent(id, name) {
+            this.payloadDelete.id = id;
+            this.payloadDelete.name = name;
+            this.modalDeleteStudent = true;
+        },
+        deleteStudent() {
+            console.log('delete');
         }
     }
 }
@@ -311,6 +355,15 @@ label.mb-2 {
     color: #000;
     font-size: 0.8rem;
     margin-bottom: 0.5rem;
+}
+
+.badge {
+    border-radius: 0;
+    font-size: 14px;
+    line-height: 1;
+    padding: 0.3rem 0.5rem;
+    font-weight: normal;
+    cursor: pointer;
 }
 
 @media (max-width: 470px) {

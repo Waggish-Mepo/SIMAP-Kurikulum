@@ -19,79 +19,101 @@ class StudentCourseController extends Controller
      */
     public function index(Request $request)
     {
-        $academicCalendar = new AcademicCalendar;
-        $studentCourseService = new StudentCourseService;
-        $batchService = new BatchService;
+        $studentService = new StudentService;
         $courseService = new CourseService;
+        $studentCourseService = new StudentCourseService;
+        $studentGroupService = new StudentGroupService;
         $courseId = $request->course;
 
         $course = $courseService->detail($courseId);
 
-        $batches = $batchService->index([
-            'entry_year' => $course['entry_year'],
-            'with_student_groups' => true
-        ]);
+        $studentGroupMajor = [];
+        foreach ($course['majors'] as $major) {
+            $studentGroups = $studentGroupService->index(['major_id' => $major, 'school_year' => $course['entry_year'], 'without_pagination' => true]);
 
-        $studentGroups = $batches->pluck('studentGroups')->flatten();
-
-        $studentGroupName = [];
-        foreach ($studentGroups as $v) {
-            $studentGroupName[$v['id']] = $v['name'];
+            if (count($studentGroups) > 0) {
+                for ($i = 0; $i < count($studentGroups); $i++) {
+                    $studentGroupMajor[] = $studentGroups[$i];
+                }
+            }
         }
 
-        $grade = $academicCalendar->gradeByAcademicYear($course['entry_year'], true);
-
-        $courseStudentGroupStudent = [];
-        foreach ($studentGroupName as $student_group_id => $student_group) {
-            $courseStudentGroupStudent[$student_group_id.'-index']['data'] = $studentCourseService->students($courseId, $student_group_id);
-            $courseStudentGroupStudent[$student_group_id.'-index']['name'] = $student_group;
-            $courseStudentGroupStudent[$student_group_id.'-index']['id'] = $student_group_id;
+        $studentGroupsNameID = [];
+        foreach ($studentGroupMajor as $v) {
+            $studentGroupsNameID[$v['id']] = $v['name'];
         }
 
+        $studentGroupWithStudents = [];
+        foreach ($studentGroupsNameID as $student_group_id => $student_group) {
+            $students = $studentService->index(['student_group_id' => $student_group_id, 'without_pagination' => true]);
 
-        return response()->json($courseStudentGroupStudent);
+            $studentWithChecked = [];
+            foreach ($students as $student) {
+                $checkExist = $studentCourseService->getByStudents($student['id']);
+
+                if (!count($checkExist)) {
+                    $student['already_coursed'] = false;
+                } else {
+                    $student['already_coursed'] = true;
+                    $studentWithChecked[] = $student;
+                }
+            }
+
+            $studentGroupWithStudents[$student_group_id . '-index']['data'] = $studentWithChecked;
+            $studentGroupWithStudents[$student_group_id . '-index']['name'] = $student_group;
+            $studentGroupWithStudents[$student_group_id . '-index']['id'] = $student_group_id;
+        }
+
+        return response()->json($studentGroupWithStudents);
     }
 
     public function selectStudents($courseId)
     {
-        $academicCalendar = new AcademicCalendar;
         $studentService = new StudentService;
-        $batchService = new BatchService;
         $courseService = new CourseService;
         $studentCourseService = new StudentCourseService;
+        $studentGroupService = new StudentGroupService;
 
         $course = $courseService->detail($courseId);
 
-        $batches = $batchService->index([
-            'entry_year' => $course['entry_year'],
-            'with_student_groups_students' => true
-        ]);
+        $studentGroupMajor = [];
+        foreach ($course['majors'] as $major) {
+            $studentGroups = $studentGroupService->index(['major_id' => $major,'school_year' => $course['entry_year'], 'without_pagination' => true]);
 
-        $studentGroups = $batches->pluck('studentGroups')->flatten();
-
-        $students = $studentGroups->pluck('students')->flatten();
-
-        $studentWithCourse = $studentCourseService->index($courseId, ['query' => 'students.id', 'without_pagination' => true]);
-
-        $studentIdCourseCreated = [];
-        if (count($studentWithCourse) > 0) {
-            $studentIdCourseCreated = collect($studentWithCourse)->pluck('id', 'id')->all();
+            if (count($studentGroups) > 0) {
+                for ($i=0; $i < count($studentGroups); $i++) {
+                    $studentGroupMajor[] = $studentGroups[$i];
+                }
+            }
         }
 
-        $dataStudent = [];
-        foreach ($students as $key => $v) {
-            $dataStudent[$key] = $v;
+        $studentGroupsNameID = [];
+        foreach ($studentGroupMajor as $v) {
+            $studentGroupsNameID[$v['id']] = $v['name'];
+        }
 
-            if (!isset($studentIdCourseCreated[$v['id']])) {
-                $dataStudent[$key]['already_coursed'] = false;
+        $studentGroupWithStudents = [];
+        foreach ($studentGroupsNameID as $student_group_id => $student_group) {
+            $students = $studentService->index(['student_group_id' => $student_group_id, 'without_pagination' => true]);
 
-                continue;
+            $studentWithChecked = [];
+            foreach ($students as $student) {
+                $checkExist = $studentCourseService->getByStudents($student['id']);
+
+                if (!count($checkExist)) {
+                    $student['already_coursed'] = false;
+                    $studentWithChecked[] = $student;
+                } else {
+                    $student['already_coursed'] = true;
+                }
             }
 
-            $dataStudent[$key]['already_coursed'] = true;
+            $studentGroupWithStudents[$student_group_id.'-index']['data'] = $studentWithChecked;
+            $studentGroupWithStudents[$student_group_id.'-index']['name'] = $student_group;
+            $studentGroupWithStudents[$student_group_id.'-index']['id'] = $student_group_id;
         }
 
-        return response()->json($dataStudent);
+        return response()->json($studentGroupWithStudents);
     }
 
     /**
@@ -112,7 +134,15 @@ class StudentCourseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $studentCourseService = new StudentCourseService;
+
+        $courseId = $request->course_id;
+        $payload = [
+            'student_ids' => $request->payload
+        ];
+
+        $createStudentCourse = $studentCourseService->bulkCreate($courseId, $payload);
+        return response()->json($createStudentCourse);
     }
 
     /**
