@@ -2,11 +2,13 @@
 
 namespace App\Service\Database;
 
+use App\Models\Course;
 use App\Models\Gradebook;
 use App\Models\ReportPeriod;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class GradebookService{
 
@@ -65,6 +67,38 @@ class GradebookService{
     private function fill(Gradebook $gradebook, array $payload) {
         foreach ($payload as $key => $value) {
             $gradebook->$key = $value;
+        }
+
+        $gradebookArray = $gradebook->toArray();
+
+        unset($gradebookArray['components']);
+
+        if (array_key_exists('components', $payload) && $payload['components'] !== null) {
+            $gradebookArray['components'] = (array) $gradebook['components'] ?? null;
+            if (isset($gradebook['weights']->knowledge)) {
+                $gradebook['weights->knowledge'] = $gradebook->weights->knowledge / 100;
+            }
+        }
+
+        unset($gradebookArray['weights']);
+
+        if (array_key_exists('weights', $payload) && $payload['weights'] !== null) {
+            $gradebookArray['weights'] = (array) $gradebook['weights'] ?? null;
+            if (isset($gradebook['weights']->skill)) {
+                $gradebook['weights->skill'] = $gradebook->weights->skill / 100;
+            }
+        }
+
+        $course = Course::findOrFail($gradebook->course_id);
+
+        if ($course->curriculum === Course::K21_SEKOLAH_PENGGERAK) {
+            $gradebook['weights->general'] = 1;
+        }
+
+        if ($course->curriculum !== Course::K21_SEKOLAH_PENGGERAK) {
+            if ($gradebook->weights->knowledge + $gradebook->weights->skill !== 1.0) {
+                throw new UnprocessableEntityHttpException('total weights must 100');
+            }
         }
 
         $validate = Validator::make($gradebook->toArray(), [

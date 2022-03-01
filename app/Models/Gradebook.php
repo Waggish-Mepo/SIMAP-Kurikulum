@@ -21,13 +21,16 @@ class Gradebook extends Model
     public const KNOWLEDGE = 'KNOWLEDGE';
     public const SKILL = 'SKILL';
     public const GENERAL = 'GENERAL';
-  
+
     public function predicateLetters() {
         return $this->hasMany(PredicateLetter::class);
     }
 
     public function components() {
         return $this->hasMany(GradebookComponent::class);
+    }
 
+    public function course() {
+        return $this->belongsTo(Course::class);
     }
 }
