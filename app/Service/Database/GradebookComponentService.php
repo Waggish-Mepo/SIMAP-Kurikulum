@@ -40,6 +40,7 @@ class GradebookComponentService{
         return $gradebookComponent->toArray();
     }
 
+    //yang update belum work sepenuhnya
     public function update($gradebookComponentId, $payload) {
 
         Gradebook::findOrFail($payload['gradebook_id']);
