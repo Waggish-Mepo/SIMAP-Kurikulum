@@ -38,7 +38,7 @@ class StudentGroupService {
                     return [$item['major']['id'] => $item];
                 });
 
-                return $studentGroups
+                return $studentGroups;
             }
 
         }
