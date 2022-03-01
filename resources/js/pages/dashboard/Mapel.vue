@@ -205,6 +205,8 @@ export default {
         addSubject() {
             this.create(this.subject).then((result) => {
                 this.modalAdd = false;
+                this.subject.name = null;
+                this.subject.group = null;
                 this.getSubjects('');
             })
         },
@@ -243,16 +245,6 @@ export default {
 <style scoped>
 h4 {
     font-weight: 600;
-}
-
-.input-text:focus {
-    box-shadow: 0px 0px 0px;
-    border-color: #B4ADAD;
-    outline: 0px;
-}
-
-.form-control {
-    border: 1px solid #B4ADAD;
 }
 
 .btn-outline-muted {

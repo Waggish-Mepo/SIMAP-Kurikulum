@@ -13,11 +13,11 @@
             </select>
         </div>
     </div>
-    <div class="card w-100 shadow-sm bg-white p-3 mb-3" @click="modalAdd = true">
+    <div class="card w-100 card-add bg-white p-3 mb-3" @click="modalAdd = true">
         <a href="#"><span class="fas fa-plus mr-3"></span> Tambah Periode Rapor</a>
     </div>
     <div v-if="data.length > 0">
-        <a v-for="(report, index) in data" :key="index" href="#" class="card w-100 bg-white shadow-sm p-3 d-flex" @click="showReportPeriod(report.id)">
+        <a v-for="(report, index) in data" :key="index" href="#" class="card w-100 bg-white shadow-sm p-3" @click="showReportPeriod(report.id)">
             <div class="d-flex">
                 <i class="far fa-calendar text-dark-gray"></i>
                 <div class="d-flex flex-column text-secondary">
@@ -27,6 +27,7 @@
                 </div>
             </div>
         </a>
+        <pagination class="mt-3" :pagination="pages" @paginate="getReportPeriods" :offset="2" :data="payloadGet"></pagination>
     </div>
     <!-- data null -->
     <div v-else class="w-100 card-not-found">
@@ -99,19 +100,33 @@
 import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
 // modal
 import modalComponent from '../../components/Modal.vue';
+// pagination
+import paginateComponent from '../../components/Pagination.vue';
 export default {
     name: "periodeRapor",
     components: {
-        "modal": modalComponent
+        "modal": modalComponent,
+        "pagination": paginateComponent
     },
     data() {
         return {
             modalAdd: false,
             modalEdit: false,
             modalDelete: false,
+            pages: {
+                total: 0,
+                per_page: 10,
+                from: 1,
+                to: 0,
+                current_page: 1,
+                last_page: 1,
+            },
             payloadGet: {
                 orderBy: '',
-                search: ''
+                schoolYear: '',
+                search: '',
+                page: 1,
+                per_page: 5
             },
             data: [],
             submitAddForm: {
@@ -143,17 +158,24 @@ export default {
         getReportPeriods(payload) {
             this.index(payload).then((result) => {
                 this.data = result.data;
+                this.pages.total = result.total;
+                this.pages.per_page = result.per_page;
+                this.pages.from = result.from;
+                this.pages.to = result.to;
+                this.pages.current_page = result.current_page;
+                this.pages.last_page = result.last_page;
             })
         },
         sortBySchoolYear(e) {
-            this.payloadGet.search = e.target.value;
+            this.payloadGet.schoolYear = e.target.value;
             this.payloadGet.orderBy = 'school_year';
             this.getReportPeriods(this.payloadGet);
         },
         addReportPeriod() {
             this.create(this.submitAddForm).then((result) => {
                 this.modalAdd = false;
-                this.payloadGet.search = '';
+                this.payloadGet.schoolYear = '';
+                this.submitAddForm.title = null;
                 this.getReportPeriods(this.payloadGet);
             });
         },
@@ -167,7 +189,7 @@ export default {
             let payload = {id: this.submitEditForm.id, data: this.submitEditForm};
             this.edit(payload).then((result) => {
                 this.modalEdit = false;
-                this.payloadGet.search = '';
+                this.payloadGet.schoolYear = '';
                 this.getReportPeriods(this.payloadGet);
             });
         },
@@ -186,6 +208,10 @@ export default {
 .card {
     font-size: 1rem;
     margin-bottom: 10px;
+}
+
+.card-add {
+    border: none !important;
 }
 
 a:hover {
@@ -211,15 +237,6 @@ i {
 .form-select {
     width: 10rem;
     margin-left: 8px;
-}
-
-.card-not-found {
-    margin-top: 25px;
-}
-
-.img {
-    max-width: 130px;
-    width: 100%;
 }
 
 @media (max-width: 575px) {

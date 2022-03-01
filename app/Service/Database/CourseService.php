@@ -13,6 +13,7 @@ class CourseService{
         $orderBy = $filter['order_by'] ?? 'ASC';
         $perPage = $filter['page'] ?? 20;
         $entryYear = $filter['entry_year'] ?? null;
+        $subjectId = $filter['subject_id'] ?? null;
         $curriculum = $filter['curriculum'] ?? null;
         $withSubject = $filter['with_subject'] ?? false;
         $withStudents = $filter['with_students'] ?? false;
@@ -22,6 +23,10 @@ class CourseService{
 
         if ($entryYear) {
             $query->where('entry_year', $entryYear);
+        }
+
+        if ($subjectId) {
+            $query->where('subject_id', $subjectId);
         }
 
         if ($curriculum) {

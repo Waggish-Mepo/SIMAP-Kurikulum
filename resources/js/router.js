@@ -48,7 +48,42 @@ const router = new Router({
             {
                 path: '/:page/courses',
                 name: 'courses',
-                component: loadView('dashboard/Course')
+                component: loadView('dashboard/courses/Course')
+            },
+            {
+                path: '/:page/courses/:course',
+                name: 'courses.students',
+                component: loadView('dashboard/courses/Students')
+            },
+            {
+                path: '/:page/courses/:course/add',
+                name: 'courses.students.add',
+                component: loadView('dashboard/courses/Add')
+            },
+            {
+                path: '/:page/batches',
+                name: 'batches',
+                component: loadView('dashboard/batches/Batch')
+            },
+            {
+                path: '/:page/batches/:batch/student-groups',
+                name: 'student_groups',
+                component: loadView('dashboard/batches/StudentGroup')
+            },
+            {
+                path: '/:page/batches/:batch/student-groups/:group/students',
+                name: 'students',
+                component: loadView('dashboard/batches/StudentData')
+            },
+            {
+                path: '/:page/gradebooks/periods',
+                name: 'gradebooks.period',
+                component: loadView('dashboard/gradeBook/Period')
+            },
+            {
+                path: '/:page/gradebooks/periods/:period',
+                name: 'gradebooks.course',
+                component: loadView('dashboard/gradeBook/PeriodCourse')
             },
             ]
         },

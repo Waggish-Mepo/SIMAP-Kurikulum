@@ -7,22 +7,22 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Pelajaran...." @keyup="searchSubject" v-model="search">
+                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Mata Pelajaran...." @keyup="searchSubject" v-model="payload.search">
                     <div class="input-group-append">
                         <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white" @click="searchSubject"><i class="fa fa-search"></i></a>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <a href="#" class="btn btn-secondary btn-block mt-md-1" @click="getDataSubjects('')">Refresh Data</a>
+                <a href="#" class="btn btn-secondary btn-block mt-md-1" @click="refreshDataSubjects">Refresh Data</a>
             </div>
         </div>
         <div class="card w-100 bg-white p-2 mt-3" @click="modalAdd = true">
             <a href="#"><span class="fas fa-plus mr-3"></span> Tambah Pelajaran</a>
         </div>
         <div class="col-12 mt-3">
-            <div v-for="(subject, index) in dataSubjects" :key="index" class="mb-2">
-                <div class="card w-100 shadow-sm bg-white p-3" data-bs-toggle="collapse" aria-expanded="false" @click="showPanelCollapse(subject.id, index)">
+            <div v-for="(subject, index) in courses" :key="index" class="mb-2">
+                <div class="card card-subject w-100 shadow-sm bg-white p-3" data-bs-toggle="collapse" aria-expanded="false" @click="showPanelCollapse(subject.id, index)">
                     <div class="d-flex justify-content-between text-capitalize">
                         <div><span class="fas fa-book"></span>
                         {{subject.name}}</div>
@@ -32,13 +32,24 @@
                     </div>
                 </div>
                 <div class="collapse" :id="subject.id">
-                    <ul class="list-group">
-                        <li class="list-group-item" v-for="(course, index) in filterCourses(subject.id)" :key="index">
-                            <a href="#" class="text-capitalize" @click="showCourse(course.id)">{{course.entry_year | checkClass}} | {{course.caption}} | {{course.major_details_string}}</a>
+                    <ul class="list-group" v-if="subject.data.length > 0">
+                        <li class="list-group-item" v-for="(course, index) in subject.data" :key="index">
+                            <router-link v-bind:to="{ name: 'courses.students', params: {page: 5, course: course.id} }" class="router">
+                            <a href="#" class="text-capitalize">Kelas {{course.entry_year_with_class}} | {{course.caption}} | {{course.major_details_string}}</a>
+                            </router-link>
                         </li>
+                    </ul>
+                    <ul class="list-group" v-if="subject.data.length < 1">
+                        <li class="list-group-item text-capitalize text-center">belum terdapat data pelajaran</li>
                     </ul>
                 </div>
             </div>
+        </div>
+
+        <!-- if data null -->
+        <div v-if="courses.length < 1" class="w-100 card-not-found">
+            <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
+            <h5 class="text-center text-capitalize mt-4">data terkait tidak ditemukan</h5>
         </div>
 
         <!-- modal -->
@@ -90,69 +101,12 @@
                 </div>
             </div>
         </modal>
-
-        <modal v-if="modalEdit" @close="modalEdit = false" :action="editCourse">
-            <h5 slot="header">Edit Pelajaran</h5>
-            <div slot="body">
-                <div class="alert alert-danger mb-3" v-if="errorMessage">
-                    {{ errorMessage }}
-                </div>
-                <div class="form-group">
-                    <label class="mb-2">Kurikulum Acuan</label>
-                    <select2 :options="curriculums" v-model="updateForm.curriculum" :class="{'is-invalid': errors.curriculum}"></select2>
-                    <div class="invalid-feedback" v-if="errors.curriculum">
-                        {{ errors.curriculum[0] }}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="mb-2">Jurusan</label>
-                    <select2 :options="majors" :reduce="major => major.id" label="abbreviation" v-model="updateForm.majors" :class="{'is-invalid': errors.majors}" multiple></select2>
-                    <div class="invalid-feedback" v-if="errors.majors">
-                        {{ errors.majors[0] }}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="mb-2">Mata Pelajaran</label>
-                    <select2 :options="subjects" :reduce="subject => subject.id" label="name" v-model="updateForm.subject_id" :class="{'is-invalid': errors.subject_id}"></select2>
-                    <div class="invalid-feedback" v-if="errors.subject_id">
-                        {{ errors.subject_id[0] }}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="mb-2">Kelas/Angkatan Masuk</label>
-                    <small class="text-danger" v-if="errors.entry_year">
-                        {{ errors.entry_year[0] }}
-                    </small>
-                    <div v-for="(year, index) in entry_years" :key="index" class="form-check">
-                        <input class="form-check-input" type="radio" :value="year" v-model="submitForm.entry_year">
-                        <label class="form-check-label text-capitalize">
-                            {{ "Kelas " +  index + " | Angkatan Masuk " + year.substr(0, 4) }}
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="mb-2">Keterangan</label>
-                    <input type="text" class="form-control" placeholder="contoh : Matematika IT" v-model="updateForm.caption" :class="{'is-invalid': errors.caption}">
-                    <div class="invalid-feedback" v-if="errors.caption">
-                        {{ errors.caption[0] }}
-                    </div>
-                </div>
-            </div>
-            <button type="button" class="btn btn-outline-danger" slot="button" @click="showModalDelete">Hapus</button>
-        </modal>
-
-        <modal v-if="modalDelete" @close="modalDelete = false" :deleteOpt="deleteCourse">
-            <h5 slot="header">Hapus Pelajaran</h5>
-            <div slot="body">
-                <span>Yakin untuk menghapus pelajaran <b>{{updateForm.caption}}</b>? Semua data terkait <b>{{updateForm.caption}}</b> akan terhapus.</span>
-            </div>
-        </modal>
     </div>
 </template>
 
 <script>
 // modal
-import modalComponent from '../../components/Modal.vue';
+import modalComponent from '../../../components/Modal.vue';
 // vue-select
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
@@ -162,13 +116,11 @@ export default {
     name: "Courses",
     components: {
         "modal": modalComponent,
-        "select2": vSelect
+        "select2": vSelect,
     },
     data() {
         return {
             modalAdd: false,
-            modalEdit: false,
-            modalDelete: false,
             subjects: [],
             curriculums: [],
             majors: [],
@@ -180,18 +132,18 @@ export default {
                 majors: [],
                 subject_id: null
             },
-            updateForm: {},
-            dataSubjects: [],
-            search: '',
+            payload: {
+                search: '',
+                period: ''
+            },
             entry_years: [],
         }
     },
     created() {
         this.getSubjects();
-        this.getDataSubjects(this.search);
         this.getCurriculums();
         this.getMajors();
-        this.getCourses();
+        this.getCourses(this.payload);
         this.getEntryYears();
     },
     computed: {
@@ -212,13 +164,12 @@ export default {
                 this.entry_years = result;
             })
         },
-        getDataSubjects(search) {
-            this.searchByCourse(search).then((result) => {
-                this.dataSubjects = result;
-            });
-        },
         searchSubject() {
-            this.getDataSubjects(this.search);
+            this.getCourses(this.payload);
+        },
+        refreshDataSubjects() {
+            this.payload.search = '';
+            this.getCourses(this.payload);
         },
         getSubjects() {
             this.getAll().then((result) => {
@@ -237,44 +188,22 @@ export default {
             iconTitle.classList.toggle('fa-arrow-down');
             iconTitle.classList.toggle('fa-arrow-up');
         },
-        getCourses() {
-            this.index().then((result) => {
+        getCourses(payload) {
+            this.index(payload).then((result) => {
                 this.courses = result;
-            });
-        },
-        filterCourses(subject) {
-            return this.courses.filter(function(course) {
-                return course.subject_id == subject;
             });
         },
         addCourse() {
             this.create(this.submitForm).then((result) => {
                 this.modalAdd = false;
-                this.getDataSubjects(this.search);
-                this.getCourses();
+                this.submitForm.curriculum = null;
+                this.submitForm.caption = null;
+                this.submitForm.entry_year = null;
+                this.submitForm.majors = [];
+                this.submitForm.subject_id = null;
+                this.getCourses(this.payload);
             });
         },
-        showCourse(id) {
-            this.show(id).then((result) => {
-                this.updateForm = result;
-                this.modalEdit = true;
-            });
-        },
-        editCourse() {
-            let payload = {id: this.updateForm.id, data: this.updateForm};
-            this.edit(payload).then((result) => {
-                this.modalEdit = false;
-                this.getDataSubjects(this.search);
-                this.getCourses();
-            })
-        },
-        showModalDelete() {
-            this.modalEdit = false;
-            this.modalDelete = true;
-        },
-        deleteCourse() {
-            console.log('delete');
-        }
     }
 }
 </script>
@@ -282,16 +211,6 @@ export default {
 <style scoped>
 a:hover {
     text-decoration: none;
-}
-
-.input-text:focus {
-    box-shadow: 0px 0px 0px;
-    border-color: #B4ADAD;
-    outline: 0px;
-}
-
-.form-control {
-    border: 1px solid #B4ADAD;
 }
 
 .btn-outline-muted {
@@ -302,6 +221,10 @@ a:hover {
 
 .card {
     border: 0 !important;
+}
+
+.card-subject {
+    cursor: pointer;
 }
 
 .card a {
@@ -321,12 +244,17 @@ a:hover {
     padding-left: 3rem;
 }
 
-.list-group-item a {
+.list-group-item a.router {
     color: #333;
 }
 
-.list-group-item a:hover {
+.list-group-item a.router:hover {
     text-decoration: underline;
+}
+
+a.router {
+    text-decoration: none !important;
+    color: #000 !important;
 }
 
 span.fas.fa-book {

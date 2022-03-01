@@ -23,10 +23,22 @@
                         <span class="nav_name">Periode Rapor</span>
                     </a>
                     </router-link>
-                    <router-link v-bind:to="{ name: 'courses', params: {page: 4} }">
+                    <router-link v-bind:to="{ name: 'batches', params: {page: 4} }">
                     <a href="#" class="nav_link" :class="{active: $route.params.page == 4}"> 
+                        <i class="fas fa-users nav_icon" title="Data Siswa"></i> 
+                        <span class="nav_name">Data Siswa</span>
+                    </a>
+                    </router-link>
+                    <router-link v-bind:to="{ name: 'courses', params: {page: 5} }">
+                    <a href="#" class="nav_link" :class="{active: $route.params.page == 5}"> 
                         <i class="fas fa-inbox nav_icon" title="Pelajaran"></i> 
                         <span class="nav_name">Pelajaran</span>
+                    </a>
+                    </router-link>
+                    <router-link v-bind:to="{ name: 'gradebooks.period', params: {page: 6} }">
+                    <a href="#" class="nav_link" :class="{active: $route.params.page == 6}"> 
+                        <i class="fas fa-book nav_icon" title="Buku Nilai"></i> 
+                        <span class="nav_name">Buku Nilai</span>
                     </a>
                     </router-link>
                 </div> 

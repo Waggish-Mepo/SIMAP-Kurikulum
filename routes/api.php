@@ -9,6 +9,10 @@ use App\Http\Controllers\SubjectTeacherController;
 use App\Http\Controllers\ReportPeriodController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\MajorController;
+use App\Http\Controllers\BatchController;
+use App\Http\Controllers\StudentGroupController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentCourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,6 +64,30 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [CourseController::class, 'store']);
         Route::get('/{id}', [CourseController::class, 'show']);
         Route::patch('/{id}', [CourseController::class, 'update']);
+    });
+    Route::prefix('student-courses')->group(function () {
+        Route::get('/', [StudentCourseController::class, 'index']);
+        Route::post('/', [StudentCourseController::class, 'store']);
+        Route::get('/{id}', [StudentCourseController::class, 'selectStudents']);
+        Route::patch('/{id}', [StudentCourseController::class, 'update']);
+    });
+    Route::prefix('batches')->group(function () {
+        Route::get('/', [BatchController::class, 'index']);
+        Route::post('/', [BatchController::class, 'store']);
+        Route::get('/{id}', [BatchController::class, 'show']);
+        Route::patch('/{id}', [BatchController::class, 'update']);
+    });
+    Route::prefix('student-groups')->group(function () {
+        Route::get('/', [StudentGroupController::class, 'index']);
+        Route::post('/', [StudentGroupController::class, 'store']);
+        Route::get('/{id}', [StudentGroupController::class, 'show']);
+        Route::patch('/{id}', [StudentGroupController::class, 'update']);
+    });
+    Route::prefix('students')->group(function () {
+        Route::get('/', [StudentController::class, 'index']);
+        Route::post('/', [StudentController::class, 'store']);
+        Route::get('/{id}', [StudentController::class, 'show']);
+        Route::patch('/{id}', [StudentController::class, 'update']);
     });
     Route::prefix('majors')->group(function () {
         Route::get('/', [MajorController::class, 'index']);

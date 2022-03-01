@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import router from './router.js'
 
 //IMPORT MODULE SECTION
 import auth from './stores/auth/index.js'
@@ -9,6 +10,10 @@ import subjectTeachers from './stores/subjectTeachers/index.js'
 import reportPeriods from './stores/reportPeriods/index.js'
 import courses from './stores/courses/index.js'
 import majors from './stores/majors/index.js'
+import batches from './stores/batches/index.js'
+import studentGroups from './stores/studentGroups/index.js'
+import students from './stores/students/index.js'
+import studentCourses from './stores/studentCourses/index.js'
 
 Vue.use(Vuex);
 
@@ -22,7 +27,11 @@ const store = new Vuex.Store({
         subjectTeachers,
         reportPeriods,
         courses,
-        majors
+        studentCourses,
+        majors,
+        batches,
+        studentGroups,
+        students
     },
     state: {
         errors: [],
@@ -47,12 +56,21 @@ const store = new Vuex.Store({
         },
         SET_ERROR(state, payload) {
             state.isLoading = false;
+            if (payload.message == "Unauthenticated.") {
+                localStorage.clear();
+                router.push({ name: 'login' });
+            }
             state.errorMessage = Array.isArray(payload.message) ? payload.message[0] : payload.message;
             state.errors = !payload.errors ? [] : payload.errors;
         },
         SET_ERROR_VALIDATE(state, payload) {
             state.isLoading = false;
-            state.errors = !payload ? [] : payload;
+            if (payload.errors) {
+                state.errorMessage = Array.isArray(payload.message) ? payload.message[0] : payload.message;
+                state.errors = !payload.errors ? [] : payload.errors;
+            } else {
+                state.errors = !payload ? [] : payload;
+            }
         },
         CLEAR_ERROR(state) {
             state.errors = []

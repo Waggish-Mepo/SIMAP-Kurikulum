@@ -17,6 +17,7 @@ class BatchService {
         $perPage = $filter['page'] ?? 20;
         $withMajor = $filter['with_major'] ?? false;
         $withStudentGroups = $filter['with_student_groups'] ?? false;
+        $withStudentGroupsStudents = $filter['with_student_groups_students'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = Batch::orderBy('created_at', $orderBy);
@@ -29,8 +30,12 @@ class BatchService {
             $query->with('studentGroups');
         }
 
+        if ($withStudentGroupsStudents) {
+            $query->with('studentGroups.students');
+        }
+
         if ($batchName) {
-            $query->where('batch_name', $batchName);
+            $query->where('batch_name','LIKE', '%'. $batchName . '%');
         }
 
         if ($entryYear) {
@@ -85,7 +90,6 @@ class BatchService {
         $validate = Validator::make($batch->toArray(), [
             'batch_name' => 'required|string',
             'entry_year' => ['required', Rule::in(config('constant.common.school_years'))],
-            'major_id' => 'required',
         ]);
 
         if($validate->fails()) {
