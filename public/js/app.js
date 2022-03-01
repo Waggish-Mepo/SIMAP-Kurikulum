@@ -5765,6 +5765,17 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       name: 'gradebooks.course',
       component: loadView('dashboard/gradeBook/PeriodCourse')
     }]
+  }, {
+    path: '/dashboard/gradebooks',
+    component: loadView('dashboard/BaseGradeBook'),
+    meta: {
+      auth: true
+    },
+    children: [{
+      path: '/periods/:period/course/:course',
+      name: 'gradebooks.course.detail',
+      component: loadView('dashboard/gradeBook/Detail')
+    }]
   }]
 });
 router.beforeEach(function (to, from, next) {
@@ -6361,7 +6372,7 @@ var actions = {
       });
     });
   },
-  show: function show(_ref3, payload) {
+  detail: function detail(_ref3, payload) {
     var commit = _ref3.commit;
     commit('SET_LOADING', true, {
       root: true
@@ -6585,8 +6596,26 @@ var actions = {
       });
     });
   },
-  create: function create(_ref3, payload) {
+  getByCourse: function getByCourse(_ref3, payload) {
     var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/student-groups/by-course/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  create: function create(_ref4, payload) {
+    var commit = _ref4.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -6603,8 +6632,8 @@ var actions = {
       });
     });
   },
-  edit: function edit(_ref4, payload) {
-    var commit = _ref4.commit;
+  edit: function edit(_ref5, payload) {
+    var commit = _ref5.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -57827,6 +57856,10 @@ var index = {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var map = {
+	"./dashboard/BaseGradeBook.vue": [
+		"./resources/js/pages/dashboard/BaseGradeBook.vue",
+		"resources_js_pages_dashboard_BaseGradeBook_vue"
+	],
 	"./dashboard/Home.vue": [
 		"./resources/js/pages/dashboard/Home.vue",
 		"resources_js_pages_dashboard_Home_vue"
@@ -57869,6 +57902,10 @@ var map = {
 	"./dashboard/courses/Students.vue": [
 		"./resources/js/pages/dashboard/courses/Students.vue",
 		"resources_js_pages_dashboard_courses_Students_vue"
+	],
+	"./dashboard/gradeBook/Detail.vue": [
+		"./resources/js/pages/dashboard/gradeBook/Detail.vue",
+		"resources_js_pages_dashboard_gradeBook_Detail_vue"
 	],
 	"./dashboard/gradeBook/Period.vue": [
 		"./resources/js/pages/dashboard/gradeBook/Period.vue",
@@ -58021,7 +58058,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

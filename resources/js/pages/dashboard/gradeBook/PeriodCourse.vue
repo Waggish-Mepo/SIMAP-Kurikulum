@@ -17,10 +17,12 @@
                 <h5 class="text-capitalize">{{subject.name}}</h5>
                 <div v-if="subject.data.length > 0">
                     <div class="card w-100 p-3 mb-2" v-for="(course, index) in subject.data" :key="index">
+                        <router-link v-bind:to="{ name: 'gradebooks.course.detail', params: {period: period.id, course: course.id} }" class="router">
                         <div class="d-flex align-items-center text-capitalize">
                             <span class="fas fa-book"></span>
                             {{period.title}} {{period.school_year}} - {{course.caption}} Kelas {{course.entry_year_with_class}}
                         </div>
+                        </router-link>
                     </div>
                 </div>
                 <div v-else>
@@ -56,10 +58,10 @@ export default {
     },
     methods: {
         ...mapActions('courses', ['index']),
-        ...mapActions('reportPeriods', ['show']),
+        ...mapActions('reportPeriods', ['detail']),
 
         showPeriod(id) {
-            this.show(id).then((result) => {
+            this.detail(id).then((result) => {
                 this.period = result;
             })
         },
@@ -83,5 +85,9 @@ h5 {
 
 span.fas.fa-book {
     margin-right: 10px;
+}
+
+a.router {
+    color: #000;
 }
 </style>

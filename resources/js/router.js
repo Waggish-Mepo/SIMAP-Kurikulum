@@ -87,6 +87,16 @@ const router = new Router({
             },
             ]
         },
+        {
+            path: '/dashboard/gradebooks',
+            component: loadView('dashboard/BaseGradeBook'),
+            meta: { auth: true },
+            children: [{ 
+                path: '/periods/:period/course/:course',
+                name: 'gradebooks.course.detail',
+                component: loadView('dashboard/gradeBook/Detail')
+            }]
+        }
     ],
 });
 

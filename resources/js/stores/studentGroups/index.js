@@ -33,6 +33,19 @@ const actions = {
                 })
         })
     },
+    getByCourse({ commit }, payload) {
+        commit('SET_LOADING', true, { root: true });
+        return new Promise((resolve, reject) => {
+            axios.get('/student-groups/by-course/'+payload)
+                .then((response) => {
+                    resolve(response.data);
+                    commit('SET_GOOD', null, { root: true });
+                })
+                .catch((error) => {
+                    commit('SET_ERROR', error.response.data, { root: true });
+                })
+        })
+    },
     create({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
