@@ -142,6 +142,25 @@
     border: 1px solid #B4ADAD;
 }
 
+/* card img not found */
+.card-not-found {
+    margin-top: 25px;
+}
+
+.img {
+    max-width: 130px;
+    width: 100%;
+}
+
+/* table */
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
 .body-pd {
     padding-left: 48px;
 }

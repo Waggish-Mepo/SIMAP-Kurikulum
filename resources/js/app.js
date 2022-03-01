@@ -11,6 +11,10 @@ import store from './store.js'
 import App from './App.vue'
 import axios from 'axios'
 
+import VueGoodTablePlugin from 'vue-good-table';
+import 'vue-good-table/dist/vue-good-table.css';
+Vue.use(VueGoodTablePlugin);
+
 Vue.prototype.$http = axios;
 Vue.prototype.$http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 Vue.prototype.$http.defaults.headers.common['Accept'] = 'application/json';

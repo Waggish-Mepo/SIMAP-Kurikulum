@@ -10,7 +10,7 @@ const actions = {
     index({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/report-periods/?page='+payload.page+'&per_page='+payload.per_page+'&orderBy='+payload.orderBy+'&schoolYear='+payload.schoolYear+'&search='+payload.search)
+            axios.get('/student-courses/?course='+payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -20,23 +20,10 @@ const actions = {
                 })
         })
     },
-    schoolYears({ commit }) {
+    showSelected({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/report-periods/school-years')
-                .then((response) => {
-                    resolve(response.data);
-                    commit('SET_GOOD', null, { root: true });
-                })
-                .catch((error) => {
-                    commit('SET_ERROR', error.response.data, { root: true });
-                })
-        })
-    },
-    show({ commit }, payload) {
-        commit('SET_LOADING', true, { root: true });
-        return new Promise((resolve, reject) => {
-            axios.get('/report-periods/'+payload)
+            axios.get('/student-courses/'+payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -49,7 +36,7 @@ const actions = {
     create({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.post('/report-periods', payload)
+            axios.post('/student-courses', payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -62,7 +49,7 @@ const actions = {
     edit({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.patch('/report-periods/'+payload.id, payload.data)
+            axios.patch('/student-courses/'+payload.id, payload.data)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });

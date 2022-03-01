@@ -7,6 +7,7 @@ use App\Service\Database\CourseService;
 use App\Service\Database\MajorService;
 use App\Service\Functions\AcademicCalendar;
 use App\Service\Database\ReportPeriodService;
+use App\Service\Database\SubjectService;
 
 class CourseController extends Controller
 {
@@ -15,27 +16,58 @@ class CourseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->search;
+        $period = $request->period;
+
         $courseDB = new CourseService;
         $majorDB = new MajorService;
         $academicCalendar = new AcademicCalendar;
+        $subjectDB = new SubjectService;
+        $reportPeriodDB = new ReportPeriodService;
 
-        $courses = $courseDB->index(['without_pagination' => true]);
-        $coursesWithMajors = [];
-        foreach ($courses as $course) {
-            if (!$course['majors']) {
-                $coursesWithMajors[] = $course;
-                continue;
-            }
-
-            $majors = $majorDB->bulkDetail($course['majors'])['data'];
-            $course['major_details'] = $majors;
-            $course['major_details_string'] = collect($majors)->pluck('abbreviation')->join(', ');
-            $course['entry_year_with_class'] = $academicCalendar->gradeByAcademicYear($course['entry_year']);
-            $coursesWithMajors[] = $course;
+        if ($search == "") {
+            $subjects = $subjectDB->index(['without_pagination' => true]);
+        } else {
+            $subjects = $subjectDB->index(['name' => $search,'without_pagination' => true]);
         }
-        return response()->json($coursesWithMajors);
+        
+        $subjectsNameID = [];
+        foreach ($subjects as $v) {
+            $subjectsNameID[$v['id']] = $v['name'];
+        }
+
+        $subjectWithCourse = [];
+        foreach ($subjectsNameID as $subject_id => $subject) {
+            if ($period == "") {
+                $courses = $courseDB->index(['subject_id' => $subject_id, 'without_pagination' => true]);
+            } else {
+                $reportPeriod = $reportPeriodDB->detail($period);
+                $year = $reportPeriod['school_year'];
+
+                $courses = $courseDB->index(['entry_year' => $year, 'subject_id' => $subject_id, 'without_pagination' => true]);
+            }
+            
+            $coursesWithMajors = [];
+            foreach ($courses as $course) {
+                if (!$course['majors']) {
+                    $coursesWithMajors[] = $course;
+                    continue;
+                }
+
+                $majors = $majorDB->bulkDetail($course['majors'])['data'];
+                $course['major_details'] = $majors;
+                $course['major_details_string'] = collect($majors)->pluck('abbreviation')->join(', ');
+                $course['entry_year_with_class'] = $academicCalendar->gradeByAcademicYear($course['entry_year']);
+                $coursesWithMajors[] = $course;
+            }
+            $subjectWithCourse[$subject.'-index']['data'] = $coursesWithMajors;
+            $subjectWithCourse[$subject.'-index']['id'] = $subject_id;
+            $subjectWithCourse[$subject.'-index']['name'] = $subject;
+        }
+
+        return response()->json($subjectWithCourse);
     }
 
     public function getCurriculums()
@@ -61,24 +93,6 @@ class CourseController extends Controller
         ];
 
         return response()->json($academicYearByGrade);
-    }
-
-    public function getByEntryYear($id)
-    {
-        $courseDB = new CourseService;
-        $academicCalendar = new AcademicCalendar;
-        $reportPeriodDB = new ReportPeriodService;
-
-        $reportPeriod = $reportPeriodDB->detail($id);
-        $year = $reportPeriod['school_year'];
-
-        $courses = $courseDB->index(['entry_year' => $year, 'without_pagination' => true]);
-        $courseWithClass = [];
-        foreach ($courses as $course) {
-            $course['entry_year_with_class'] = $academicCalendar->gradeByAcademicYear($course['entry_year']);
-            $courseWithClass[] = $course;
-        }
-        return response()->json($courseWithClass);
     }
 
     /**
@@ -112,7 +126,15 @@ class CourseController extends Controller
     public function show($id)
     {
         $courseDB = new CourseService;
-        return response()->json($courseDB->detail($id));
+        $academicCalendar = new AcademicCalendar;
+        $majorDB = new MajorService;
+
+        $course = $courseDB->detail($id);
+        $majors = $majorDB->bulkDetail($course['majors'])['data'];
+
+        $course['entry_year_with_class'] = $academicCalendar->gradeByAcademicYear($course['entry_year']);
+        $course['major_details_string'] = collect($majors)->pluck('abbreviation')->join(', ');
+        return response()->json($course);
     }
 
     /**
@@ -136,7 +158,13 @@ class CourseController extends Controller
     public function update(Request $request, $id)
     {
         $courseDB = new CourseService;
-        return response()->json($courseDB->update($id, $request->all()));
+        return response()->json($courseDB->update($id, [
+            'curriculum' => $request->curriculum,
+            'caption' => $request->caption,
+            'entry_year' => $request->entry_year,
+            'majors' => $request->majors,
+            'subject_id' => $request->subject_id,
+        ]));
     }
 
     /**

@@ -48,7 +48,17 @@ const router = new Router({
             {
                 path: '/:page/courses',
                 name: 'courses',
-                component: loadView('dashboard/Course')
+                component: loadView('dashboard/courses/Course')
+            },
+            {
+                path: '/:page/courses/:course',
+                name: 'courses.students',
+                component: loadView('dashboard/courses/Students')
+            },
+            {
+                path: '/:page/courses/:course/add',
+                name: 'courses.students.add',
+                component: loadView('dashboard/courses/Add')
             },
             {
                 path: '/:page/batches',

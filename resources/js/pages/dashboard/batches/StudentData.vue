@@ -13,21 +13,10 @@
         {{ errorMessage }}
         </div>
         <div class="row my-3">
-            <div class="col-md-6">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Nama Siswa...." v-model="payload.search" @keyup="searchStudents">
-                    <div class="input-group-append">
-                        <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white" @click="searchStudents"><i class="fas fa-search"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="d-flex">
-                    <a href="#" class="btn btn-primary btn-block mt-md-1" @click="modalAddStudent = true">
-                        <span class="fas fa-plus"></span> Tambah Siswa
-                    </a>
-                    <a href="#" class="btn btn-secondary btn-block mt-md-1" @click="refreshData">Refresh Data</a>
-                </div>
+            <div class="col-12">
+                <a href="#" class="btn btn-primary btn-block mt-md-1" @click="modalAddStudent = true">
+                    <span class="fas fa-plus"></span> Tambah Siswa
+                </a>
             </div>
         </div>
 
@@ -38,33 +27,31 @@
                         <h4 class="card-title">Data siswa rombel {{studentGroup}}</h4>
                         <p class="card-description">{{batchName}}</p>
                         <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Nama</th>
-                                        <th>NIS</th>
-                                        <th>Jenis Kelamin</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
+                            <table class="table table-borderless">
                                 <tbody>
-                                    <tr v-for="(student, index) in students" :key="index">
-                                        <td>{{student.name}}</td>
-                                        <td>{{student.nis}}</td>
-                                        <td>{{student.jk}}</td>
-                                        <td>
-                                            <label class="badge bg-green1 text-white" @click="showStudent(student.id)">Edit</label>
-                                        </td>
-                                    </tr>
-                                    <!-- if data null -->
-                                    <tr v-if="students.length < 1">
-                                        <td colspan="4">
-                                            <div class="w-100 card-not-found">
-                                                <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
-                                                <h5 class="text-center text-capitalize mt-4">data terkait tidak ditemukan</h5>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                <vue-good-table
+                                    :columns="columns"
+                                    :rows="rows"
+                                    :pagination-options="paginationOpts"
+                                    :sort-options="sortOpts"
+                                    :fixed-header="true"
+                                    max-height="800px"
+                                    styleClass="vgt-table condensed striped"
+                                >
+                                    <template slot="table-row" slot-scope="props">
+                                    <span v-if="props.column.field === 'id'">
+                                        <a
+                                        href="#"
+                                        title="Edit Siswa"
+                                        @click="showStudent(props.row.id)"
+                                        >
+                                        <label class="badge bg-green1 text-white">Edit</label>
+                                        </a>
+                                    </span>
+                                    </template>
+                                </vue-good-table>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -213,10 +200,48 @@ export default {
             modalEdit: false,
             modalDeleteStudentGroup: false,
             payload: {
-                search: '',
                 studentGroup: this.$route.params.group
             },
-            students: [],
+            rows: [],
+            columns: [
+                {
+                    label: "NIS",
+                    field: "nis",
+                    filterOptions: { enabled: true },
+                },
+                {
+                    label: "Nama",
+                    field: "name",
+                    filterOptions: { enabled: true },
+                },
+                {
+                    label: "Jenis Kelamin",
+                    field: "jk",
+                    filterOptions: { enabled: true },
+                },
+                {
+                    label: "Aksi",
+                    field: "id",
+                    tdClass: "text-center",
+                    sortable: false,
+                },
+            ],
+            sortOpts: { enabled: true },
+            paginationOpts: {
+                enabled: true,
+                mode: "records",
+                perPage: 10,
+                position: "bottom",
+                perPageDropdown: [10, 50, 100],
+                dropdownAllowAll: true,
+                setCurrentPage: 1,
+                nextLabel: "Next",
+                prevLabel: "Prev",
+                rowsPerPageLabel: "Rows per page",
+                ofLabel: "of",
+                pageLabel: "Page", // for 'pages' mode
+                allLabel: "All",
+            },
             modalDeleteStudent: false,
             studentEditForm: {},
             modalEditStudent: false,
@@ -277,15 +302,8 @@ export default {
         },
         getStudents(payload) {
             this.index(payload).then((result) => {
-                this.students = result;
+                this.rows = result;
             })
-        },
-        searchStudents() {
-            this.getStudents(this.payload);
-        },
-        refreshData() {
-            this.payload.search = '';
-            this.getStudents(this.payload);
         },
         showModalDeleteStudent() {
             this.modalEditStudent = false;
@@ -363,34 +381,6 @@ export default {
     margin-bottom: 0.5rem;
 }
 
-.table-responsive {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    -ms-overflow-style: -ms-autohiding-scrollbar;
-}
-
-.table {
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 1rem;
-    background-color: transparent;
-}
-
-.table thead th {
-    border-top: 0;
-    border-bottom-width: 1px;
-    font-size: 1rem;
-    text-transform: uppercase;
-}
-
-.table td {
-    font-size: 1rem;
-    padding: 0.5rem;
-    text-transform: capitalize;
-}
-
 .badge {
     border-radius: 0;
     font-size: 14px;
@@ -398,15 +388,6 @@ export default {
     padding: 0.3rem 0.5rem;
     font-weight: normal;
     cursor: pointer;
-}
-
-.card-not-found {
-    margin-top: 25px;
-}
-
-.img {
-    max-width: 130px;
-    width: 100%;
 }
 
 @media (max-width: 575px) {

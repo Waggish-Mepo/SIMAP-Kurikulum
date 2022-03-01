@@ -10,7 +10,7 @@ const actions = {
     index({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/students/?studentGroup='+payload.studentGroup+'&search='+payload.search)
+            axios.get('/students/?studentGroup='+payload.studentGroup)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });

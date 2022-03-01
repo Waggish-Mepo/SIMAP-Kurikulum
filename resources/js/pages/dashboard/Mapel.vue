@@ -205,6 +205,8 @@ export default {
         addSubject() {
             this.create(this.subject).then((result) => {
                 this.modalAdd = false;
+                this.subject.name = null;
+                this.subject.group = null;
                 this.getSubjects('');
             })
         },

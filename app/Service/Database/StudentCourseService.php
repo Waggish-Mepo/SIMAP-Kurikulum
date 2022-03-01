@@ -51,6 +51,13 @@ class StudentCourseService{
         return $studentCourses;
     }
 
+    public function getByStudents($studentId = null)
+    {
+        $studentCourses = StudentCourse::where('student_id', $studentId)->get()->toArray();
+
+        return $studentCourses;
+    }
+
     public function students($courseId, $studentGroupId)
     {
         $course = Course::findOrFail($courseId);

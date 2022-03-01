@@ -21,7 +21,7 @@ class StudentGroupService {
         $withBatch = $filter['with_batch'] ?? false;
         $withMajor = $filter['with_major'] ?? false;
         $withStudent = $filter['with_student'] ?? false;
-        $groupByMajor = $filter['group_by_major'] ?? false;
+        // $groupByMajor = $filter['group_by_major'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = StudentGroup::orderBy('name', $orderBy);
@@ -53,13 +53,13 @@ class StudentGroupService {
         if ($withMajor) {
             $query->with('major');
 
-            if ($groupByMajor) {
-                $studentGroups = collect($query->get())->mapToGroups(function($item, $key) {
-                    return [$item['major']['id'] => $item];
-                });
+            // if ($groupByMajor) {
+            //     $studentGroups = collect($query->get())->mapToGroups(function($item, $key) {
+            //         return [$item['major']['id'] => $item];
+            //     });
 
-                return $studentGroups;
-            }
+            //     return $studentGroups;
+            // }
 
             if ($withoutPagination) {
                 return $query->get()->toArray();

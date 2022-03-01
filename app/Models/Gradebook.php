@@ -24,6 +24,7 @@ class Gradebook extends Model
   
     public function predicateLetters() {
         return $this->hasMany(PredicateLetter::class);
+    }
 
     public function components() {
         return $this->hasMany(GradebookComponent::class);

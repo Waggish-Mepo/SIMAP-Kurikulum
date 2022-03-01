@@ -14,15 +14,10 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->search;
         $studentGroup = $request->studentGroup;
         $students = new StudentService;
 
-        if ($search == "") {
-            return response()->json($students->index(['student_group_id' => $studentGroup, 'without_pagination' => true]));
-        } else {
-            return response()->json($students->index(['student_group_id' => $studentGroup, 'name' => $search, 'without_pagination' => true]));
-        }
+        return response()->json($students->index(['student_group_id' => $studentGroup, 'without_pagination' => true]));
     }
 
     /**

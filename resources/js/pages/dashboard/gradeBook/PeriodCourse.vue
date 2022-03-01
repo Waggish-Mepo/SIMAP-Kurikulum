@@ -12,23 +12,22 @@
         {{ errorMessage }}
         </div>
 
-        <div v-if="subjects.length > 1">
-            <div class="mb-4" v-for="(subject, index) in subjects" :key="index">
+        <div>
+            <div class="mb-4" v-for="(subject, index) in courses" :key="index">
                 <h5 class="text-capitalize">{{subject.name}}</h5>
-                <div class="card w-100 p-3 mb-2" v-for="(course, index) in filterCourses(subject.id)" :key="index">
-                    <div class="d-flex align-items-center text-capitalize">
-                        <span class="fas fa-book"></span>
-                        {{period.title}} {{period.school_year}} - {{course.caption}} Kelas {{course.entry_year_with_class}}
+                <div v-if="subject.data.length > 0">
+                    <div class="card w-100 p-3 mb-2" v-for="(course, index) in subject.data" :key="index">
+                        <div class="d-flex align-items-center text-capitalize">
+                            <span class="fas fa-book"></span>
+                            {{period.title}} {{period.school_year}} - {{course.caption}} Kelas {{course.entry_year_with_class}}
+                        </div>
                     </div>
+                </div>
+                <div v-else>
+                    <p class="text-capitalize">data pelajaran terkait tidak tersedia</p>
                 </div>
                 <hr>
             </div>
-        </div>
-
-        <!-- data null -->
-        <div v-else class="w-100 card-not-found">
-            <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
-            <h5 class="text-center text-capitalize mt-4">data terkait tidak ditemukan</h5>
         </div>
     </div>
 </template>
@@ -41,45 +40,32 @@ export default {
     data() {
         return {
             period: {},
-            subjects: [],
-            courses: []
+            courses: [],
+            payload: {
+                search: '',
+                period: this.$route.params.period
+            },
         }
     },
     created() {
         this.showPeriod(this.$route.params.period);
+        this.getCourses(this.payload);
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
     },
     methods: {
-        ...mapActions('subjects', ['getAll']),
-        ...mapActions('courses', ['byEntryYears']),
+        ...mapActions('courses', ['index']),
         ...mapActions('reportPeriods', ['show']),
 
         showPeriod(id) {
             this.show(id).then((result) => {
                 this.period = result;
-                this.getCourses(result.id);
             })
         },
-        getSubjects() {
-            this.getAll().then((result) => {
-                this.subjects = result;
-            })
-        },
-        filterCourses(subject) {
-            return this.courses.filter(function(course) {
-                return course.subject_id == subject;
-            });
-        },
-        getCourses(year) {
-            this.byEntryYears(year).then((result) => {
+        getCourses(payload) {
+            this.index(payload).then((result) => {
                 this.courses = result;
-                if(result.length < 1) {
-                    this.subjects = [];
-                } else {
-                    this.getSubjects();
-                }
             })
         }
     }
@@ -97,14 +83,5 @@ h5 {
 
 span.fas.fa-book {
     margin-right: 10px;
-}
-
-.card-not-found {
-    margin-top: 25px;
-}
-
-.img {
-    max-width: 130px;
-    width: 100%;
 }
 </style>

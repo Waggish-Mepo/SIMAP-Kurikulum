@@ -7,7 +7,7 @@
         <div class="row mt-3 mb-sm-3 mb-4">
             <div class="col-md-6">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Angkatan...." v-model="search" @keyup="searchBatches">
+                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Angkatan...." v-model="payload.search" @keyup="searchBatches">
                     <div class="input-group-append">
                         <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white" @click="searchBatches"><i class="fas fa-search"></i></a>
                     </div>
@@ -30,6 +30,7 @@
             </div>
             </router-link>
         </div>
+        <pagination v-if="batches.length > 0" class="mt-3" :pagination="pages" @paginate="getBatches" :offset="2" :data="payload"></pagination>
 
         <!-- if data null -->
         <div v-if="batches.length < 1" class="w-100 card-not-found">
@@ -61,15 +62,30 @@
 import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
 // modal
 import modalComponent from '../../../components/Modal.vue';
+// pagination
+import paginateComponent from '../../../components/Pagination.vue';
 export default {
     name: "batch",
     components: {
-        "modal": modalComponent
+        "modal": modalComponent,
+        "pagination": paginateComponent
     },
     data() {
         return {
             batches: [],
-            search: '',
+            pages: {
+                total: 0,
+                per_page: 10,
+                from: 1,
+                to: 0,
+                current_page: 1,
+                last_page: 1,
+            },
+            payload: {
+                search: '',
+                page: 1,
+                per_page: 5
+            },
             modalAdd: false,
             submitAddForm: {
                 batch_name: null
@@ -77,7 +93,7 @@ export default {
         }
     },
     created() {
-        this.getBatches(this.search);
+        this.getBatches(this.payload);
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
@@ -87,20 +103,27 @@ export default {
 
         getBatches(search) {
             this.index(search).then((result) => {
-                this.batches = result;
+                this.batches = result.data;
+                this.pages.total = result.total;
+                this.pages.per_page = result.per_page;
+                this.pages.from = result.from;
+                this.pages.to = result.to;
+                this.pages.current_page = result.current_page;
+                this.pages.last_page = result.last_page;
             })
         },
         searchBatches() {
-            this.getBatches(this.search);
+            this.getBatches(this.payload);
         },
         refreshBatches() {
-            this.search = '';
-            this.getBatches(this.search);
+            this.payload.search = '';
+            this.getBatches(this.payload);
         },
         addBatch() {
             this.create(this.submitAddForm).then((result) => {
                 this.modalAdd = false;
-                this.getBatches(this.search);
+                this.submitAddForm.batch_name = null;
+                this.getBatches(this.payload);
             });
         }
     }
@@ -122,15 +145,6 @@ export default {
     font-weight: 500;
     font-size: 1rem;
     cursor: pointer;
-}
-
-.card-not-found {
-    margin-top: 25px;
-}
-
-.img {
-    max-width: 130px;
-    width: 100%;
 }
 
 a.router {
