@@ -21,22 +21,30 @@ class StudentCourseController extends Controller
     {
         $studentService = new StudentService;
         $courseService = new CourseService;
+        $batchService = new BatchService;
         $studentCourseService = new StudentCourseService;
         $studentGroupService = new StudentGroupService;
         $courseId = $request->course;
 
         $course = $courseService->detail($courseId);
 
-        $studentGroupMajor = [];
-        foreach ($course['majors'] as $major) {
-            $studentGroups = $studentGroupService->index(['major_id' => $major, 'school_year' => $course['entry_year'], 'without_pagination' => true]);
+        $batches = $batchService->index([
+            'entry_year' => $course['entry_year'],
+            'with_student_groups' => true
+        ]);
 
-            if (count($studentGroups) > 0) {
-                for ($i = 0; $i < count($studentGroups); $i++) {
-                    $studentGroupMajor[] = $studentGroups[$i];
-                }
-            }
-        }
+        $studentGroupMajor = $batches->pluck('studentGroups')->flatten()->whereIn('major_id', $course['majors']);
+
+        // $studentGroupMajor = [];
+        // foreach ($course['majors'] as $major) {
+        //     $studentGroups = $studentGroupService->index(['major_id' => $major, 'school_year' => $course['entry_year'], 'without_pagination' => true]);
+
+        //     if (count($studentGroups) > 0) {
+        //         for ($i = 0; $i < count($studentGroups); $i++) {
+        //             $studentGroupMajor[] = $studentGroups[$i];
+        //         }
+        //     }
+        // }
 
         $studentGroupsNameID = [];
         foreach ($studentGroupMajor as $v) {
@@ -49,7 +57,7 @@ class StudentCourseController extends Controller
 
             $studentWithChecked = [];
             foreach ($students as $student) {
-                $checkExist = $studentCourseService->getByStudents($student['id']);
+                $checkExist = $studentCourseService->getByStudents($student['id'], $courseId);
 
                 if (!count($checkExist)) {
                     $student['already_coursed'] = false;
@@ -71,21 +79,29 @@ class StudentCourseController extends Controller
     {
         $studentService = new StudentService;
         $courseService = new CourseService;
+        $batchService = new BatchService;
         $studentCourseService = new StudentCourseService;
         $studentGroupService = new StudentGroupService;
 
         $course = $courseService->detail($courseId);
 
-        $studentGroupMajor = [];
-        foreach ($course['majors'] as $major) {
-            $studentGroups = $studentGroupService->index(['major_id' => $major,'school_year' => $course['entry_year'], 'without_pagination' => true]);
+        $batches = $batchService->index([
+            'entry_year' => $course['entry_year'],
+            'with_student_groups' => true
+        ]);
 
-            if (count($studentGroups) > 0) {
-                for ($i=0; $i < count($studentGroups); $i++) {
-                    $studentGroupMajor[] = $studentGroups[$i];
-                }
-            }
-        }
+        $studentGroupMajor = $batches->pluck('studentGroups')->flatten()->whereIn('major_id', $course['majors']);
+
+        // $studentGroupMajor = [];
+        // foreach ($course['majors'] as $major) {
+        //     $studentGroups = $studentGroupService->index(['major_id' => $major,'school_year' => $course['entry_year'], 'without_pagination' => true]);
+
+        //     if (count($studentGroups) > 0) {
+        //         for ($i=0; $i < count($studentGroups); $i++) {
+        //             $studentGroupMajor[] = $studentGroups[$i];
+        //         }
+        //     }
+        // }
 
         $studentGroupsNameID = [];
         foreach ($studentGroupMajor as $v) {
@@ -98,7 +114,7 @@ class StudentCourseController extends Controller
 
             $studentWithChecked = [];
             foreach ($students as $student) {
-                $checkExist = $studentCourseService->getByStudents($student['id']);
+                $checkExist = $studentCourseService->getByStudents($student['id'], $courseId);
 
                 if (!count($checkExist)) {
                     $student['already_coursed'] = false;

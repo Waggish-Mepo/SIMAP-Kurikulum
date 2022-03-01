@@ -51,9 +51,11 @@ class StudentCourseService{
         return $studentCourses;
     }
 
-    public function getByStudents($studentId = null)
+    public function getByStudents($studentId = null, $courseId = null)
     {
-        $studentCourses = StudentCourse::where('student_id', $studentId)->get()->toArray();
+        $studentCourses = StudentCourse::where('student_id', $studentId)
+        ->where('course_id', $courseId)
+        ->get()->toArray();
 
         return $studentCourses;
     }
