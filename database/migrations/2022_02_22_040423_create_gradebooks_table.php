@@ -17,6 +17,7 @@ class CreateGradebooksTable extends Migration
             $table->uuid('id')->primary();
             $table->string('title');
             $table->uuid('report_period_id');
+            $table->uuid('course_id');
             $table->jsonb('components');
             $table->float('scorebar');
             $table->jsonb('weights');
