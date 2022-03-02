@@ -17,7 +17,6 @@ class PredicateLetterService {
         $maxScore = $filter['max_score'] ?? null;
         $letter = $filter['letter'] ?? null;
         $gradebookId = $filter['gradebook_id'] ?? null;
-        $withBatch = $filter['with_batch'] ?? false;
 
         $query = PredicateLetter::orderBy('created_at', $orderBy);
 
@@ -37,10 +36,6 @@ class PredicateLetterService {
             $query->where('gradebook_id', $gradebookId);
         }
 
-        if ($withBatch) {
-            $query->with('batch');
-        }
-
         $predicateLetters = $query->paginate($perPage);
 
         return $predicateLetters;
@@ -52,25 +47,11 @@ class PredicateLetterService {
         return $predicateLetter->toArray();
     }
 
-    public function bulkDetail($predicateLetterIds)
-    {
-        $query = PredicateLetter::whereIn('id', $predicateLetterIds);
-
-        $predicateLetters = $query->simplePaginate(100);
-
-        return $predicateLetters->toArray();
-    }
-
     public function create($payload) {
 
         $predicateLetter = new PredicateLetter;
 
-        // $academicCalendarService = new AcademicCalendar;
-
         $predicateLetter->id = Uuid::uuid4()->toString();
-        // $predicateLetter->min_score =
-        // $predicateLetter->max_score =
-        // $predicateLetter->letter =
         $predicateLetter = $this->fill($predicateLetter, $payload);
         $predicateLetter->save();
 
