@@ -14,6 +14,7 @@ use App\Http\Controllers\StudentGroupController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentCourseController;
 use App\Http\Controllers\GradebookController;
+use App\Http\Controllers\PredicatLetterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -100,5 +101,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [GradebookController::class, 'show']);
         Route::post('/', [GradebookController::class, 'store']);
         Route::patch('/{id}', [GradebookController::class, 'update']);
+    });
+    Route::prefix('predicate-letters')->group(function () {
+        Route::get('/{id}', [PredicatLetterController::class, 'index']);
+        Route::get('/show/{id}', [PredicatLetterController::class, 'show']);
+        Route::post('/', [PredicatLetterController::class, 'store']);
+        Route::patch('/{id}', [PredicatLetterController::class, 'update']);
     });
 });

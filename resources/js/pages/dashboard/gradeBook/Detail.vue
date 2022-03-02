@@ -49,7 +49,7 @@
 
     <h5 class="text-capitalize mt-5">pengaturan predikat nilai pada rapor</h5>
     <p class="text-secondary">prediket pada nilai siswa/i akan otomatis terbuat sesuai aturan dibawah ini</p>
-    <table class="table table-bordered text-center">
+    <table class="table table-bordered text-center bg-white">
         <thead>
             <tr>
                 <th scope="col">Predikat</th>
@@ -58,12 +58,15 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th>A</th>
-                <td>>= 84</td>
+            <tr v-for="(pl, index) in predicates" :key="index">
+                <th>{{pl.letter}}</th>
+                <td>>= {{pl.min_score}}</td>
                 <td>
-                    <a href="#" class="btn btn-sm btn-white text-dark" @click="modalEditPredikat = true"><span class="fas fa-pen predikat"></span></a>
+                    <a href="#" class="btn btn-sm btn-white text-dark" @click="showModalEditPredicate(pl.id)"><span class="fas fa-pen predikat"></span></a>
                 </td>
+            </tr>
+            <tr v-if="predicates.length < 1">
+                <td colspan="3" class="text-center text-capitalize">data predikat belum tersedia</td>
             </tr>
             <tr>
                 <td colspan="3">
@@ -107,11 +110,17 @@
                 <b class="mb-4">Total bobot nilai pengetahuan dan keterampilan harus 100%</b>
                 <div class="form-group col-sm-6">
                     <label class="mb-2">Bobot Pengetahuan</label>
-                    <input type="number" class="form-control" v-model="gradebookData.weights.knowledge">
+                    <input type="number" class="form-control" v-model="gradebookData.weights.knowledge" :class="{'is-invalid': errors.weights}">
+                    <div class="invalid-feedback" v-if="errors.weights">
+                        {{ errors.weights[0] }}
+                    </div>
                 </div>
                 <div class="form-group col-sm-6">
                     <label class="mb-2">Bobot Keterampilan</label>
-                    <input type="number" class="form-control" v-model="gradebookData.weights.skill">
+                    <input type="number" class="form-control" v-model="gradebookData.weights.skill" :class="{'is-invalid': errors.weights}">
+                    <div class="invalid-feedback" v-if="errors.weights">
+                        {{ errors.weights[0] }}
+                    </div>
                 </div>
             </div>
             <div class="form-group">
@@ -134,20 +143,20 @@
             </div>
             <div class="form-group mb-3">
                 <label class="mb-2">Predikat</label>
-                <input type="text" class="form-control">
-                <!-- <div class="invalid-feedback" v-if="errors.scorebar">
-                    {{ errors.scorebar[0] }}
-                </div> -->
+                <input type="text" class="form-control" :class="{'is-invalid': errors.letter}" v-model="predicateSubmitForm.letter" placeholder="Contoh : A">
+                <div class="invalid-feedback" v-if="errors.letter">
+                    {{ errors.letter[0] }}
+                </div>
             </div>
             <div class="form-group">
                 <div class="d-flex flex-column">
                     <label class="mb-1">Skor Pembatas</label>
                     <small class="mb-2">Predikat tersebut didapatkan apabila nilai lebih sama dengan dari nilai berikut</small>
                 </div>
-                <input type="number" class="form-control">
-                <!-- <div class="invalid-feedback" v-if="errors.scorebar">
-                    {{ errors.scorebar[0] }}
-                </div> -->
+                <input type="number" class="form-control" :class="{'is-invalid': errors.min_score}" v-model="predicateSubmitForm.min_score" placeholder="Contoh: 75">
+                <div class="invalid-feedback" v-if="errors.min_score">
+                    {{ errors.min_score[0] }}
+                </div>
             </div>
         </div>
     </modal>
@@ -160,20 +169,20 @@
             </div>
             <div class="form-group mb-3">
                 <label class="mb-2">Predikat</label>
-                <input type="text" class="form-control">
-                <!-- <div class="invalid-feedback" v-if="errors.scorebar">
-                    {{ errors.scorebar[0] }}
-                </div> -->
+                <input type="text" class="form-control" v-model="predicateDetail.letter" :class="{'is-invalid': errors.letter}">
+                <div class="invalid-feedback" v-if="errors.letter">
+                    {{ errors.letter[0] }}
+                </div>
             </div>
             <div class="form-group">
                 <div class="d-flex flex-column">
                     <label class="mb-1">Skor Pembatas</label>
                     <small class="mb-2">Predikat tersebut didapatkan apabila nilai lebih sama dengan dari nilai berikut</small>
                 </div>
-                <input type="number" class="form-control">
-                <!-- <div class="invalid-feedback" v-if="errors.scorebar">
-                    {{ errors.scorebar[0] }}
-                </div> -->
+                <input type="number" class="form-control" v-model="predicateDetail.min_score" :class="{'is-invalid': errors.min_score}">
+                <div class="invalid-feedback" v-if="errors.min_score">
+                    {{ errors.min_score[0] }}
+                </div>
             </div>
         </div>
         <button type="button" class="btn btn-outline-danger" slot="button" @click="showModalDeletePredikat">Hapus</button>
@@ -295,6 +304,14 @@ export default {
             period: {},
             course: {},
             gradebookData: {},
+            predicates: [],
+            predicateDetail: {},
+            predicateSubmitForm: {
+                letter: null,
+                max_score: 0,
+                min_score: null,
+                gradebook_id: this.$route.params.gb
+            },
             modalEditWeights: false,
             modalAddPredikat: false,
             modalEditPredikat: false,
@@ -307,6 +324,7 @@ export default {
         this.getGradebook(this.$route.params.gb);
         this.getPeriod(this.$route.params.period);
         this.getCourse(this.$route.params.course);
+        this.getPredicateLetter(this.$route.params.gb);
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
@@ -315,6 +333,7 @@ export default {
         ...mapActions('reportPeriods', ['detail']),
         ...mapActions('courses', ['show']),
         ...mapActions('gradebooks', ['gradebook', 'updateGradebook']),
+        ...mapActions('predicateLetters', ['getPredicate', 'predicate', 'createPredicate', 'updatePredicate']),
 
         getPeriod(id) {
             this.detail(id).then((result) => {
@@ -341,11 +360,31 @@ export default {
                 this.modalEditWeights = false;
             })
         },
+        getPredicateLetter(id) {
+            this.getPredicate(id).then((result) => {
+                this.predicates = result;
+            })
+        },
         addPredikat() {
-            console.log('add');
+            this.createPredicate(this.predicateSubmitForm).then((result) => {
+                this.predicateSubmitForm.letter = null;
+                this.predicateSubmitForm.min_score = null;
+                this.modalAddPredikat = false;
+                this.getPredicateLetter(this.$route.params.gb);
+            })
+        },
+        showModalEditPredicate(id) {
+            this.predicate(id).then((result) => {
+                this.predicateDetail = result;
+                this.modalEditPredikat = true;
+            })
         },
         editPredikat() {
-            console.log('edit');
+            let payload = {id: this.predicateDetail.id, data: this.predicateDetail};
+            this.updatePredicate(payload).then((result) => {
+                this.modalEditPredikat = false;
+                this.getPredicateLetter(this.$route.params.gb);
+            })
         },
         showModalDeletePredikat() {
             this.modalEditPredikat = false;

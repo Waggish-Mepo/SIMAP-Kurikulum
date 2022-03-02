@@ -17,6 +17,7 @@ class PredicateLetterService {
         $maxScore = $filter['max_score'] ?? null;
         $letter = $filter['letter'] ?? null;
         $gradebookId = $filter['gradebook_id'] ?? null;
+        $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = PredicateLetter::orderBy('created_at', $orderBy);
 
@@ -34,6 +35,10 @@ class PredicateLetterService {
 
         if ($gradebookId) {
             $query->where('gradebook_id', $gradebookId);
+        }
+
+        if ($withoutPagination) {
+            return $query->get()->toArray();
         }
 
         $predicateLetters = $query->paginate($perPage);
