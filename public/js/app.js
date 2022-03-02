@@ -5764,6 +5764,10 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/:page/gradebooks/periods/:period',
       name: 'gradebooks.course',
       component: loadView('dashboard/gradeBook/PeriodCourse')
+    }, {
+      path: '/:page/gradebooks/periods/:period/course/:course/gradebook/:gb',
+      name: 'gradebooks.course.detail',
+      component: loadView('dashboard/gradeBook/Detail')
     }]
   }, {
     path: '/dashboard/gradebooks',
@@ -5772,9 +5776,9 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       auth: true
     },
     children: [{
-      path: '/periods/:period/course/:course',
-      name: 'gradebooks.course.detail',
-      component: loadView('dashboard/gradeBook/Detail')
+      path: '/periods/:period/course/:course/gradebook/:gb/student-group/:sg',
+      name: 'gradebooks.course.detail.group',
+      component: loadView('dashboard/gradeBook/DetailGroup')
     }]
   }]
 });
@@ -5806,8 +5810,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _router_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./router.js */ "./resources/js/router.js");
 /* harmony import */ var _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stores/auth/index.js */ "./resources/js/stores/auth/index.js");
 /* harmony import */ var _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./stores/subjects/index.js */ "./resources/js/stores/subjects/index.js");
@@ -5820,6 +5824,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _stores_studentGroups_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./stores/studentGroups/index.js */ "./resources/js/stores/studentGroups/index.js");
 /* harmony import */ var _stores_students_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./stores/students/index.js */ "./resources/js/stores/students/index.js");
 /* harmony import */ var _stores_studentCourses_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./stores/studentCourses/index.js */ "./resources/js/stores/studentCourses/index.js");
+/* harmony import */ var _stores_gradebooks_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./stores/gradebooks/index.js */ "./resources/js/stores/gradebooks/index.js");
 
 
  //IMPORT MODULE SECTION
@@ -5835,9 +5840,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_12__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_13__["default"]);
+
+vue__WEBPACK_IMPORTED_MODULE_13__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_14__["default"]);
 var debug = "development" !== 'production';
-var store = new vuex__WEBPACK_IMPORTED_MODULE_13__["default"].Store({
+var store = new vuex__WEBPACK_IMPORTED_MODULE_14__["default"].Store({
   modules: {
     auth: _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_1__["default"],
     subjects: _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_2__["default"],
@@ -5849,7 +5855,8 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_13__["default"].Store({
     majors: _stores_majors_index_js__WEBPACK_IMPORTED_MODULE_7__["default"],
     batches: _stores_batches_index_js__WEBPACK_IMPORTED_MODULE_8__["default"],
     studentGroups: _stores_studentGroups_index_js__WEBPACK_IMPORTED_MODULE_9__["default"],
-    students: _stores_students_index_js__WEBPACK_IMPORTED_MODULE_10__["default"]
+    students: _stores_students_index_js__WEBPACK_IMPORTED_MODULE_10__["default"],
+    gradebooks: _stores_gradebooks_index_js__WEBPACK_IMPORTED_MODULE_12__["default"]
   },
   state: {
     errors: [],
@@ -6154,7 +6161,7 @@ var actions = {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/courses/?search=' + payload.search + '&period=' + payload.period).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/courses/?search=' + payload.search).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
@@ -6245,6 +6252,127 @@ var actions = {
     });
     return new Promise(function (resolve, reject) {
       axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/courses/' + payload.id, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: state,
+  actions: actions,
+  mutations: mutations
+});
+
+/***/ }),
+
+/***/ "./resources/js/stores/gradebooks/index.js":
+/*!*************************************************!*\
+  !*** ./resources/js/stores/gradebooks/index.js ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var state = function state() {
+  return {};
+};
+
+var mutations = {};
+var actions = {
+  checkCourse: function checkCourse(_ref, payload) {
+    var commit = _ref.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/gradebooks/course/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  getGradebook: function getGradebook(_ref2, payload) {
+    var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/gradebooks/check-gradebook/?report_period_id=' + payload.report_period_id + '&course_id=' + payload.course_id).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  gradebook: function gradebook(_ref3, payload) {
+    var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/gradebooks/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  create: function create(_ref4, payload) {
+    var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/gradebooks', payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  updateGradebook: function updateGradebook(_ref5, payload) {
+    var commit = _ref5.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/gradebooks/' + payload.id, payload.data).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
@@ -57907,6 +58035,10 @@ var map = {
 		"./resources/js/pages/dashboard/gradeBook/Detail.vue",
 		"resources_js_pages_dashboard_gradeBook_Detail_vue"
 	],
+	"./dashboard/gradeBook/DetailGroup.vue": [
+		"./resources/js/pages/dashboard/gradeBook/DetailGroup.vue",
+		"resources_js_pages_dashboard_gradeBook_DetailGroup_vue"
+	],
 	"./dashboard/gradeBook/Period.vue": [
 		"./resources/js/pages/dashboard/gradeBook/Period.vue",
 		"resources_js_pages_dashboard_gradeBook_Period_vue"
@@ -58058,7 +58190,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

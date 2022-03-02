@@ -85,17 +85,24 @@ const router = new Router({
                 name: 'gradebooks.course',
                 component: loadView('dashboard/gradeBook/PeriodCourse')
             },
+            { 
+                path: '/:page/gradebooks/periods/:period/course/:course/gradebook/:gb',
+                name: 'gradebooks.course.detail',
+                component: loadView('dashboard/gradeBook/Detail')
+            },
             ]
         },
         {
             path: '/dashboard/gradebooks',
             component: loadView('dashboard/BaseGradeBook'),
             meta: { auth: true },
-            children: [{ 
-                path: '/periods/:period/course/:course',
-                name: 'gradebooks.course.detail',
-                component: loadView('dashboard/gradeBook/Detail')
-            }]
+            children: [
+                { 
+                    path: '/periods/:period/course/:course/gradebook/:gb/student-group/:sg',
+                    name: 'gradebooks.course.detail.group',
+                    component: loadView('dashboard/gradeBook/DetailGroup')
+                },
+            ]
         }
     ],
 });

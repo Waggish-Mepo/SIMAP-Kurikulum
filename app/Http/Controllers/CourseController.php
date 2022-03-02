@@ -19,7 +19,6 @@ class CourseController extends Controller
     public function index(Request $request)
     {
         $search = $request->search;
-        $period = $request->period;
 
         $courseDB = new CourseService;
         $majorDB = new MajorService;
@@ -40,14 +39,7 @@ class CourseController extends Controller
 
         $subjectWithCourse = [];
         foreach ($subjectsNameID as $subject_id => $subject) {
-            if ($period == "") {
-                $courses = $courseDB->index(['subject_id' => $subject_id, 'without_pagination' => true]);
-            } else {
-                $reportPeriod = $reportPeriodDB->detail($period);
-                $year = $reportPeriod['school_year'];
-
-                $courses = $courseDB->index(['entry_year' => $year, 'subject_id' => $subject_id, 'without_pagination' => true]);
-            }
+            $courses = $courseDB->index(['subject_id' => $subject_id, 'without_pagination' => true]);
             
             $coursesWithMajors = [];
             foreach ($courses as $course) {

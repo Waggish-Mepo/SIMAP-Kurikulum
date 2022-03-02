@@ -35,6 +35,6 @@ export default {
 }
 
 .content-wrapper {
-    padding: 15px;
+    padding: 15px 20px;
 }
 </style>

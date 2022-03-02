@@ -6,7 +6,11 @@
             <hr>
         </div>
         <ul class="list-unstyled components">
-            <li> <a href="#">Users</a> </li>
+            <li v-for="(sg, index) in studentGroups" :key="index" :class="{active: $route.params.sg == sg.id}">
+                <router-link v-bind:to="{ name: 'gradebooks.course.detail', params: {period: period.id, course: course.id, sg: sg.id} }" class="router"> 
+                <a href="#">{{sg.name}}</a> 
+                </router-link>
+            </li>
         </ul>
     </nav>
 </template>
@@ -60,6 +64,10 @@ p {
     line-height: 1.7em;
 }
 
+a.router {
+    color: #000;
+}
+
 #sidebar {
     min-width: 180px;
     max-width: 180px;
@@ -83,7 +91,7 @@ p {
 }
 
 #sidebar ul li a {
-    padding: 8px 0 8px 20px;
+    padding: 8px 0 8px 10px;
     font-size: 1em;
     display: block;
     color: #B4ADAD;
