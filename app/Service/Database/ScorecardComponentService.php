@@ -3,5 +3,5 @@
 namespace App\Service\Database;
 
 class ScorecardComponentService{
-    //nanti
+
 }
