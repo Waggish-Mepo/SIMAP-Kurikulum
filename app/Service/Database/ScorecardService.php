@@ -25,11 +25,11 @@ class ScorecardService{
         return $scorecards;
     }
 
-    public function bulkCreate($gradebookId)
+    public function bulkCreate($gradebookId, $payload)
     {
         $gradebook = Gradebook::with('course')->findOrFail($gradebookId);
 
-        Validator::make($this->request->only(['gradebook_id', 'students']), [
+        Validator::make($payload, [
             'students' => 'required|array',
             'students.*.id' => 'required|exists:students,id',
             'gradebook_id' => 'required|exists:gradebooks,id',
@@ -37,10 +37,9 @@ class ScorecardService{
             'students.*.skill_score' => 'nullable|numeric',
             'students.*.final_score' => 'nullable|numeric',
             'students.*.predicate' => 'nullable|string',
-            'locked' => 'boolean',
         ])->validate();
 
-        $students = $this->request->input('students', []);
+        $students = $payload['students'];
         $scorecards = DB::transaction(function () use ($students, $gradebook) {
             $data = collect([]);
             $result = collect([]);

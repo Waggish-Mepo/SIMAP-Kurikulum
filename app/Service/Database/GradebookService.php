@@ -16,12 +16,17 @@ class GradebookService{
         $orderBy = $filter['order_by'] ?? 'ASC';
         $perPage = $filter['page'] ?? 20;
         $title = $filter['title'] ?? null;
+        $course = $filter['course_id'] ?? null;
         $reportPeriodId = $filter['report_period_id'] ?? null;
 
         $query = Gradebook::orderBy('created_at', $orderBy);
 
         if ($reportPeriodId) {
             $query->where('report_period_id', $reportPeriodId);
+        }
+
+        if ($course) {
+            $query->where('course_id', $course);
         }
 
         if ($title !== null) {
@@ -106,9 +111,9 @@ class GradebookService{
             'components' => 'nullable|array',
             'components.*' => ['nullable', 'string', Rule::in(config('constant.gradebook.components'))],
             'weights' => 'nullable',
-            'weights.knowledge' => 'required_without:weights.general|numeric',
-            'weights.skill' => 'required_without:weights.general|numeric',
-            'weights.general' => 'required_without_all:weights.knowledge,weights.skill|numeric',
+            // 'weights.knowledge' => 'required_without:weights.general|numeric',
+            // 'weights.skill' => 'required_without:weights.general|numeric',
+            // 'weights.general' => 'required_without_all:weights.knowledge,weights.skill|numeric',
             'scorebar' => 'required|numeric',
             'course_id' => 'nullable|uuid',
             'report_period_id' => 'nullable|uuid',

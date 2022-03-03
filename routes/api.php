@@ -13,6 +13,8 @@ use App\Http\Controllers\BatchController;
 use App\Http\Controllers\StudentGroupController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentCourseController;
+use App\Http\Controllers\GradebookController;
+use App\Http\Controllers\PredicatLetterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,6 +83,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [StudentGroupController::class, 'index']);
         Route::post('/', [StudentGroupController::class, 'store']);
         Route::get('/{id}', [StudentGroupController::class, 'show']);
+        Route::get('/by-course/{id}', [StudentGroupController::class, 'getByCourse']);
         Route::patch('/{id}', [StudentGroupController::class, 'update']);
     });
     Route::prefix('students')->group(function () {
@@ -91,5 +94,18 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::prefix('majors')->group(function () {
         Route::get('/', [MajorController::class, 'index']);
+    });
+    Route::prefix('gradebooks')->group(function () {
+        Route::get('/check-by-period-course', [GradebookController::class, 'checkPeriodCourse']);
+        Route::get('/check-gradebook', [GradebookController::class, 'checkGradebook']);
+        Route::get('/{id}', [GradebookController::class, 'show']);
+        Route::post('/', [GradebookController::class, 'store']);
+        Route::patch('/{id}', [GradebookController::class, 'update']);
+    });
+    Route::prefix('predicate-letters')->group(function () {
+        Route::get('/{id}', [PredicatLetterController::class, 'index']);
+        Route::get('/show/{id}', [PredicatLetterController::class, 'show']);
+        Route::post('/', [PredicatLetterController::class, 'store']);
+        Route::patch('/{id}', [PredicatLetterController::class, 'update']);
     });
 });

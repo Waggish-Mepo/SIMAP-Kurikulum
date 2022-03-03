@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Service\Database\StudentGroupService;
+use App\Service\Database\CourseService;
+use App\Service\Database\BatchService;
 
 class StudentGroupController extends Controller
 {
@@ -35,6 +37,23 @@ class StudentGroupController extends Controller
 
             return response()->json($studentGroups);
         }
+    }
+
+    public function getByCourse($courseId)
+    {
+        $courseService = new CourseService;
+        $batchService = new BatchService;
+
+        $course = $courseService->detail($courseId);
+
+        $batches = $batchService->index([
+            'entry_year' => $course['entry_year'],
+            'with_student_groups' => true
+        ]);
+
+        $studentGroupMajor = $batches->pluck('studentGroups')->flatten()->whereIn('major_id', $course['majors']);
+
+        return response()->json($studentGroupMajor);
     }
 
     /**
