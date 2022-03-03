@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Service\Database\BatchService;
+use App\Service\Database\CourseService;
 use Illuminate\Http\Request;
 use App\Service\Database\GradebookService;
+use App\Service\Database\ScorecardService;
+use App\Service\Database\StudentCourseService;
+use App\Service\Database\StudentService;
 
 class GradebookController extends Controller
 {
@@ -36,7 +41,46 @@ class GradebookController extends Controller
     public function store(Request $request)
     {
         $gradebookDB = new GradebookService;
-        return response()->json($gradebookDB->create($request->all()));
+        $courseService = new CourseService;
+        $batchService = new BatchService;
+        $studentCourseService = new StudentCourseService;
+        $scorecardService = new ScorecardService;
+
+        $gradebook = $gradebookDB->create($request->all());
+
+        $courseId = $request->course_id;
+
+        $course = $courseService->detail($courseId);
+
+        $batches = $batchService->index([
+            'entry_year' => $course['entry_year'],
+            'with_student_groups_students' => true
+        ]);
+
+        $studentGroupMajor = $batches->pluck('studentGroups')->flatten()->whereIn('major_id', $course['majors']);
+
+        $students = $studentGroupMajor->pluck('students')->flatten();
+
+        $studentsPayload = [];
+        foreach ($students as $student) {
+            $checkExist = $studentCourseService->getByStudents($student['id'], $courseId);
+
+            if (count($checkExist)) {
+                $studentsPayload[$student['id']]['id'] = $student['id'];
+                $studentsPayload[$student['id']]['knowledge_score'] = null;
+                $studentsPayload[$student['id']]['skill_score'] = null;
+                $studentsPayload[$student['id']]['predicate'] = null;
+            }
+        }
+
+        $payloadScorecard = [
+            'gradebook_id' => $gradebook['id'],
+            'students' => $studentsPayload,
+        ];
+
+        $scorecardService->bulkCreate($gradebook['id'], $payloadScorecard);
+
+        return response()->json($gradebook);
     }
 
     /**
