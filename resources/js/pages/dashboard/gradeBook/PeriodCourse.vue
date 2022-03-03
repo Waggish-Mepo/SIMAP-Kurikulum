@@ -16,7 +16,7 @@
             <div class="mb-4" v-for="(subject, index) in courses" :key="index">
                 <h5 class="text-capitalize">{{subject.name}}</h5>
                 <div v-if="subject.data.length > 0">
-                    <div class="card w-100 p-3 mb-2" v-for="(course, index) in subject.data" :key="index" @click="checkGradebook(course.id, period.id)">
+                    <div class="card w-100 p-3 mb-2" v-for="(course, index) in subject.data" :key="index" @click="checkGradebook(course.id)">
                         <!-- <router-link v-bind:to="{ name: 'gradebooks.course.detail', params: {page: 6, period: period.id, course: course.id, gb: 1} }" class="router"> -->
                         <div class="d-flex align-items-center text-capitalize">
                             <span class="fas fa-book"></span>
@@ -121,7 +121,7 @@ export default {
     methods: {
         ...mapActions('courses', ['index', 'show']),
         ...mapActions('reportPeriods', ['detail']),
-        ...mapActions('gradebooks', ['checkCourse', 'create', 'getGradebook']),
+        ...mapActions('gradebooks', ['checkPeriodCourse', 'create', 'getGradebook']),
 
         showPeriod(id) {
             this.detail(id).then((result) => {
@@ -133,8 +133,9 @@ export default {
                 this.courses = result;
             })
         },
-        checkGradebook(courseId) {
-            this.checkCourse(courseId).then((result) => {
+        checkGradebook(courseId, periodId) {
+            let payload = {report_period: this.$route.params.period, course: courseId};
+            this.checkPeriodCourse(payload).then((result) => {
                 if (result.data.length < 1) {
                     this.show(courseId).then((value) => {
                         this.gradebook.course_id = courseId;

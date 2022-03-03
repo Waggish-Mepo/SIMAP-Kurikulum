@@ -7,10 +7,10 @@ const mutations = {
 };
 
 const actions = {
-    checkCourse({ commit }, payload) {
+    checkPeriodCourse({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/gradebooks/course/'+payload)
+            axios.get('/gradebooks/check-by-period-course/?report_period='+payload.report_period+'&course='+payload.course)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });

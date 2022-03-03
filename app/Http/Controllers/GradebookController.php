@@ -96,10 +96,12 @@ class GradebookController extends Controller
         return response()->json($gradebookDB->detail($id));
     }
 
-    public function checkCourse($courseId)
+    public function checkPeriodCourse(Request $request)
     {
+        $reportPeriodId = $request->report_period;
+        $courseId = $request->course;
         $gradebookDB = new GradebookService;
-        return response()->json($gradebookDB->index(['course_id' => $courseId]));
+        return response()->json($gradebookDB->index(['report_period_id' => $reportPeriodId,'course_id' => $courseId]));
     }
 
     public function checkGradebook(Request $request)

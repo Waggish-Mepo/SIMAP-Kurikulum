@@ -96,7 +96,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [MajorController::class, 'index']);
     });
     Route::prefix('gradebooks')->group(function () {
-        Route::get('/course/{id}', [GradebookController::class, 'checkCourse']);
+        Route::get('/check-by-period-course', [GradebookController::class, 'checkPeriodCourse']);
         Route::get('/check-gradebook', [GradebookController::class, 'checkGradebook']);
         Route::get('/{id}', [GradebookController::class, 'show']);
         Route::post('/', [GradebookController::class, 'store']);

@@ -6297,13 +6297,13 @@ var state = function state() {
 
 var mutations = {};
 var actions = {
-  checkCourse: function checkCourse(_ref, payload) {
+  checkPeriodCourse: function checkPeriodCourse(_ref, payload) {
     var commit = _ref.commit;
     commit('SET_LOADING', true, {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/gradebooks/course/' + payload).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/gradebooks/check-by-period-course/?report_period=' + payload.report_period + '&course=' + payload.course).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
