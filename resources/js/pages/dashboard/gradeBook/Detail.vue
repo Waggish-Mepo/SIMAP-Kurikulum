@@ -78,24 +78,29 @@
 
     <h5 class="text-capitalize mt-5">komponen penilaian</h5>
     <p class="text-secondary">Komponen nilai otomatis menambahkan siswa/i yang terdaftar di pelajaran <span class="text-capitalize">{{course.caption}} {{course.entry_year_with_class}}</span></p>
-    <b class="text-capitalize mt-4">total bobot pengetahuan :</b>
-    <b class="text-capitalize">total bobot keterampilan :</b>
-    <div class="card w-100 mb-3">
+    <div class="d-flex flex-column mb-4 mt-4" v-if="course.curriculum !== 'K21 | Sekolah Penggerak'">
+        <b class="text-capitalize">total bobot pengetahuan : {{totalKnowledge}}</b>
+        <b class="text-capitalize">total bobot keterampilan : {{totalSkill}}</b>
+    </div>
+    <div class="card w-100 mb-3" v-for="(gc, index) in components" :key="index">
         <div class="card-title bg-muted p-2 text-center">
-            <b class="text-capitalize">penilaian harian 1 (PH 1)</b> <span class="fas fa-pen" style="margin-left: 8px" @click="modalEditComponent = true"></span>
+            <b class="text-capitalize">{{gc.title}} ({{gc.abbreviation}})</b> <span class="fas fa-pen" style="margin-left: 8px" @click="showComponent(gc.id)"></span>
         </div>
-        <div class="card-body">
+        <div class="card-body" v-if="gc.knowledge_weight">
             <div class="row">
                 <div class="col-6 border-right p-col">
-                    <p class="text-secondary text-capitalize">bobot pengetahuan</p>
-                    <p class="text-black">5%</p>
+                    <p class="text-secondary text-capitalize">pengetahuan</p>
+                    <p class="text-black">{{gc.knowledge_weight}}</p>
                 </div>
                 <div class="col-6">
-                    <p class="text-secondary text-capitalize">bobot keterampilan</p>
-                    <p class="text-black">5%</p>
+                    <p class="text-secondary text-capitalize">keterampilan</p>
+                    <p class="text-black">{{gc.skill_weight}}</p>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="card w-100 mb-3 mt-3 p-2" v-if="components.length < 1">
+        <p class="text-center">Data penilaian belum tersedia.</p>
     </div>
     <a href="#" class="btn btn-white text-primary" @click="modalAddComponent = true"><span class="fas fa-plus"></span>Tambah Komponen Penilaian</a>
 
@@ -191,7 +196,7 @@
     <modal v-if="modalDeletePredikat" @close="modalDeletePredikat = false" :deleteOpt="deletePredikat">
         <h5 slot="header">Hapus Predikat</h5>
         <div slot="body">
-            <span>Yakin akan menghapus predikat <b class="text-capitalize">test</b>? data terkait mungkin saja akan mengalami perubahan</span>
+            <span>Yakin akan menghapus predikat <b class="text-capitalize">{{predicateDetail.letter}} dengan aturan >= {{predicateDetail.min_score}}</b>? data terkait mungkin saja akan mengalami perubahan</span>
         </div>
     </modal>
 
@@ -202,40 +207,54 @@
             <div class="alert alert-danger mb-3" v-if="errorMessage">
                 {{ errorMessage }}
             </div>
-            <div class="row mb-3">
-                <b class="mb-4">Total bobot nilai pengetahuan dan keterampilan harus 100%</b>
-                <div class="form-group col-sm-6">
-                    <label class="mb-2">Singkatan Penilaian</label>
-                    <input type="text" class="form-control" placeholder="Contoh : PH 1">
-                </div>
-                <div class="form-group col-sm-6">
-                    <label class="mb-2">Nama Penilaian</label>
-                   <input type="text" class="form-control" placeholder="Contoh : Penilaian Harian 1">
-                </div>
+            <div class="alert alert-danger mb-3" v-if="errorInWeight.status">
+                {{ errorInWeight.message }}
             </div>
             <div class="row mb-3">
                 <div class="form-group col-sm-6">
+                    <label class="mb-2">Singkatan Penilaian</label>
+                    <input type="text" class="form-control" placeholder="Contoh : PH 1" v-model="componentSubmitForm.abbreviation" :class="{'is-invalid': errors.abbreviation}">
+                    <div class="invalid-feedback" v-if="errors.abbreviation">
+                        {{ errors.abbreviation[0] }}
+                    </div>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label class="mb-2">Nama Penilaian</label>
+                    <input type="text" class="form-control" placeholder="Contoh : Penilaian Harian 1" v-model="componentSubmitForm.title" :class="{'is-invalid': errors.title}">
+                    <div class="invalid-feedback" v-if="errors.title">
+                        {{ errors.title[0] }}
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3" v-if="course.curriculum !== 'K21 | Sekolah Penggerak'">
+                <div class="form-group col-sm-6">
                     <label class="mb-2">Bobot Pengetahuan</label>
                     <div class="input-group">
-                        <button class="btn btn-outline-secondary" disabled="disabled">
+                        <button class="btn btn-outline-secondary" @click="downScore('knowledge_weight')">
                             <span class="fas fa-minus"></span>
                         </button>
-                        <input type="number" class="form-control" value="1" min="1" max="100">
-                        <button class="btn btn-outline-secondary">
+                        <input type="number" class="form-control" v-model="knowledge_weight" :class="{'is-invalid': errors.knowledge_weight}">
+                        <button class="btn btn-outline-secondary" @click="upScore('knowledge_weight')">
                             <span class="fas fa-plus i-input"></span>
                         </button>
+                    </div>
+                    <div class="invalid-feedback" v-if="errors.knowledge_weight">
+                        {{ errors.knowledge_weight[0] }}
                     </div>
                 </div>
                 <div class="form-group col-sm-6">
                     <label class="mb-2">Bobot Keterampilan</label>
                     <div class="input-group">
-                        <button class="btn btn-outline-secondary" disabled="disabled">
+                        <button class="btn btn-outline-secondary" @click="downScore('skill_weight')">
                             <span class="fas fa-minus"></span>
                         </button>
-                        <input type="number" class="form-control" value="1" min="1" max="100">
-                        <button class="btn btn-outline-secondary">
+                        <input type="number" class="form-control" v-model="skill_weight" :class="{'is-invalid': errors.skill_weight}">
+                        <button class="btn btn-outline-secondary" @click="upScore('skill_weight')">
                             <span class="fas fa-plus i-input"></span>
                         </button>
+                    </div>
+                    <div class="invalid-feedback" v-if="errors.skill_weight">
+                        {{ errors.skill_weight[0] }}
                     </div>
                 </div>
             </div>
@@ -248,26 +267,28 @@
             <div class="alert alert-danger mb-3" v-if="errorMessage">
                 {{ errorMessage }}
             </div>
-            <div class="row mb-3">
-                <b class="mb-4">Total bobot nilai pengetahuan dan keterampilan harus 100%</b>
-                <div class="form-group col-sm-6">
-                    <label class="mb-2">Singkatan Penilaian</label>
-                    <input type="text" class="form-control" placeholder="Contoh : PH 1">
-                </div>
-                <div class="form-group col-sm-6">
-                    <label class="mb-2">Nama Penilaian</label>
-                   <input type="text" class="form-control" placeholder="Contoh : Penilaian Harian 1">
-                </div>
+            <div class="alert alert-danger mb-3" v-if="errorInWeight.status">
+                {{ errorInWeight.message }}
             </div>
             <div class="row mb-3">
                 <div class="form-group col-sm-6">
+                    <label class="mb-2">Singkatan Penilaian</label>
+                    <input type="text" class="form-control" placeholder="Contoh : PH 1" v-model="componentEditForm.abbreviation">
+                </div>
+                <div class="form-group col-sm-6">
+                    <label class="mb-2">Nama Penilaian</label>
+                   <input type="text" class="form-control" placeholder="Contoh : Penilaian Harian 1" v-model="componentEditForm.title">
+                </div>
+            </div>
+            <div class="row mb-3" v-if="course.curriculum !== 'K21 | Sekolah Penggerak'">
+                <div class="form-group col-sm-6">
                     <label class="mb-2">Bobot Pengetahuan</label>
                     <div class="input-group">
-                        <button class="btn btn-outline-secondary" disabled="disabled">
+                        <button class="btn btn-outline-secondary" @click="downScore('knowledge_weight_edit')">
                             <span class="fas fa-minus"></span>
                         </button>
-                        <input type="number" class="form-control" value="1" min="1" max="100">
-                        <button class="btn btn-outline-secondary">
+                        <input type="number" class="form-control" v-model="componentEditForm.knowledge_weight">
+                        <button class="btn btn-outline-secondary" @click="upScore('knowledge_weight_edit')">
                             <span class="fas fa-plus i-input"></span>
                         </button>
                     </div>
@@ -275,16 +296,24 @@
                 <div class="form-group col-sm-6">
                     <label class="mb-2">Bobot Keterampilan</label>
                     <div class="input-group">
-                        <button class="btn btn-outline-secondary" disabled="disabled">
+                        <button class="btn btn-outline-secondary" @click="downScore('skill_weight_edit')">
                             <span class="fas fa-minus"></span>
                         </button>
-                        <input type="number" class="form-control" value="1" min="1" max="100">
-                        <button class="btn btn-outline-secondary">
+                        <input type="number" class="form-control" v-model="componentEditForm.skill_weight">
+                        <button class="btn btn-outline-secondary" @click="upScore('skill_weight_edit')">
                             <span class="fas fa-plus i-input"></span>
                         </button>
                     </div>
                 </div>
             </div>
+        </div>
+        <button type="button" class="btn btn-outline-danger" slot="button" @click="showModalDeleteComponent">Hapus</button>
+    </modal>
+
+    <modal v-if="modalDeleteComponent" @close="modalDeleteComponent = false" :deleteOpt="deleteComponent">
+        <h5 slot="header">Hapus Penilaian</h5>
+        <div slot="body">
+            <span>Yakin akan menghapus data <b class="text-capitalize">{{componentEditForm.title}}</b>? semua data yang terkait dengan <b class="text-capitalize">{{componentEditForm.title}}</b> akan ikut terhapus.</span>
         </div>
     </modal>
 </div>  
@@ -312,12 +341,32 @@ export default {
                 min_score: null,
                 gradebook_id: this.$route.params.gb
             },
+            components: [],
+            totalKnowledge: null,
+            totalSkill: null,
+            knowledge_weight: 1,
+            skill_weight: 1,
+            general_weight: 1,
+            componentSubmitForm: {
+                title: null,
+                abbreviation: null,
+                knowledge_weight: null,
+                skill_weight: null,
+                general_weight: null,
+                gradebook_id: this.$route.params.gb
+            },
+            componentEditForm: {},
+            errorInWeight: {
+                status: false,
+                message: null
+            },
             modalEditWeights: false,
             modalAddPredikat: false,
             modalEditPredikat: false,
             modalDeletePredikat: false,
             modalAddComponent: false,
-            modalEditComponent: false
+            modalEditComponent: false,
+            modalDeleteComponent: false
         }
     },
     created() {
@@ -325,6 +374,7 @@ export default {
         this.getPeriod(this.$route.params.period);
         this.getCourse(this.$route.params.course);
         this.getPredicateLetter(this.$route.params.gb);
+        this.getGradebookComponents(this.$route.params.gb);
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
@@ -334,6 +384,7 @@ export default {
         ...mapActions('courses', ['show']),
         ...mapActions('gradebooks', ['gradebook', 'updateGradebook']),
         ...mapActions('predicateLetters', ['getPredicate', 'predicate', 'createPredicate', 'updatePredicate']),
+        ...mapActions('gradebookComponents', ['getComponents', 'component', 'createComponents', 'updateComponent']),
 
         getPeriod(id) {
             this.detail(id).then((result) => {
@@ -390,14 +441,106 @@ export default {
             this.modalEditPredikat = false;
             this.modalDeletePredikat = true;
         },
+        upScore(model) {
+            if(model === "knowledge_weight") {
+                if(this.knowledge_weight < 10) {
+                    this.knowledge_weight += 1;
+                }
+            } else if (model === "skill_weight") {
+                if(this.skill_weight < 10) {
+                    this.skill_weight += 1;
+                }
+            } else if (model === "knowledge_weight_edit") {
+                if (this.componentEditForm.knowledge_weight < 10) {
+                    this.componentEditForm.knowledge_weight += 1;
+                }
+            } else if (model === "skill_weight_edit") {
+                if (this.componentEditForm.skill_weight < 10) {
+                    this.componentEditForm.skill_weight += 1;
+                }
+            }
+        },
+        downScore(model) {
+            if(model === "knowledge_weight") {
+                if(this.knowledge_weight !== 0) {
+                    this.knowledge_weight -= 1;
+                }
+            } else if (model === "skill_weight") {
+                if(this.skill_weight !== 0) {
+                    this.skill_weight -= 1;
+                }
+            } else if (model === "knowledge_weight_edit") {
+                if (this.componentEditForm.knowledge_weight !== 0){
+                    this.componentEditForm.knowledge_weight -= 1;
+                }
+            } else if (model === "skill_weight_edit") {
+                if (this.componentEditForm.knowledge_weight !== 0) {
+                    this.componentEditForm.skill_weight -= 1;
+                }
+            }
+        },
         deletePredikat() {
             console.log('delete');
         },
-        addComponent() {
-            console.log('add');
+        getGradebookComponents(id) {
+            this.getComponents(id).then((result) => {
+                this.components = result;
+                if (this.components.length > 0) {
+                    this.totalKnowledge = 0;
+                    this.totalSkill = 0;
+                    for (let i = 0; i < this.components.length; i++) {
+                        this.totalKnowledge += this.components[i].knowledge_weight;
+                        this.totalSkill += this.components[i].skill_weight;
+                    }
+                }
+            });
         },
-        editcomponent() {
-            console.log('edit');
+        addComponent() {
+            if (this.componentSubmitForm.knowledge_weight + this.componentSubmitForm.skill_weight > 10) {
+                this.errorInWeight.status = true;
+                this.errorInWeight.message = "total bobot pengetahuan dan keterampilan tidak boleh lebih dari 10";
+            }
+            if (this.course.curriculum !== 'K21 | Sekolah Penggerak') {
+                this.componentSubmitForm.knowledge_weight = this.knowledge_weight;
+                this.componentSubmitForm.skill_weight = this.skill_weight;
+            } else {
+                this.componentSubmitForm.general_weight = 1;
+            }
+            this.createComponents(this.componentSubmitForm).then((result) => {
+                this.componentSubmitForm.title = null;
+                this.componentSubmitForm.abbreviation = null;
+                this.componentSubmitForm.knowledge_weight = null;
+                this.knowledge_weight = 1;
+                this.componentSubmitForm.skill_weight = null;
+                this.skill_weight = 1;
+                this.componentSubmitForm.general_weight = null;
+                this.modalAddComponent = false;
+                this.getGradebookComponents(this.$route.params.gb);
+            })
+        },
+        showComponent(id) {
+            this.component(id).then((result) => {
+                this.componentEditForm = result;
+                this.modalEditComponent = true;
+            })
+        },
+        editComponent() {
+            if (this.componentEditForm.knowledge_weight + this.componentEditForm.skill_weight > 10) {
+                this.errorInWeight.status = true;
+                this.errorInWeight.message = "total bobot pengetahuan dan keterampilan tidak boleh lebih dari 10";
+            }
+            let payload = {id: this.componentEditForm.id, data: this.componentEditForm};
+            this.updateComponent(payload).then((result) => {
+                this.modalEditComponent = false;
+                this.getGradebookComponents(this.$route.params.gb);
+            })
+        },
+        showModalDeleteComponent() {
+            this.modalEditComponent = false;
+            this.modalDeleteComponent = true;
+        },
+        deleteComponent() {
+            console.log('delete');
         }
     }
 }
