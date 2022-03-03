@@ -15,6 +15,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentCourseController;
 use App\Http\Controllers\GradebookController;
 use App\Http\Controllers\PredicatLetterController;
+use App\Http\Controllers\GradebookComponentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -107,5 +108,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/show/{id}', [PredicatLetterController::class, 'show']);
         Route::post('/', [PredicatLetterController::class, 'store']);
         Route::patch('/{id}', [PredicatLetterController::class, 'update']);
+    });
+    Route::prefix('gradebook-components')->group(function () {
+        Route::get('/gradebook/{id}', [GradebookComponentController::class, 'index']);
+        Route::get('/{id}', [GradebookComponentController::class, 'show']);
+        Route::post('/', [GradebookComponentController::class, 'store']);
+        Route::patch('/{id}', [GradebookComponentController::class, 'update']);
     });
 });
