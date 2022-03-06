@@ -27,7 +27,7 @@ class GradebookComponentService{
         if ($withoutPagination) {
             return $query->get()->toArray();
         }
-        
+
         $gradebookComponents = $query->paginate($perPage);
 
         return $gradebookComponents;
@@ -57,7 +57,7 @@ class GradebookComponentService{
             $gradebookComponent->save();
 
             FunctionsGradebook::syncScorecardComponent($gradebook->id, $isK21);
-            FunctionsGradebook::recalculate($gradebook->id, $isK21);
+            // FunctionsGradebook::recalculate($gradebook->id, $isK21);
         });
 
         return $gradebookComponent->toArray();
@@ -66,11 +66,21 @@ class GradebookComponentService{
     //yang update belum work sepenuhnya
     public function update($gradebookComponentId, $payload) {
 
-        Gradebook::findOrFail($payload['gradebook_id']);
+        $gradebook = Gradebook::findOrFail($payload['gradebook_id']);
         $gradebookComponent = GradebookComponent::findOrFail($gradebookComponentId);
 
         $gradebookComponent = $this->fill($gradebookComponent, $payload);
         $gradebookComponent->save();
+
+        DB::transaction(function () use (
+            $gradebook,
+            $gradebookComponent
+        ) {
+            $isK21 = $gradebook->course->curriculum === Course::K21_SEKOLAH_PENGGERAK;
+            $gradebookComponent->save();
+
+            // FunctionsGradebook::recalculate($gradebook->id, $isK21);
+        });
 
         return $gradebookComponent->toArray();
     }

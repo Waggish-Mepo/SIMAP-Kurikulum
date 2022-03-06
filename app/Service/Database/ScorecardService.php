@@ -2,7 +2,6 @@
 
 namespace App\Service\Database;
 
-use App\Models\Course;
 use App\Models\Gradebook;
 use App\Models\ReportPeriod;
 use App\Models\Scorecard;

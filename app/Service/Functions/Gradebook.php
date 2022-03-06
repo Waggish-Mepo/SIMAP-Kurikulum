@@ -6,7 +6,6 @@ use App\Models\Gradebook as ModelsGradebook;
 use App\Models\PredicateLetter;
 use App\Models\Scorecard;
 use App\Models\ScorecardComponent;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
