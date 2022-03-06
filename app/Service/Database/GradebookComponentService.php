@@ -15,9 +15,19 @@ class GradebookComponentService{
     public function index($filter = []) {
         $orderBy = $filter['order_by'] ?? 'ASC';
         $perPage = $filter['page'] ?? 20;
+        $gradebook = $filter['gradebook_id'] ?? false;
+        $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = GradebookComponent::orderBy('created_at', $orderBy);
 
+        if ($gradebook) {
+            $query->where('gradebook_id', $gradebook);
+        }
+
+        if ($withoutPagination) {
+            return $query->get()->toArray();
+        }
+        
         $gradebookComponents = $query->paginate($perPage);
 
         return $gradebookComponents;
@@ -75,7 +85,7 @@ class GradebookComponentService{
             'title' => 'required|string',
             'abbreviation' => 'required|string',
             'knowledge_weight' => 'required_without:general_weight|nullable|numeric|between:0,9',
-            'skill_weight' => 'required_without:general_weight|nullable|numeric',
+            'skill_weight' => 'required_without:general_weight|nullable|numeric|between:0,9',
             'general_weight' => 'required_without_all:knowledge_weight, skill_weight|nullable|numeric|between:0,9',
             'gradebook_id' => 'required',
         ]);

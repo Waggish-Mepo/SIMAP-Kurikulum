@@ -14,6 +14,9 @@ import batches from './stores/batches/index.js'
 import studentGroups from './stores/studentGroups/index.js'
 import students from './stores/students/index.js'
 import studentCourses from './stores/studentCourses/index.js'
+import gradebooks from './stores/gradebooks/index.js'
+import predicateLetters from './stores/predicateLetters/index.js'
+import gradebookComponents from './stores/gradebookComponents/index.js'
 
 Vue.use(Vuex);
 
@@ -31,7 +34,10 @@ const store = new Vuex.Store({
         majors,
         batches,
         studentGroups,
-        students
+        students,
+        gradebooks,
+        predicateLetters,
+        gradebookComponents
     },
     state: {
         errors: [],

@@ -7,10 +7,10 @@ const mutations = {
 };
 
 const actions = {
-    index({ commit }, payload) {
+    checkPeriodCourse({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/student-groups/?page='+payload.page+'&per_page='+payload.per_page+'&batch='+payload.batch+'&search='+payload.search+'&sort='+payload.sort)
+            axios.get('/gradebooks/check-by-period-course/?report_period='+payload.report_period+'&course='+payload.course)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -20,10 +20,10 @@ const actions = {
                 })
         })
     },
-    detail({ commit }, payload) {
+    getGradebook({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/student-groups/'+payload)
+            axios.get('/gradebooks/check-gradebook/?report_period_id='+payload.report_period_id+'&course_id='+payload.course_id)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -33,10 +33,10 @@ const actions = {
                 })
         })
     },
-    getByCourse({ commit }, payload) {
+    gradebook({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/student-groups/by-course/'+payload)
+            axios.get('/gradebooks/'+payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -49,7 +49,7 @@ const actions = {
     create({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.post('/student-groups', payload)
+            axios.post('/gradebooks', payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -59,10 +59,10 @@ const actions = {
                 })
         })
     },
-    edit({ commit }, payload) {
+    updateGradebook({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.patch('/student-groups/'+payload.id, payload.data)
+            axios.patch('/gradebooks/'+payload.id, payload.data)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });

@@ -7,10 +7,10 @@ const mutations = {
 };
 
 const actions = {
-    index({ commit }, payload) {
+    getPredicate({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/student-groups/?page='+payload.page+'&per_page='+payload.per_page+'&batch='+payload.batch+'&search='+payload.search+'&sort='+payload.sort)
+            axios.get('/predicate-letters/'+payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -20,10 +20,10 @@ const actions = {
                 })
         })
     },
-    detail({ commit }, payload) {
+    predicate({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/student-groups/'+payload)
+            axios.get('/predicate-letters/show/'+payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -33,23 +33,10 @@ const actions = {
                 })
         })
     },
-    getByCourse({ commit }, payload) {
+    createPredicate({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/student-groups/by-course/'+payload)
-                .then((response) => {
-                    resolve(response.data);
-                    commit('SET_GOOD', null, { root: true });
-                })
-                .catch((error) => {
-                    commit('SET_ERROR', error.response.data, { root: true });
-                })
-        })
-    },
-    create({ commit }, payload) {
-        commit('SET_LOADING', true, { root: true });
-        return new Promise((resolve, reject) => {
-            axios.post('/student-groups', payload)
+            axios.post('/predicate-letters', payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -59,10 +46,10 @@ const actions = {
                 })
         })
     },
-    edit({ commit }, payload) {
+    updatePredicate({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.patch('/student-groups/'+payload.id, payload.data)
+            axios.patch('/predicate-letters/'+payload.id, payload.data)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });

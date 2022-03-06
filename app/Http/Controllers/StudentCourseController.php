@@ -23,7 +23,6 @@ class StudentCourseController extends Controller
         $courseService = new CourseService;
         $batchService = new BatchService;
         $studentCourseService = new StudentCourseService;
-        $studentGroupService = new StudentGroupService;
         $courseId = $request->course;
 
         $course = $courseService->detail($courseId);
@@ -34,17 +33,6 @@ class StudentCourseController extends Controller
         ]);
 
         $studentGroupMajor = $batches->pluck('studentGroups')->flatten()->whereIn('major_id', $course['majors']);
-
-        // $studentGroupMajor = [];
-        // foreach ($course['majors'] as $major) {
-        //     $studentGroups = $studentGroupService->index(['major_id' => $major, 'school_year' => $course['entry_year'], 'without_pagination' => true]);
-
-        //     if (count($studentGroups) > 0) {
-        //         for ($i = 0; $i < count($studentGroups); $i++) {
-        //             $studentGroupMajor[] = $studentGroups[$i];
-        //         }
-        //     }
-        // }
 
         $studentGroupsNameID = [];
         foreach ($studentGroupMajor as $v) {
@@ -81,7 +69,6 @@ class StudentCourseController extends Controller
         $courseService = new CourseService;
         $batchService = new BatchService;
         $studentCourseService = new StudentCourseService;
-        $studentGroupService = new StudentGroupService;
 
         $course = $courseService->detail($courseId);
 
@@ -91,17 +78,6 @@ class StudentCourseController extends Controller
         ]);
 
         $studentGroupMajor = $batches->pluck('studentGroups')->flatten()->whereIn('major_id', $course['majors']);
-
-        // $studentGroupMajor = [];
-        // foreach ($course['majors'] as $major) {
-        //     $studentGroups = $studentGroupService->index(['major_id' => $major,'school_year' => $course['entry_year'], 'without_pagination' => true]);
-
-        //     if (count($studentGroups) > 0) {
-        //         for ($i=0; $i < count($studentGroups); $i++) {
-        //             $studentGroupMajor[] = $studentGroups[$i];
-        //         }
-        //     }
-        // }
 
         $studentGroupsNameID = [];
         foreach ($studentGroupMajor as $v) {
