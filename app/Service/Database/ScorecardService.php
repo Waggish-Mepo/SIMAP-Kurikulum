@@ -12,18 +12,40 @@ use Illuminate\Support\Facades\Validator;
 use Ramsey\Uuid\Uuid;
 
 class ScorecardService{
-    public function index($reportPeriodId, $gradebookId)
-    {
-        ReportPeriod::findOrFail($reportPeriodId);
+
+    public function index($gradebookId, $filter = []) {
+
         Gradebook::findOrFail($gradebookId);
 
-        $scorecards = Scorecard::with([
-            'knowledgeScoreLetter',
-            'skillScoreLetter',
-            'finalScoreLetter',
-        ])->where('gradebook_id', $gradebookId)->orderBy('created_at', 'asc')->paginate($this->perPage());
+        $orderBy = $filter['order_by'] ?? 'ASC';
+        $perPage = $filter['page'] ?? 20;
+        $students = $filter['student_ids'] ?? [];
+        $withStudent = $filter['with_student'] ?? false;
+        $withScorecardComponents = $filter['with_scorecard_components'] ?? false;
+        $withLetter = $filter['with_letter'] ?? false;
+        $withoutPagination = $filter['without_pagination'] ?? false;
 
-        return $scorecards;
+        $query = Scorecard::where('gradebook_id', $gradebookId)->orderBy('created_at', $orderBy);
+
+        if ($students) {
+            $query->whereIn('student_id', $students);
+        }
+
+        if ($withStudent) {
+            $query->with('student');
+        }
+
+        if ($withScorecardComponents) {
+            $query->with('scorecardComponents');
+        }
+
+        if ($withoutPagination) {
+            return $query->get()->toArray();
+        }
+
+        $courses = $query->paginate($perPage);
+
+        return $courses;
     }
 
     public function bulkCreate($gradebookId, $payload)
