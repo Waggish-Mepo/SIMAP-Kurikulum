@@ -1,6 +1,6 @@
 <template>
     <nav class="navbar navbar-expand-md shadow"> 
-        <button type="button" id="sidebarCollapse" class="btn btn-white"> <i class="fas fa-bars" @click="showSidebar"></i> Buku Nilai</button>
+        <button type="button" id="sidebarCollapse" class="btn btn-white" @click="showSidebar"> <i class="fas fa-bars"></i> Buku Nilai</button>
     </nav>
 </template>
 
@@ -10,6 +10,7 @@ export default {
     methods: {
         showSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebar').classList.toggle('d-none');
         }
     }
 }

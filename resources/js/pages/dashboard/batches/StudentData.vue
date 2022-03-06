@@ -230,7 +230,7 @@ export default {
             paginationOpts: {
                 enabled: true,
                 mode: "records",
-                perPage: 10,
+                perPage: 40,
                 position: "bottom",
                 perPageDropdown: [10, 50, 100],
                 dropdownAllowAll: true,
@@ -351,12 +351,6 @@ export default {
 }
 
 /* table */
-.flex {
-    -webkit-box-flex: 1;
-    -ms-flex: 1 1 auto;
-    flex: 1 1 auto;
-}
-
 .card {
     position: relative;
     display: flex;

@@ -103,7 +103,7 @@ export default {
             paginationOpts: {
                 enabled: true,
                 mode: "records",
-                perPage: 5,
+                perPage: 40,
                 position: "bottom",
                 perPageDropdown: [10, 50, 100],
                 dropdownAllowAll: true,

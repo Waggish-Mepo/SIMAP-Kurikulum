@@ -1,5 +1,5 @@
 <template>
-    <nav id="sidebar">
+    <nav id="sidebar" class="d-none">
         <div class="loader" v-if="isLoading"></div>
         <div class="sidebar-header">
             <p>{{period.title}} {{period.school_year}} - {{course.caption}} Kelas {{course.entry_year_with_class}}</p>
@@ -59,26 +59,21 @@ export default {
 </script>
 
 <style scoped>
-p {
-    font-size: 1em;
-    line-height: 1.7em;
-}
-
 a.router {
     color: #000;
 }
 
 #sidebar {
-    min-width: 180px;
-    max-width: 180px;
+    min-width: 120px;
+    max-width: 120px;
     background-color: #182A36;
     color: #B4ADAD;
     transition: all 0.3s;
 }
 
-#sidebar.active {
-    margin-left: -180px;
-}
+/* #sidebar.active {
+    margin-left: -140px;
+} */
 
 #sidebar .sidebar-header {
     background-color: #182A36;
@@ -88,6 +83,7 @@ a.router {
 
 #sidebar .sidebar-header p {
     padding: 10px 10px 0 20px;
+    font-size: 0.8rem;
 }
 
 #sidebar ul li a {
@@ -108,19 +104,14 @@ a.router {
 }
 
 @media(max-width:768px) {
-    #sidebar {
+    /* #sidebar {
         margin-left: -180px;
-    }
+    } */
 
-    #sidebar.active {
+    /* #sidebar.active {
         margin-left: 0px;
-    }
+    } */
 
-    #sidebarCollapse span {
-        display: none;
-    }
-
-    p,
     #sidebar ul li a {
         font-size: 0.9em;
     }
