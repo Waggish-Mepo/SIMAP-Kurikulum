@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\Gradebook;
 use App\Models\ReportPeriod;
 use App\Models\Scorecard;
+use App\Service\Functions\Gradebook as FunctionsGradebook;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Ramsey\Uuid\Uuid;
@@ -40,7 +41,9 @@ class ScorecardService{
         ])->validate();
 
         $students = $payload['students'];
-        $scorecards = DB::transaction(function () use ($students, $gradebook) {
+        $isK21 = $gradebook->course->curriculum === Course::K21_SEKOLAH_PENGGERAK;
+
+        $scorecards = DB::transaction(function () use ($students, $gradebook, $isK21) {
             $data = collect([]);
             $result = collect([]);
 
@@ -58,6 +61,7 @@ class ScorecardService{
             }
 
             Scorecard::insert($data->toArray());
+            FunctionsGradebook::syncScorecardComponent($gradebook->id, $isK21);
 
             return [
                 'scorecards' => $result,
