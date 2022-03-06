@@ -2,19 +2,76 @@
 
 namespace App\Service\Functions;
 
-use Carbon\Carbon;
+use App\Models\Gradebook as ModelsGradebook;
+use App\Models\PredicateLetter;
+use App\Models\Scorecard;
+use App\Models\ScorecardComponent;
+use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Uuid;
 
 //WIP
 class Gradebook
 {
+    private static function performUpdateOrCreate($scorecard, $existKeys, $isK21)
+    {
+        $data = collect([]);
+        foreach ($scorecard['components'] as $item) {
+            $exist = $existKeys[$item->id] ?? null;
+
+            if ($exist) {
+                $exist->save();
+
+                continue;
+            }
+
+            $data->push([
+                'id' => Uuid::uuid4()->toString(),
+                'gradebook_component_id' => $item->id,
+                'scorecard_id' => $scorecard->id,
+            ]);
+        }
+
+        return $data->toArray();
+    }
+
+    public static function syncScorecardComponent($gradebookId, $isK21 = false)
+    {
+        $gradebookComponents = ModelsGradebook::findOrFail($gradebookId)->components()->get();
+        $scorecards = Scorecard::where('gradebook_id', $gradebookId)->get();
+        $exists = ScorecardComponent::whereIn('gradebook_component_id', $gradebookComponents->pluck('id'))
+            ->whereIn('scorecard_id', $scorecards->pluck('id'))->get();
+
+        $scorecardsArray = $scorecards->mapWithKeys(function ($item) use ($gradebookComponents, $exists) {
+            $data = $item;
+            $data['components'] = $gradebookComponents;
+            $data['exists'] = collect(
+                $exists->where('scorecard_id', $item->id)
+                    ->whereIn('gradebook_component_id', $gradebookComponents->pluck('id'))
+                    ->values(),
+            );
+
+            return [$item->id => $data];
+        });
+
+        return DB::transaction(function () use ($scorecardsArray, $isK21) {
+            $data = collect([]);
+            foreach ($scorecardsArray as $scorecard) {
+                $existKeys = $scorecard['exists']->keyBy('gradebook_component_id');
+                $insertData = self::performUpdateOrCreate($scorecard, $existKeys, $isK21);
+                ScorecardComponent::insert($insertData);
+            }
+
+            return $data;
+        });
+    }
+
     public static function recalculate($gradebookId, $isK21 = false)
     {
-        $gradebook = Gradebook::findOrFail($gradebookId);
+        $gradebook = ModelsGradebook::findOrFail($gradebookId);
         $scorecards = $gradebook->scorecards;
-        $predicates = PredicateLetter::where('letterable_id', $gradebookId)
-            ->where('letterable_type', PredicateLetter::GRADEBOOK)
-            ->get()
-            ->mapToGroups(fn ($item) => [$item->type => $item]);
+        $predicates = PredicateLetter::where('gradebook_id', $gradebookId)
+                        ->get()
+                        ->mapToGroups(fn ($item) => [$item->type => $item]);
 
         return DB::transaction(function () use ($gradebook, $scorecards, $predicates, $isK21) {
             $data = collect([]);
@@ -26,9 +83,7 @@ class Gradebook
                     $scorecard->final_score = null;
                     $scorecard->final_score_letter_id = null;
                     $scorecard->knowledge_score = null;
-                    $scorecard->knowledge_score_letter_id = null;
                     $scorecard->skill_score = null;
-                    $scorecard->skill_score_letter_id = null;
 
                     $scorecard->save();
                     $data->push($scorecard);
