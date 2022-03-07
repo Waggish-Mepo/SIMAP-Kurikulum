@@ -48,6 +48,13 @@ class ScorecardService{
         return $courses;
     }
 
+    public function detail($scorecardId) 
+    {
+        $scorecard = Scorecard::with('scorecardComponents')->findOrFail($scorecardId);
+
+        return $scorecard->toArray();
+    }
+
     public function bulkCreate($gradebookId, $payload)
     {
         $gradebook = Gradebook::with('course')->findOrFail($gradebookId);

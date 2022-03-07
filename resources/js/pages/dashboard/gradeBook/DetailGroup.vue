@@ -24,9 +24,9 @@
             <div class="col-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">RPL XII-2</h4>
+                        <h4 class="card-title">{{studentGroup.name}}</h4>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover">
+                            <table class="table table-bordered table-hover" v-if="course.curriculum !== 'K21 | Sekolah Penggerak'">
                                 <thead class="text-capitalize text-center bg-muted">
                                     <tr>
                                         <th rowspan="2" style="vertical-align : middle;">no</th>
@@ -35,68 +35,86 @@
                                         <th rowspan="2" style="vertical-align : middle;">predikat</th>
                                         <th rowspan="2" style="vertical-align : middle;">nilai akhir</th>
                                         <th colspan="2" style="vertical-align : middle;">nilai rapot</th>
-                                        <th colspan="2" style="vertical-align : middle;">PH 1</th>
-                                        <th colspan="2" style="vertical-align : middle;">PH 2</th>
-                                        <th colspan="2" style="vertical-align : middle;">PH 3</th>
-                                        <th colspan="2" style="vertical-align : middle;">UTS</th>
-                                        <th colspan="2" style="vertical-align : middle;">PAS</th>
+                                        <th v-for="(component, index) in components" :key="index" colspan="2" style="vertical-align : middle;">{{component.abbreviation}}</th>
                                     </tr>
                                     <tr>
                                         <th>p</th>
                                         <th>k</th>
-                                        <th>p</th>
-                                        <th>k</th>
-                                        <th>p</th>
-                                        <th>k</th>
-                                        <th>p</th>
-                                        <th>k</th>
-                                        <th>p</th>
-                                        <th>k</th>
-                                        <th>p</th>
-                                        <th>k</th>
+                                        <th v-for="index in componentTotal" :key="index">{{index | scoreType}}</th>
                                     </tr>
                                 </thead>
                                 <tbody class="text-capitalize" style="border-top: none !important;">
-                                    <tr>
-                                        <td>1</td>
-                                        <td>fema flamelina putri</td>
-                                        <td>11907154</td>
-                                        <td>A</td>
-                                        <td>92</td>
-                                        <td>88.00</td>
-                                        <td>90.00</td>
-                                        <td @click="modalScore= true">100.00</td>
-                                        <td>90.00</td>
-                                        <td>100.00</td>
-                                        <td>90.00</td>
-                                        <td>98.00</td>
-                                        <td>92.00</td>
-                                        <td>90.00</td>
-                                        <td>94.00</td>
-                                        <td>92.00</td>
-                                        <td>92.00</td>
-                                    </tr>
-                                    <tr class="bg-muted2">
-                                        <td>2</td>
-                                        <td>levi ackerman
+                                    <tr v-for="(sc, i) in scorecards" :key="i">
+                                        <td>{{i+1}}</td>
+                                        <td>{{sc.student.name}}</td>
+                                        <!-- <td>levi ackerman
                                             <br>
                                             <span class="text-secondary">siswa ini sudah tidak terdaftar pada mata pelajaran ini</span>
+                                        </td> -->
+                                        <td>{{sc.student.nis}}</td>
+                                        <td>-</td>
+                                        <td>{{sc.final_score | scoreCheck}}</td>
+                                        <td>{{sc.knowledge_score | scoreCheck}}</td>
+                                        <td>{{sc.skill_score | scoreCheck}}</td>
+                                        <td v-for="index in componentTotal" :key="index" class="cursor-pointer" @click="showModalUpdate(sc.student.name, index, sc.id)">
+                                            <span v-if="index === 1">
+                                                <span v-if="sc.scorecard_components[0]['knowledge_score'] < gradebookData.scorebar && sc.scorecard_components[0]['knowledge_score'] !== null" class="text-danger">
+                                                    {{sc.scorecard_components[0]['knowledge_score'] | scoreCheck}}
+                                                </span>
+                                                <span v-else>
+                                                    {{sc.scorecard_components[0]['knowledge_score'] | scoreCheck}}
+                                                </span>
+                                            </span>
+                                            <span v-else-if="index % 2 === 0">
+                                                <span v-if="sc.scorecard_components[index/2-1]['skill_score'] < gradebookData.scorebar && sc.scorecard_components[index/2-1]['skill_score'] !== null" class="text-danger">
+                                                    {{sc.scorecard_components[index/2-1]['skill_score'] | scoreCheck}}
+                                                </span>
+                                                <span v-else>
+                                                    {{sc.scorecard_components[index/2-1]['skill_score'] | scoreCheck}}
+                                                </span>
+                                            </span>
+                                            <span v-else-if="index % 2 !== 0">
+                                                <span v-if="sc.scorecard_components[(index-1)/2] < gradebookData.scorebar && sc.scorecard_components[(index-1)/2] !== null" class="text-danger">
+                                                    {{sc.scorecard_components[(index-1)/2]['knowledge_score'] | scoreCheck}}
+                                                </span>
+                                                <span v-else>
+                                                    {{sc.scorecard_components[(index-1)/2]['knowledge_score'] | scoreCheck}}
+                                                </span>
+                                            </span>
                                         </td>
-                                        <td>12345678</td>
-                                        <td>A</td>
-                                        <td>92</td>
-                                        <td>88.00</td>
-                                        <td>90.00</td>
-                                        <td>100.00</td>
-                                        <td>90.00</td>
-                                        <td>100.00</td>
-                                        <td>90.00</td>
-                                        <td>98.00</td>
-                                        <td>92.00</td>
-                                        <td>90.00</td>
-                                        <td>94.00</td>
-                                        <td>92.00</td>
-                                        <td>92.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered table-hover" v-if="course.curriculum === 'K21 | Sekolah Penggerak'">
+                                <thead class="text-capitalize text-center bg-muted">
+                                    <tr>
+                                        <th>no</th>
+                                        <th>nama siswa</th>
+                                        <th>NIS</th>
+                                        <th>predikat</th>
+                                        <th>nilai akhir</th>
+                                        <th v-for="(component, index) in components" :key="index">{{component.abbreviation}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-capitalize" style="border-top: none !important;">
+                                    <tr v-for="(sc, i) in scorecards" :key="i">
+                                        <td>{{i+1}}</td>
+                                        <td>{{sc.student.name}}</td>
+                                        <!-- <td>levi ackerman
+                                            <br>
+                                            <span class="text-secondary">siswa ini sudah tidak terdaftar pada mata pelajaran ini</span>
+                                        </td> -->
+                                        <td>{{sc.student.nis}}</td>
+                                        <td>-</td>
+                                        <td>{{sc.final_score | scoreCheck}}</td>
+                                        <td v-for="(scComponent, index) in sc.scorecard_components" :key="index" class="cursor-pointer" @click="showModalUpdateGeneral(sc.student.name, sc.id, scComponent.id, scComponent.title)">
+                                            <span v-if="scComponent.general_score < gradebookData.scorebar && scComponent.general_score !== null" class="text-danger">
+                                                {{scComponent.general_score | scoreCheck}}
+                                            </span>
+                                            <span v-else>
+                                                {{scComponent.general_score | scoreCheck}}
+                                            </span>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -109,20 +127,16 @@
         <!-- modal -->
         <modal v-if="modalScore" @close="modalScore = false" :action="updateScore">
             <div slot="header">
-                <h5 class="text-capitalize"><b>Fema Flamelina Putri</b></h5>
-                <span class="text-capitalize">penilaian harian 1</span>
+                <h5 class="text-capitalize"><b>{{studentName}}</b></h5>
+                <span class="text-capitalize">{{componentTitle}}</span>
             </div>
             <div slot="body" class="mt-4">
-                <!-- <div class="alert alert-danger mb-3" v-if="errorMessage">
+                <div class="alert alert-danger mb-3" v-if="errorMessage">
                     {{ errorMessage }}
-                </div> -->
+                </div>
                 <div class="form-group">
-                    <label class="mb-2">Nilai Pengetahuan</label>
-                    <input type="number" placeholder="Contoh: 90" class="form-control">
-                    <!-- :class="{'is-invalid': errors.title}" -->
-                    <!-- <div class="invalid-feedback" v-if="errors.title">
-                        {{ errors.title[0] }}
-                    </div> -->
+                    <label class="mb-2">Nilai {{scoreType}}</label>
+                    <input type="number" placeholder="Contoh: 90" class="form-control" v-model="score">
                 </div>
             </div>
         </modal>
@@ -142,12 +156,41 @@ export default {
         return {
             period: {},
             course: {},
-            modalScore: false
+            studentGroup: {},
+            gradebookData: {},
+            modalScore: false,
+            scorecards: [],
+            components: [],
+            componentTotal: 0,
+            studentName: null,
+            componentTitle: null,
+            scoreType: null,
+            score: null,
+            scorecardId: null,
+            scorecardComponentId: null,
+            scores: {
+                knowledge_score: null,
+                skill_score: null,
+                general_score: null
+            }
         }
     },
     created() {
         this.getPeriod(this.$route.params.period);
         this.getCourse(this.$route.params.course);
+        this.getStudentGroup(this.$route.params.sg);
+        this.getGradebook(this.$route.params.gb);
+        this.getScoreCards();
+    },
+    watch: {
+        '$route.params.sg': {
+            handler: function() {
+                this.getScoreCards();
+                this.getStudentGroup(this.$route.params.sg);
+            },
+            deep: true,
+            immediate: true
+        }
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
@@ -155,6 +198,10 @@ export default {
     methods: {
         ...mapActions('reportPeriods', ['detail']),
         ...mapActions('courses', ['show']),
+        ...mapActions('studentGroups', ['detailStudentGroup']),
+        ...mapActions('gradebooks', ['gradebook']),
+        ...mapActions('scorecards', ['index', 'detailScorecard']),
+        ...mapActions('scorecardComponents', ['scorecardComponent', 'edit']),
 
         getPeriod(id) {
             this.detail(id).then((result) => {
@@ -166,8 +213,111 @@ export default {
                 this.course = result;
             })
         },
+        getStudentGroup(id) {
+            this.detailStudentGroup(id).then((result) => {
+                this.studentGroup = result;
+            })
+        },
+        getGradebook(id) {
+            this.gradebook(id).then((result) => {
+                this.gradebookData = result;
+            })
+        },
+        getScoreCards() {
+            let payload = {gb: this.$route.params.gb, sg: this.$route.params.sg}
+            this.index(payload).then((result) => {
+                this.scorecards = result;
+                this.components = result[0]['scorecard_components'];
+                this.componentTotal = result[0]['scorecard_components'].length * 2;
+            })
+        },
+        showModalUpdate(name, index, scorecard) {
+            this.studentName = name;
+            this.scorecardId = scorecard;
+            this.detailScorecard(scorecard).then((result) => {
+                if(index === 1) {
+                    this.componentTitle = this.components[0]['title'];
+                    this.scoreType = 'Pengetahuan';
+                    this.scorecardComponentId = result.scorecard_components[0]['id'];
+                    this.scores.skill_score = result.scorecard_components[0]['skill_score'];
+                    this.scores.general_score = result.scorecard_components[0]['general_score'];
+                    if(result.scorecard_components[0]['knowledge_score']) {
+                        this.score = result.scorecard_components[0]['knowledge_score'];
+                    } else {
+                        this.score = 0;
+                    }
+                } else if(index % 2 === 0) {
+                    this.componentTitle = this.components[index/2-1]['title'];
+                    this.scoreType = 'Keterampilan';
+                    this.scorecardComponentId = result.scorecard_components[index/2-1]['id'];
+                    this.scores.knowledge_score = result.scorecard_components[index/2-1]['knowledge_score'];
+                    this.scores.general_score = result.scorecard_components[index/2-1]['general_score'];
+                    if(result.scorecard_components[index/2-1]['skill_score']) {
+                        this.score = result.scorecard_components[index/2-1]['skill_score'];
+                    } else {
+                        this.score = 0;
+                    }
+                } else if(index % 2 !== 0) {
+                    this.componentTitle = this.components[(index-1)/2]['title'];
+                    this.scoreType = 'Pengetahuan';
+                    this.scorecardComponentId = result.scorecard_components[(index-1)/2]['id'];
+                    this.scores.skill_score = result.scorecard_components[(index-1)/2]['skill_score'];
+                    this.scores.general_score = result.scorecard_components[(index-1)/2]['general_score'];
+                    if(result.scorecard_components[(index-1)/2]['knowledge_score']) {
+                        this.score = result.scorecard_components[(index-1)/2]['knowledge_score'];
+                    } else {
+                        this.score = 0;
+                    }
+                }
+                this.modalScore = true;
+            });
+        },
+        showModalUpdateGeneral(name, scorecardId, scComponentId, title) {
+            this.studentName = name;
+            this.scoreType = 'Umum';
+            this.scorecardId = scorecardId;
+            this.componentTitle = title;
+            this.scorecardComponent(scComponentId).then((result) => {
+                this.scorecardComponentId = result.id;
+                this.scores.knowledge_score = result.knowledge_score;
+                this.scores.skill_score = result.skill_score;
+                if (result.general_score) {
+                    this.score = result.general_score;
+                } else {
+                    this.score = 0;
+                }  
+                this.modalScore = true;
+            })
+        },
         updateScore() {
-            console.log('add');
+            let knowledge, skill, general;
+            if (this.scoreType === 'Pengetahuan') {
+                skill = this.scores.skill_score;
+                knowledge = this.score;
+                general = this.scores.general_score;
+            } else if (this.scoreType === 'Keterampilan') {
+                skill = this.score;
+                knowledge = this.scores.knowledge_score;
+                general = this.scores.general_score;
+            } else if (this.scoreType === 'Umum') {
+                skill = this.scores.skill_score;
+                knowledge = this.scores.knowledge_score;
+                general = this.score;
+            }
+            let payload = {periodId: this.$route.params.period, 
+                data: {
+                    gradebook_id: this.$route.params.gb,
+                    scorecard_id: this.scorecardId,
+                    scorecard_component_id: this.scorecardComponentId,
+                    knowledge_score: knowledge,
+                    skill_score: skill,
+                    general_score: general,
+                }
+            }
+            this.edit(payload).then((result) => {
+                this.modalScore = false;
+                this.getScoreCards();
+            })
         }
     }
 }
@@ -194,6 +344,8 @@ h5 {
     background-color: #fff;
     border: 1px solid #d2d2dc;
     border-radius: 0;
+    max-width: 890px;
+    margin: auto;
 }
 
 .card .card-title {
@@ -214,5 +366,28 @@ h5 {
 
 .table-bordered {
     border-color: #333 !important;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+@media(max-width:1070px) {
+    .card {
+        max-width: 1070px;
+        width: 100%;
+    }
+}
+
+@media (max-width: 575px) { 
+    h5 {
+        font-size: 0.9rem !important;
+    }
+    b, span {
+        font-size: 0.7rem !important;
+    }
+    table {
+        font-size: 0.8rem !important;
+    }
 }
 </style>

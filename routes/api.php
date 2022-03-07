@@ -16,6 +16,8 @@ use App\Http\Controllers\StudentCourseController;
 use App\Http\Controllers\GradebookController;
 use App\Http\Controllers\PredicatLetterController;
 use App\Http\Controllers\GradebookComponentController;
+use App\Http\Controllers\ScorecardController;
+use App\Http\Controllers\ScorecardComponentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -114,5 +116,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [GradebookComponentController::class, 'show']);
         Route::post('/', [GradebookComponentController::class, 'store']);
         Route::patch('/{id}', [GradebookComponentController::class, 'update']);
+    });
+    Route::prefix('scorecards')->group(function () {
+        Route::get('/gradebook', [ScorecardController::class, 'index']);
+        Route::get('/{id}', [ScorecardController::class, 'show']);
+    });
+    Route::prefix('scorecard-components')->group(function () {
+        Route::get('/{id}', [ScorecardComponentController::class, 'show']);
+        Route::patch('/{id}', [ScorecardComponentController::class, 'update']);
     });
 });

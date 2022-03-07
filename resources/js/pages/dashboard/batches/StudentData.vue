@@ -265,7 +265,7 @@ export default {
     },
     methods: {
         ...mapActions('majors', ['allData']),
-        ...mapActions('studentGroups', ['detail', 'edit']),
+        ...mapActions('studentGroups', ['detailStudentGroup', 'edit']),
         ...mapActions('batches', ['show']),
         ...mapActions('students', ['create', 'index', 'studentDetail', 'update']),
 
@@ -275,7 +275,7 @@ export default {
             })
         },
         showStudentGroup(id) {
-            this.detail(id).then((result) => {
+            this.detailStudentGroup(id).then((result) => {
                 this.editForm = result;
                 this.studentGroup = result.name;
             })

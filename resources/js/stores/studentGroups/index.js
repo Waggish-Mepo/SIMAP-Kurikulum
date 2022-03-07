@@ -20,7 +20,7 @@ const actions = {
                 })
         })
     },
-    detail({ commit }, payload) {
+    detailStudentGroup({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
             axios.get('/student-groups/'+payload)

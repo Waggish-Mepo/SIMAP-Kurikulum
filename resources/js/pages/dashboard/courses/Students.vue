@@ -281,6 +281,7 @@ export default {
             this.edit(payload).then((result) => {
                 this.modalEdit = false;
                 this.getCourse(this.$route.params.course);
+                this.getStudentCourse(this.$route.params.course);
             })
         },
         showModalDelete() {

@@ -1,5 +1,5 @@
 <template>
-    <nav id="sidebar" class="d-none">
+    <nav id="sidebar">
         <div class="loader" v-if="isLoading"></div>
         <div class="sidebar-header">
             <p>{{period.title}} {{period.school_year}} - {{course.caption}} Kelas {{course.entry_year_with_class}}</p>
@@ -7,7 +7,7 @@
         </div>
         <ul class="list-unstyled components">
             <li v-for="(sg, index) in studentGroups" :key="index" :class="{active: $route.params.sg == sg.id}">
-                <router-link v-bind:to="{ name: 'gradebooks.course.detail', params: {period: period.id, course: course.id, sg: sg.id} }" class="router"> 
+                <router-link v-bind:to="{ name: 'gradebooks.course.detail.group', params: {period: $route.params.period, course: $route.params.course, gb: $route.params.gb, sg: sg.id} }" class="router"> 
                 <a href="#">{{sg.name}}</a> 
                 </router-link>
             </li>
@@ -71,9 +71,9 @@ a.router {
     transition: all 0.3s;
 }
 
-/* #sidebar.active {
-    margin-left: -140px;
-} */
+#sidebar.active {
+    margin-left: -120px;
+}
 
 #sidebar .sidebar-header {
     background-color: #182A36;
@@ -103,14 +103,14 @@ a.router {
     background: #274355;
 }
 
-@media(max-width:768px) {
-    /* #sidebar {
-        margin-left: -180px;
-    } */
+@media(max-width:1070px) {
+    #sidebar {
+        margin-left: -120px;
+    }
 
-    /* #sidebar.active {
+    #sidebar.active {
         margin-left: 0px;
-    } */
+    }
 
     #sidebar ul li a {
         font-size: 0.9em;

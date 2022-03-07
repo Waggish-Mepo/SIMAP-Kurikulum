@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ScorecardComponentService{
 
-    public function update($reportPeriodId, $gradebookId, $scorecardId, $scorecardComponentId)
+    public function update($reportPeriodId, $gradebookId, $scorecardId, $scorecardComponentId, $payload)
     {
         ReportPeriod::findOrFail($reportPeriodId);
         $gradebook = Gradebook::with('course')->findOrFail($gradebookId);
@@ -21,17 +21,19 @@ class ScorecardComponentService{
         $isK21 = $gradebook->course->curriculum === Course::K21_SEKOLAH_PENGGERAK;
 
         $scorecardComponent = ScorecardComponent::findOrFail($scorecardComponentId);
-        $attributes = $this->request->only([
-            'knowledge_score',
-            'skill_score',
-            'general_score',
-        ]);
 
-        $scorecardComponent = $this->fill($scorecardComponent, $attributes);
+        $scorecardComponent = $this->fill($scorecardComponent, $payload);
 
         $scorecardComponent->save();
 
         // FunctionsGradebook::recalculate($gradebook->id, $isK21);
+
+        return $scorecardComponent->toArray();
+    }
+
+    public function detail($scorecardComponentId)
+    {
+        $scorecardComponent = ScorecardComponent::findOrFail($scorecardComponentId);
 
         return $scorecardComponent->toArray();
     }

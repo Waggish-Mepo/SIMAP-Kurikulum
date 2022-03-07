@@ -10,7 +10,6 @@ export default {
     methods: {
         showSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('sidebar').classList.toggle('d-none');
         }
     }
 }
@@ -28,6 +27,7 @@ nav.navbar {
     margin-bottom: 30px;
     position: fixed;
     width: 100%;
+    z-index: 1000;
 }
 
 .fas.fa-bars {
