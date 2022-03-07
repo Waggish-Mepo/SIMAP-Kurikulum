@@ -7,6 +7,7 @@ use App\Models\Gradebook;
 use App\Models\ReportPeriod;
 use App\Models\Scorecard;
 use App\Service\Functions\Gradebook as FunctionsGradebook;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Ramsey\Uuid\Uuid;

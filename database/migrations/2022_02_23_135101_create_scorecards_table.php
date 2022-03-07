@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateScorecardsTable extends Migration
@@ -22,7 +23,8 @@ class CreateScorecardsTable extends Migration
             $table->decimal('skill_score', 5, 2)->unsigned()->nullable();
             $table->decimal('general_score', 5, 2)->unsigned()->nullable();
             $table->decimal('final_score', 5, 2)->unsigned()->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
     }
 
