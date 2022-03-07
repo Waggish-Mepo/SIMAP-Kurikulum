@@ -74,7 +74,7 @@
                                                 </span>
                                             </span>
                                             <span v-else-if="index % 2 !== 0">
-                                                <span v-if="sc.scorecard_components[(index-1)/2] < gradebookData.scorebar && sc.scorecard_components[(index-1)/2] !== null" class="text-danger">
+                                                <span v-if="sc.scorecard_components[(index-1)/2]['knowledge_score'] < gradebookData.scorebar && sc.scorecard_components[(index-1)/2]['knowledge_score'] !== null" class="text-danger">
                                                     {{sc.scorecard_components[(index-1)/2]['knowledge_score'] | scoreCheck}}
                                                 </span>
                                                 <span v-else>

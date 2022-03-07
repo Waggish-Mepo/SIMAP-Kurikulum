@@ -37,7 +37,7 @@ class ScorecardService{
         }
 
         if ($withScorecardComponents) {
-            $query->with('scorecardComponents');
+            $query->with('scorecardComponents')->orderBy('created_at', 'ASC');
         }
 
         if ($withoutPagination) {
