@@ -1,6 +1,6 @@
 <template>
     <nav class="navbar navbar-expand-md shadow"> 
-        <button type="button" id="sidebarCollapse" class="btn btn-white"> <i class="fas fa-bars" @click="showSidebar"></i> Buku Nilai</button>
+        <button type="button" id="sidebarCollapse" class="btn btn-white" @click="showSidebar"> <i class="fas fa-bars"></i> Buku Nilai</button>
     </nav>
 </template>
 
@@ -27,6 +27,7 @@ nav.navbar {
     margin-bottom: 30px;
     position: fixed;
     width: 100%;
+    z-index: 1000;
 }
 
 .fas.fa-bars {

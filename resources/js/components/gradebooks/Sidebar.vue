@@ -7,7 +7,7 @@
         </div>
         <ul class="list-unstyled components">
             <li v-for="(sg, index) in studentGroups" :key="index" :class="{active: $route.params.sg == sg.id}">
-                <router-link v-bind:to="{ name: 'gradebooks.course.detail', params: {period: period.id, course: course.id, sg: sg.id} }" class="router"> 
+                <router-link v-bind:to="{ name: 'gradebooks.course.detail.group', params: {period: $route.params.period, course: $route.params.course, gb: $route.params.gb, sg: sg.id} }" class="router"> 
                 <a href="#">{{sg.name}}</a> 
                 </router-link>
             </li>
@@ -59,25 +59,20 @@ export default {
 </script>
 
 <style scoped>
-p {
-    font-size: 1em;
-    line-height: 1.7em;
-}
-
 a.router {
     color: #000;
 }
 
 #sidebar {
-    min-width: 180px;
-    max-width: 180px;
+    min-width: 120px;
+    max-width: 120px;
     background-color: #182A36;
     color: #B4ADAD;
     transition: all 0.3s;
 }
 
 #sidebar.active {
-    margin-left: -180px;
+    margin-left: -120px;
 }
 
 #sidebar .sidebar-header {
@@ -88,6 +83,7 @@ a.router {
 
 #sidebar .sidebar-header p {
     padding: 10px 10px 0 20px;
+    font-size: 0.8rem;
 }
 
 #sidebar ul li a {
@@ -107,20 +103,15 @@ a.router {
     background: #274355;
 }
 
-@media(max-width:768px) {
+@media(max-width:1070px) {
     #sidebar {
-        margin-left: -180px;
+        margin-left: -120px;
     }
 
     #sidebar.active {
         margin-left: 0px;
     }
 
-    #sidebarCollapse span {
-        display: none;
-    }
-
-    p,
     #sidebar ul li a {
         font-size: 0.9em;
     }

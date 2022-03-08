@@ -84,7 +84,7 @@
     </div>
     <div class="card w-100 mb-3" v-for="(gc, index) in components" :key="index">
         <div class="card-title bg-muted p-2 text-center">
-            <b class="text-capitalize">{{gc.title}} ({{gc.abbreviation}})</b> <span class="fas fa-pen" style="margin-left: 8px" @click="showComponent(gc.id)"></span>
+            <b class="text-capitalize"><a href="#" class="text-dark" @click="redirectPage">{{gc.title}} ({{gc.abbreviation}})</a></b> <span class="fas fa-pen" style="margin-left: 8px" @click="showComponent(gc.id)"></span>
         </div>
         <div class="card-body" v-if="gc.knowledge_weight">
             <div class="row">
@@ -316,6 +316,13 @@
             <span>Yakin akan menghapus data <b class="text-capitalize">{{componentEditForm.title}}</b>? semua data yang terkait dengan <b class="text-capitalize">{{componentEditForm.title}}</b> akan ikut terhapus.</span>
         </div>
     </modal>
+
+    <modal v-if="modalRedirect" @close="modalRedirect = false">
+        <h5 slot="header">Gagal!</h5>
+        <div slot="body">
+            <span>Gagal membuka <b>halaman penilaian</b> dikarenakan tidak ditemukannya data <b>rombel</b> pada mata pelajaran <b class="text-capitalize">{{course.caption}} {{course.entry_year_with_class}}</b>. Silahkan atur rombel pada halaman <b>Data Siswa</b></span>
+        </div>
+    </modal>
 </div>  
 </template>
 
@@ -366,7 +373,8 @@ export default {
             modalDeletePredikat: false,
             modalAddComponent: false,
             modalEditComponent: false,
-            modalDeleteComponent: false
+            modalDeleteComponent: false,
+            modalRedirect: false
         }
     },
     created() {
@@ -385,6 +393,7 @@ export default {
         ...mapActions('gradebooks', ['gradebook', 'updateGradebook']),
         ...mapActions('predicateLetters', ['getPredicate', 'predicate', 'createPredicate', 'updatePredicate']),
         ...mapActions('gradebookComponents', ['getComponents', 'component', 'createComponents', 'updateComponent']),
+        ...mapActions('studentGroups', ['getByCourse']),
 
         getPeriod(id) {
             this.detail(id).then((result) => {
@@ -541,6 +550,15 @@ export default {
         },
         deleteComponent() {
             console.log('delete');
+        },
+        redirectPage() {
+            this.getByCourse(this.course.id).then((result) => {
+                if(result.length < 1) {
+                    this.modalRedirect = true;
+                } else {
+                    this.$router.push({ name: 'gradebooks.course.detail.group', params: {period: this.period.id, course: this.course.id, gb: this.$route.params.gb, sg: result[0].id} });
+                }
+            });
         }
     }
 }
@@ -612,5 +630,11 @@ table {
 
 .p-col {
     padding-left: 25px !important;
+}
+
+@media (max-width: 575px) {
+    h5 {
+        font-size: 0.9rem !important;
+    }
 }
 </style>

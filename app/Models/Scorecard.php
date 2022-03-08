@@ -20,6 +20,6 @@ class Scorecard extends Model
     }
 
     public function scorecardComponents() {
-        return $this->hasMany(ScorecardComponent::class);
+        return $this->hasMany(ScorecardComponent::class)->orderBy('created_at');
     }
 }

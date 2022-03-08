@@ -189,7 +189,7 @@ a.btn:hover {
 }
 
 @media (max-width: 575px) {
-    .breadcrumb {
-        font-size: 1rem;
+    .breadcrumb-item {
+        font-size: 0.8rem !important;
     }
 }

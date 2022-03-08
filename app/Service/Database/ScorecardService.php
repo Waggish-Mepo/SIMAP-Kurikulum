@@ -37,7 +37,7 @@ class ScorecardService{
         }
 
         if ($withScorecardComponents) {
-            $query->with('scorecardComponents');
+            $query->with('scorecardComponents')->orderBy('created_at', 'ASC');
         }
 
         if ($withoutPagination) {
@@ -47,6 +47,13 @@ class ScorecardService{
         $courses = $query->paginate($perPage);
 
         return $courses;
+    }
+
+    public function detail($scorecardId) 
+    {
+        $scorecard = Scorecard::with('scorecardComponents')->findOrFail($scorecardId);
+
+        return $scorecard->toArray();
     }
 
     public function bulkCreate($gradebookId, $payload)

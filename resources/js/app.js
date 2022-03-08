@@ -76,6 +76,22 @@ Vue.filter('numFormatter', function(num) {
     }
 });
 
+Vue.filter('scoreType', function(index) {
+    if(index % 2 === 0){
+        return 'K';
+    } else {
+        return 'P';
+    }
+});
+
+Vue.filter('scoreCheck', function(num) {
+    if(num){
+        return num;
+    } else {
+        return '-';
+    }
+});
+
 new Vue({
     router,
     store,

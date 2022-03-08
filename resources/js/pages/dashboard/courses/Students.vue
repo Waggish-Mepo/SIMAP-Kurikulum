@@ -202,7 +202,7 @@ export default {
             paginationOpts: {
                 enabled: true,
                 mode: "records",
-                perPage: 5,
+                perPage: 40,
                 position: "bottom",
                 perPageDropdown: [10, 50, 100],
                 dropdownAllowAll: true,
@@ -281,6 +281,7 @@ export default {
             this.edit(payload).then((result) => {
                 this.modalEdit = false;
                 this.getCourse(this.$route.params.course);
+                this.getStudentCourse(this.$route.params.course);
             })
         },
         showModalDelete() {
