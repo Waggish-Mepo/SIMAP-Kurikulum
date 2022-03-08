@@ -15,6 +15,7 @@ class StudentService {
         $per_page = $filter['per_page'] ?? 99;
         $name = $filter['name'] ?? null;
         $studentGroup = $filter['student_group_id'] ?? null;
+        $studentGroupRelation = $filter['with_student_group'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = Student::orderBy('created_at', $orderBy);
@@ -25,6 +26,10 @@ class StudentService {
 
         if ($studentGroup) {
             $query->where('student_group_id', $studentGroup);
+        }
+
+        if ($studentGroupRelation) {
+            $query->with('studentGroup');
         }
 
         if ($withoutPagination) {

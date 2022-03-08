@@ -20,6 +20,18 @@ class StudentController extends Controller
         return response()->json($students->index(['student_group_id' => $studentGroup, 'without_pagination' => true]));
     }
 
+    public function getWithStudentGroup(Request $request)
+    {
+        $studentDB = new StudentService;
+        $studentGroup = $request->studentGroup;
+
+        if($studentGroup == ""){
+            return response()->json($studentDB->index(['with_student_group' => true, 'without_pagination' => true]));
+        } else {
+            return response()->json($studentDB->index(['student_group_id' => $studentGroup, 'with_student_group' => true, 'without_pagination' => true]));
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *

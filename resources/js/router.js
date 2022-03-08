@@ -90,6 +90,21 @@ const router = new Router({
                 name: 'gradebooks.course.detail',
                 component: loadView('dashboard/gradeBook/Detail')
             },
+            {
+                path: '/:page/reportbooks/periods',
+                name: 'reportbooks.periods',
+                component: loadView('dashboard/reportbooks/Period')
+            },
+            {
+                path: '/:page/reportbooks/periods/:period/students',
+                name: 'reportbooks.periods.students',
+                component: loadView('dashboard/reportbooks/Students')
+            },
+            {
+                path: '/:page/reportbooks/periods/:period/students/:student',
+                name: 'reportbooks.periods.students.report',
+                component: loadView('dashboard/reportbooks/StudentReport')
+            },
             ]
         },
         {

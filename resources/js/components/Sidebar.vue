@@ -41,6 +41,12 @@
                         <span class="nav_name">Buku Nilai</span>
                     </a>
                     </router-link>
+                    <router-link v-bind:to="{ name: 'reportbooks.periods', params: {page: 7} }">
+                    <a href="#" class="nav_link" :class="{active: $route.params.page == 7}"> 
+                        <i class="fas fa-copy nav_icon" title="Rapor Siswa"></i> 
+                        <span class="nav_name">Rapor Siswa</span>
+                    </a>
+                    </router-link>
                 </div> 
             </div>
             <a href="#" class="nav_link" @click="modalShow = true">

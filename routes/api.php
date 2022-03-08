@@ -91,6 +91,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::prefix('students')->group(function () {
         Route::get('/', [StudentController::class, 'index']);
+        Route::get('/with-student-groups', [StudentController::class, 'getWithStudentGroup']);
         Route::post('/', [StudentController::class, 'store']);
         Route::get('/{id}', [StudentController::class, 'show']);
         Route::patch('/{id}', [StudentController::class, 'update']);

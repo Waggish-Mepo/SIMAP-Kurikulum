@@ -34,6 +34,8 @@ export default {
                 this.title = 'pelajaran';
             } else if(this.$route.params.page == 6) {
                 this.title = 'buku nilai';
+            } else if(this.$route.params.page == 7) {
+                this.title = 'rapor siswa';
             } else {
                 this.title = 'dashboard';
             }
