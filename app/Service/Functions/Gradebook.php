@@ -70,8 +70,8 @@ class Gradebook
         $gradebook = ModelsGradebook::findOrFail($gradebookId);
         $scorecards = $gradebook->scorecards;
         $predicates = PredicateLetter::where('gradebook_id', $gradebookId)
-                        ->get()
-                        ->mapToGroups(fn ($item) => [$item->type => $item]);
+                        ->orderBy('min_score', 'desc')
+                        ->get();
 
         return DB::transaction(function () use ($gradebook, $scorecards, $predicates, $isK21) {
             $data = collect([]);
@@ -101,14 +101,12 @@ class Gradebook
 
                     $scorecard->final_score = $generalScore;
 
-                    // if (isset($predicates[PredicateLetter::FINAL])) {
-                    //     $gFinalScoreLetterId = self::determinePredicateId(
-                    //         $predicates[PredicateLetter::FINAL],
-                    //         $generalAverage,
-                    //     );
+                    $scoreLetterId = self::determinePredicateId(
+                        $predicates,
+                        $generalScore,
+                    );
 
-                    //     $scorecard->final_score_letter_id = $gFinalScoreLetterId;
-                    // }
+                    $scorecard->predicate_letter_id = $scoreLetterId;
 
                     $scorecard->save();
                     $data->push($scorecard);
@@ -144,14 +142,12 @@ class Gradebook
                 $gSkillScore = (float) $gSkillWeight * $scorecard->skill_score;
                 $gFinalScore = $gKnowledgeScore + $gSkillScore;
 
-                // if (isset($predicates[PredicateLetter::FINAL])) {
-                //     $gFinalScoreLetterId = self::determinePredicateId(
-                //         $predicates[PredicateLetter::FINAL],
-                //         $gFinalScore,
-                //     );
+                $scoreLetterId = self::determinePredicateId(
+                    $predicates,
+                    $gFinalScore,
+                );
 
-                //     $scorecard->final_score_letter_id = $gFinalScoreLetterId;
-                // }
+                $scorecard->predicate_letter_id = $scoreLetterId;
 
                 $scorecard->final_score = $gFinalScore;
 
@@ -166,7 +162,6 @@ class Gradebook
     private static function determinePredicateId($predicates, $score)
     {
         return $predicates->where('min_score', '<=', $score)
-            ->where('max_score', '>=', $score)
             ->values()
             ->first()->id ?? null;
     }

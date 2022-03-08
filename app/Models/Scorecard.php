@@ -19,6 +19,10 @@ class Scorecard extends Model
         return $this->belongsTo(Gradebook::class);
     }
 
+    public function predicateLetter() {
+        return $this->belongsTo(PredicateLetter::class);
+    }
+
     public function components()
     {
         return $this->belongsToMany(GradebookComponent::class, 'scorecard_components')
