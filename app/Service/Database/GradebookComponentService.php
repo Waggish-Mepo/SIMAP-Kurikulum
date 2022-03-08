@@ -57,13 +57,12 @@ class GradebookComponentService{
             $gradebookComponent->save();
 
             FunctionsGradebook::syncScorecardComponent($gradebook->id, $isK21);
-            // FunctionsGradebook::recalculate($gradebook->id, $isK21);
+            FunctionsGradebook::recalculate($gradebook->id, $isK21);
         });
 
         return $gradebookComponent->toArray();
     }
 
-    //yang update belum work sepenuhnya
     public function update($gradebookComponentId, $payload) {
 
         $gradebook = Gradebook::findOrFail($payload['gradebook_id']);
@@ -79,7 +78,7 @@ class GradebookComponentService{
             $isK21 = $gradebook->course->curriculum === Course::K21_SEKOLAH_PENGGERAK;
             $gradebookComponent->save();
 
-            // FunctionsGradebook::recalculate($gradebook->id, $isK21);
+            FunctionsGradebook::recalculate($gradebook->id, $isK21);
         });
 
         return $gradebookComponent->toArray();

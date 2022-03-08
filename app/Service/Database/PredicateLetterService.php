@@ -2,14 +2,17 @@
 
 namespace App\Service\Database;
 
+use App\Models\Course;
+use App\Models\Gradebook;
 use App\Models\PredicateLetter;
 use App\Service\Functions\AcademicCalendar;
+use App\Service\Functions\Gradebook as FunctionsGradebook;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
 
 class PredicateLetterService {
-    
+
     public function index($filter = []) {
         $orderBy = $filter['order_by'] ?? 'ASC';
         $perPage = $filter['page'] ?? 20;
@@ -60,6 +63,12 @@ class PredicateLetterService {
         $predicateLetter = $this->fill($predicateLetter, $payload);
         $predicateLetter->save();
 
+        $gradebook = Gradebook::with('course')->findOrFail($payload['gradebook_id']);
+
+        $isK21 = $gradebook->course->curriculum === Course::K21_SEKOLAH_PENGGERAK;
+
+        FunctionsGradebook::recalculate($gradebook->id, $isK21);
+
         return $predicateLetter->toArray();
     }
 
@@ -69,6 +78,12 @@ class PredicateLetterService {
 
         $predicateLetter = $this->fill($predicateLetter, $payload);
         $predicateLetter->save();
+
+        $gradebook = Gradebook::with('course')->findOrFail($payload['gradebook_id']);
+
+        $isK21 = $gradebook->course->curriculum === Course::K21_SEKOLAH_PENGGERAK;
+
+        FunctionsGradebook::recalculate($gradebook->id, $isK21);
 
         return $predicateLetter->toArray();
     }

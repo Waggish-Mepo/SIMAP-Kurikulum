@@ -20,7 +20,14 @@ class ScorecardController extends Controller
         $gradebook = $request->gradebook_id;
         $studentGroup = $request->student_group_id;
 
-        $scorecards = $scorecardDB->index($gradebook, ['with_scorecard_components' => true, 'with_student' => true, 'without_pagination' => true]);
+        $scorecards = $scorecardDB->index($gradebook,
+            [
+                'with_scorecard_components' => true,
+                'with_student' => true,
+                'without_pagination' => true,
+                'with_letter' => true
+            ]
+        );
 
         $scorecardFilter = [];
         foreach ($scorecards as $scorecard) {
@@ -72,7 +79,7 @@ class ScorecardController extends Controller
     public function show($id)
     {
         $scorecardDB = new ScorecardService;
-        
+
         return response()->json($scorecardDB->detail($id));
     }
 

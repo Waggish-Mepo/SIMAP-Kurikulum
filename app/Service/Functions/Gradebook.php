@@ -70,8 +70,8 @@ class Gradebook
         $gradebook = ModelsGradebook::findOrFail($gradebookId);
         $scorecards = $gradebook->scorecards;
         $predicates = PredicateLetter::where('gradebook_id', $gradebookId)
-                        ->get()
-                        ->mapToGroups(fn ($item) => [$item->type => $item]);
+                        ->orderBy('min_score', 'desc')
+                        ->get();
 
         return DB::transaction(function () use ($gradebook, $scorecards, $predicates, $isK21) {
             $data = collect([]);
@@ -81,7 +81,7 @@ class Gradebook
 
                 if ($components->isEmpty()) {
                     $scorecard->final_score = null;
-                    $scorecard->final_score_letter_id = null;
+                    // $scorecard->final_score_letter_id = null;
                     $scorecard->knowledge_score = null;
                     $scorecard->skill_score = null;
 
@@ -101,14 +101,12 @@ class Gradebook
 
                     $scorecard->final_score = $generalScore;
 
-                    if (isset($predicates[PredicateLetter::FINAL])) {
-                        $gFinalScoreLetterId = self::determinePredicateId(
-                            $predicates[PredicateLetter::FINAL],
-                            $generalAverage,
-                        );
+                    $scoreLetterId = self::determinePredicateId(
+                        $predicates,
+                        $generalScore,
+                    );
 
-                        $scorecard->final_score_letter_id = $gFinalScoreLetterId;
-                    }
+                    $scorecard->predicate_letter_id = $scoreLetterId;
 
                     $scorecard->save();
                     $data->push($scorecard);
@@ -128,29 +126,12 @@ class Gradebook
                     $knowledgeScore = $knowledgeAverage / $knowledgeWeights;
                 }
 
-                if (isset($predicates[PredicateLetter::KNOWLEDGE])) {
-                    $knlowledgeLetterId = self::determinePredicateId(
-                        $predicates[PredicateLetter::KNOWLEDGE],
-                        $knowledgeAverage,
-                    );
-                    $scorecard->knowledge_score_letter_id = $knlowledgeLetterId;
-                }
-
                 $skillAverage = (float) $components->sum(
                     fn ($item) => $item->pivot->skill_score * $item->skill_weight,
                 );
 
                 $skillWeights = (float) $components->sum('skill_weight');
                 $skillScore = $skillAverage / $skillWeights;
-
-
-                if (isset($predicates[PredicateLetter::SKILL])) {
-                    $skillLetterId = self::determinePredicateId(
-                        $predicates[PredicateLetter::SKILL],
-                        $skillAverage,
-                    );
-                    $scorecard->skill_score_letter_id = $skillLetterId;
-                }
 
                 $scorecard->knowledge_score = $knowledgeScore;
                 $scorecard->skill_score = $skillScore;
@@ -161,14 +142,12 @@ class Gradebook
                 $gSkillScore = (float) $gSkillWeight * $scorecard->skill_score;
                 $gFinalScore = $gKnowledgeScore + $gSkillScore;
 
-                if (isset($predicates[PredicateLetter::FINAL])) {
-                    $gFinalScoreLetterId = self::determinePredicateId(
-                        $predicates[PredicateLetter::FINAL],
-                        $gFinalScore,
-                    );
+                $scoreLetterId = self::determinePredicateId(
+                    $predicates,
+                    $gFinalScore,
+                );
 
-                    $scorecard->final_score_letter_id = $gFinalScoreLetterId;
-                }
+                $scorecard->predicate_letter_id = $scoreLetterId;
 
                 $scorecard->final_score = $gFinalScore;
 
@@ -183,7 +162,6 @@ class Gradebook
     private static function determinePredicateId($predicates, $score)
     {
         return $predicates->where('min_score', '<=', $score)
-            ->where('max_score', '>=', $score)
             ->values()
             ->first()->id ?? null;
     }

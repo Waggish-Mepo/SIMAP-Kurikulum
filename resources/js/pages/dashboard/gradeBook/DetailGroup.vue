@@ -52,7 +52,8 @@
                                             <span class="text-secondary">siswa ini sudah tidak terdaftar pada mata pelajaran ini</span>
                                         </td> -->
                                         <td>{{sc.student.nis}}</td>
-                                        <td>-</td>
+                                        <td v-if="sc.predicate_letter">{{sc.predicate_letter.letter}}</td>
+                                        <td v-if="!sc.predicate_letter">-</td>
                                         <td>{{sc.final_score | scoreCheck}}</td>
                                         <td>{{sc.knowledge_score | scoreCheck}}</td>
                                         <td>{{sc.skill_score | scoreCheck}}</td>
@@ -105,7 +106,8 @@
                                             <span class="text-secondary">siswa ini sudah tidak terdaftar pada mata pelajaran ini</span>
                                         </td> -->
                                         <td>{{sc.student.nis}}</td>
-                                        <td>-</td>
+                                        <td v-if="sc.predicate_letter">{{sc.predicate_letter.letter}}</td>
+                                        <td v-if="!sc.predicate_letter">-</td>
                                         <td>{{sc.final_score | scoreCheck}}</td>
                                         <td v-for="(scComponent, index) in sc.scorecard_components" :key="index" class="cursor-pointer" @click="showModalUpdateGeneral(sc.student.name, sc.id, scComponent.id, scComponent.title)">
                                             <span v-if="scComponent.general_score < gradebookData.scorebar && scComponent.general_score !== null" class="text-danger">
@@ -285,7 +287,7 @@ export default {
                     this.score = result.general_score;
                 } else {
                     this.score = 0;
-                }  
+                }
                 this.modalScore = true;
             })
         },
@@ -304,7 +306,7 @@ export default {
                 knowledge = this.scores.knowledge_score;
                 general = this.score;
             }
-            let payload = {periodId: this.$route.params.period, 
+            let payload = {periodId: this.$route.params.period,
                 data: {
                     gradebook_id: this.$route.params.gb,
                     scorecard_id: this.scorecardId,
@@ -379,7 +381,7 @@ h5 {
     }
 }
 
-@media (max-width: 575px) { 
+@media (max-width: 575px) {
     h5 {
         font-size: 0.9rem !important;
     }
