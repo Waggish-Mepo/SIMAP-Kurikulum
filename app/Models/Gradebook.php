@@ -30,6 +30,10 @@ class Gradebook extends Model
         return $this->hasMany(GradebookComponent::class);
     }
 
+    public function scorecards() {
+        return $this->hasMany(Scorecard::class);
+    }
+
     public function course() {
         return $this->belongsTo(Course::class);
     }

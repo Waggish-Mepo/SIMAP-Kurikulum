@@ -26,7 +26,7 @@ class ScorecardComponentService{
 
         $scorecardComponent->save();
 
-        // FunctionsGradebook::recalculate($gradebook->id, $isK21);
+        FunctionsGradebook::recalculate($gradebook->id, $isK21);
 
         return $scorecardComponent->toArray();
     }

@@ -40,6 +40,10 @@ class ScorecardService{
             $query->with('scorecardComponents')->orderBy('created_at', 'ASC');
         }
 
+        if ($withLetter) {
+            $query->with('predicateLetter');
+        }
+
         if ($withoutPagination) {
             return $query->get()->toArray();
         }
@@ -49,7 +53,7 @@ class ScorecardService{
         return $courses;
     }
 
-    public function detail($scorecardId) 
+    public function detail($scorecardId)
     {
         $scorecard = Scorecard::with('scorecardComponents')->findOrFail($scorecardId);
 
