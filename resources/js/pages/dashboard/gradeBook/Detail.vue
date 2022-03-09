@@ -323,7 +323,7 @@
             <span>Gagal membuka <b>halaman penilaian</b> dikarenakan tidak ditemukannya data <b>rombel</b> pada mata pelajaran <b class="text-capitalize">{{course.caption}} {{course.entry_year_with_class}}</b>. Silahkan atur rombel pada halaman <b>Data Siswa</b></span>
         </div>
     </modal>
-</div>  
+</div>
 </template>
 
 <script>
@@ -391,8 +391,8 @@ export default {
         ...mapActions('reportPeriods', ['detail']),
         ...mapActions('courses', ['show']),
         ...mapActions('gradebooks', ['gradebook', 'updateGradebook']),
-        ...mapActions('predicateLetters', ['getPredicate', 'predicate', 'createPredicate', 'updatePredicate']),
-        ...mapActions('gradebookComponents', ['getComponents', 'component', 'createComponents', 'updateComponent']),
+        ...mapActions('predicateLetters', ['getPredicate', 'predicate', 'createPredicate', 'updatePredicate', 'deletePredicate']),
+        ...mapActions('gradebookComponents', ['getComponents', 'component', 'createComponents', 'updateComponent', 'deleteGradebookComponent']),
         ...mapActions('studentGroups', ['getByCourse']),
 
         getPeriod(id) {
@@ -489,7 +489,10 @@ export default {
             }
         },
         deletePredikat() {
-            console.log('delete');
+            this.deletePredicate(this.predicateDetail.id).then((result) => {
+                this.modalDeletePredikat = false;
+                this.getPredicateLetter(this.$route.params.gb);
+            });
         },
         getGradebookComponents(id) {
             this.getComponents(id).then((result) => {
@@ -549,7 +552,10 @@ export default {
             this.modalDeleteComponent = true;
         },
         deleteComponent() {
-            console.log('delete');
+            this.deleteGradebookComponent(this.componentEditForm.id).then((result) => {
+                this.modalDeleteComponent = false;
+                this.getGradebookComponents(this.$route.params.gb);
+            });
         },
         redirectPage() {
             this.getByCourse(this.course.id).then((result) => {

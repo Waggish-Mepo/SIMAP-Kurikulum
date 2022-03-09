@@ -116,12 +116,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/show/{id}', [PredicatLetterController::class, 'show']);
         Route::post('/', [PredicatLetterController::class, 'store']);
         Route::patch('/{id}', [PredicatLetterController::class, 'update']);
+        Route::delete('/delete/{id}', [PredicatLetterController::class, 'destroy']);
     });
     Route::prefix('gradebook-components')->group(function () {
         Route::get('/gradebook/{id}', [GradebookComponentController::class, 'index']);
         Route::get('/{id}', [GradebookComponentController::class, 'show']);
         Route::post('/', [GradebookComponentController::class, 'store']);
         Route::patch('/{id}', [GradebookComponentController::class, 'update']);
+        Route::delete('/delete/{id}', [GradebookComponentController::class, 'destroy']);
     });
     Route::prefix('scorecards')->group(function () {
         Route::get('/gradebook', [ScorecardController::class, 'index']);

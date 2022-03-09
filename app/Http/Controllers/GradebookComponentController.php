@@ -88,6 +88,10 @@ class GradebookComponentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $componentService = new GradebookComponentService;
+
+        $componentService->delete($id);
+
+        return response()->json(['message' => 'ok']);
     }
 }

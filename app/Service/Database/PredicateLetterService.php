@@ -88,6 +88,21 @@ class PredicateLetterService {
         return $predicateLetter->toArray();
     }
 
+    public function delete($predicateLetterId) {
+
+        $predicateLetter = PredicateLetter::findOrFail($predicateLetterId);
+
+        $gradebook = Gradebook::with('course')->findOrFail($predicateLetter->gradebook_id);
+
+        $isK21 = $gradebook->course->curriculum === Course::K21_SEKOLAH_PENGGERAK;
+
+        $predicateLetter->delete();
+
+        FunctionsGradebook::recalculate($gradebook->id, $isK21);
+
+        return $predicateLetter->toArray();
+    }
+
     private function fill(PredicateLetter $predicateLetter, array $payload) {
         foreach ($payload as $key => $value) {
             $predicateLetter->$key = $value;
