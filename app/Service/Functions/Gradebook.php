@@ -9,7 +9,6 @@ use App\Models\ScorecardComponent;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
-//WIP
 class Gradebook
 {
     private static function performUpdateOrCreate($scorecard, $existKeys, $isK21)
@@ -81,7 +80,6 @@ class Gradebook
 
                 if ($components->isEmpty()) {
                     $scorecard->final_score = null;
-                    // $scorecard->final_score_letter_id = null;
                     $scorecard->knowledge_score = null;
                     $scorecard->skill_score = null;
 
