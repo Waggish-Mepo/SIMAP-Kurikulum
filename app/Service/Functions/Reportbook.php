@@ -7,6 +7,7 @@ use App\Models\Gradebook as ModelsGradebook;
 use App\Models\Reportbook as ModelsReportbook;
 use App\Models\ReportPeriod;
 use App\Models\Scorecard;
+use App\Models\StudentAbsence;
 use App\Models\StudentCourse;
 use App\Models\StudentGroup;
 use Illuminate\Support\Facades\DB;
@@ -52,27 +53,10 @@ class Reportbook
 
         $groupbyScorecard = $scorecards->mapToGroups(fn ($item) => [$item['student_id'] => $item['id']]);
 
-        // $presenceSick = Presence::whereIn('user_id', $userIds)
-        //     ->where('type', Presence::ABSENT)
-        //     ->where('status', Presence::SICK)
-        //     ->where('non_daily', 0)
-        //     ->get()
-        //     ->mapToGroups(fn ($item) => [$item['user_id'] => $item['id']]);
-
-        // $presenceLeave = Presence::whereIn('user_id', $userIds)
-        //     ->where('type', Presence::ABSENT)
-        //     ->where('status', Presence::LEAVE)
-        //     ->where('non_daily', 0)
-        //     ->get()
-        //     ->mapToGroups(fn ($item) => [$item['user_id'] => $item['id']]);
-
-        // $presenceUnknown = Presence::whereIn('user_id', $userIds)
-        //     ->where('type', Presence::ABSENT)
-        //     ->where('status', Presence::UNKNOWN)
-        //     ->where('non_daily', 0)
-        //     ->get()
-        //     ->mapToGroups(fn ($item) => [$item['user_id'] => $item['id']]);
-
+        $studentAbsenceIds = StudentAbsence::whereIn('student_id', $studentIds)
+            ->where('report_period_id', $reportPeriodId)
+            ->get()
+            ->mapToGroups(fn ($item) => [$item['student_id'] => $item['id']]);
 
         $reportbookExists = ModelsReportbook::where('report_period_id', $reportPeriodId)
             ->get()
@@ -84,30 +68,25 @@ class Reportbook
             $curriculum,
             $reportPeriodId,
             $reportbookExists,
-            $studentIds
+            $studentIds,
+            $studentAbsenceIds
         ) {
             $reportbooks = collect([]);
 
             foreach ($studentIds as $studentId) {
                 $isExist = isset(
                     $reportbookExists[$reportPeriodId.$studentId],
-                );
-
-                // $userId = $users[$studentId]['id'];
-
-                // $absence = [];
-
-                // $absence['ill'] = $presenceSick[$userId] ?? [];
-                // $absence['on_leave'] = $presenceLeave[$userId] ?? [];
-                // $absence['unknown'] = $presenceUnknown[$userId] ?? [];
+                );;
 
                 $scorecard = $groupbyScorecard[$studentId] ?? [];
+                $studentAbsenceId = $studentAbsenceIds[$studentId];
 
                 if (!$isExist) {
                     $reportbook = new ModelsReportbook;
                     $reportbook->id = Uuid::uuid4()->toString();
                     $reportbook->student_id = $studentId;
                     $reportbook->report_period_id = $reportPeriodId;
+                    $reportbook->student_absence_id = $studentAbsenceId;
                     $reportbook->score_config = $scorecard;
                     $reportbook->curriculum = $curriculum;
                     $reportbook->notes = null;

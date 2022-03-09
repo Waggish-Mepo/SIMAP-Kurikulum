@@ -7,6 +7,7 @@ use App\Models\Reportbook;
 use App\Models\ReportPeriod;
 use App\Models\Scorecard;
 use App\Models\Student;
+use App\Models\StudentAbsence;
 use App\Service\Functions\Reportbook as FunctionsReportbook;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -23,7 +24,7 @@ class ReportbookService
         ])->where('student_id', $studentId)
         ->where('report_period_id', $reportPeriodId)->get();
 
-        DB::transaction(function () use ($reportbooks) {
+        DB::transaction(function () use ($reportbooks, $studentId, $reportPeriodId) {
             foreach ($reportbooks as $key => $reportbook) {
                 $scorecard = Scorecard::with('gradebook', 'gradebook.course')->whereIn(
                     'id',
@@ -31,30 +32,11 @@ class ReportbookService
                 )->get();
                 $reportbooks[$key]['scorecard'] = $scorecard;
 
-                // $queryIll = Presence::whereIn('id', $reportbook->absence_config->ill);
-                // $queryUnknown = Presence::whereIn('id', $reportbook->absence_config->unknown);
-                // $queryOnLeave = Presence::whereIn('id', $reportbook->absence_config->on_leave);
+                $absence = StudentAbsence::where('student_id', $studentId)
+                            ->where('report_period_id', $reportPeriodId)
+                            ->first();
 
-                // if ($checkTime !== null) {
-                //     $from = Carbon::parse($checkTime['start_time'])->format('Y-m-d H:i:s');
-                //     $to = Carbon::parse($checkTime['end_time'])->format('Y-m-d H:i:s');
-
-                //     $queryIll->whereBetween('check_time', [$from, $to]);
-                //     $queryUnknown->whereBetween('check_time', [$from, $to]);
-                //     $queryOnLeave->whereBetween('check_time', [$from, $to]);
-                // }
-
-                // $ill = $queryIll->get();
-                // $unknown = $queryUnknown->get();
-                // $onLeave = $queryOnLeave->get();
-
-                // $absences = [];
-
-                // $absences['ill'] = $ill->pluck('check_time') ?? [];
-                // $absences['unknown'] = $unknown->pluck('check_time') ?? [];
-                // $absences['on_leave'] = $onLeave->pluck('check_time') ?? [];
-
-                // $reportbooks[$key]['absences'] = $absences;
+                $reportbooks[$key]['absences'] = $absence;
             }
         });
 
@@ -106,44 +88,6 @@ class ReportbookService
             return $reportbook->toArray();
         }
 
-        // if ($this->request->input('sync') === 'absence_config') {
-        //     $student = Student::with(['user'])->findOrFail($reportbook->student_id);
-
-
-        //     $presenceSick = Presence::where('user_id', $student->user->id)
-        //         ->where('type', Presence::ABSENT)
-        //         ->where('status', Presence::SICK)
-        //         ->where('non_daily', 0)
-        //         ->get()
-        //         ->pluck('id');
-
-        //     $presenceLeave = Presence::where('user_id', $student->user->id)
-        //         ->where('type', Presence::ABSENT)
-        //         ->where('status', Presence::LEAVE)
-        //         ->where('non_daily', 0)
-        //         ->get()
-        //         ->pluck('id');
-
-        //     $presenceUnknown = Presence::where('user_id', $student->user->id)
-        //         ->where('type', Presence::ABSENT)
-        //         ->where('status', Presence::UNKNOWN)
-        //         ->where('non_daily', 0)
-        //         ->get()
-        //         ->pluck('id');
-
-        //     $absence = [];
-
-        //     $absence['ill'] = $presenceSick ?? [];
-        //     $absence['on_leave'] = $presenceLeave ?? [];
-        //     $absence['unknown'] = $presenceUnknown ?? [];
-
-        //     $reportbook->absence_config = $absence;
-
-        //     $reportbook->save();
-
-        //     return $this->respondWithResource($reportbook);
-        // }
-
         $reportbook = $this->fill($reportbook, $payload['notes']);
 
         $reportbook->save();
@@ -170,37 +114,16 @@ class ReportbookService
 
         $scorecardIds = $scorecard->pluck('id');
 
-        // $presenceSick = Presence::where('user_id', $student->user->id)
-        //     ->where('type', Presence::ABSENT)
-        //     ->where('status', Presence::SICK)
-        //     ->get()
-        //     ->pluck('id');
-
-        // $presenceLeave = Presence::where('user_id', $student->user->id)
-        //     ->where('type', Presence::ABSENT)
-        //     ->where('status', Presence::LEAVE)
-        //     ->get()
-        //     ->pluck('id');
-
-        // $presenceUnknown = Presence::where('user_id', $student->user->id)
-        //     ->where('type', Presence::ABSENT)
-        //     ->where('status', Presence::UNKNOWN)
-        //     ->get()
-        //     ->pluck('id');
-
-
-        // $abcence = [];
-
-        // $abcence['ill'] = $presenceSick ?? [];
-        // $abcence['on_leave'] = $presenceLeave ?? [];
-        // $abcence['unknown'] = $presenceUnknown ?? [];
+        $absence = StudentAbsence::where('student_id', $studentId)
+                    ->where('report_period_id', $reportPeriodId)
+                    ->first()->id;
 
         $reportbook = new Reportbook;
         $reportbook->id = Uuid::uuid4()->toString();
         $reportbook->student_id = $studentId;
         $reportbook->report_period_id = $reportPeriodId;
         $reportbook->score_config = $scorecardIds;
-        // $reportbook->absence_config = $abcence;
+        $reportbook->student_absence_id = $absence;
         $reportbook->notes = null;
         $reportbook->report_curriculum = $reportbookExist->report_curriculum;
 
