@@ -22,7 +22,7 @@
         <div class="alert alert-info mb-5">data berikut merupakan data siswa jurusan <strong>{{course.major_details_string}} kelas {{course.entry_year_with_class}}</strong> yang terdaftar pada pelajaran.</div>
         <div class="col-12 mt-3">
             <div v-for="(sc, index) in studentCourses" :key="index" class="mb-2">
-                <div class="card card-course w-100 shadow-sm bg-white p-3" data-bs-toggle="collapse" aria-expanded="false" @click="showPanelCollapse(sc.id, index)" v-if="sc.data.length > 0">
+                <div class="card card-course w-100 shadow-sm bg-white p-3" data-bs-toggle="collapse" aria-expanded="false" @click="showPanelCollapse(sc.id, index)">
                     <div class="d-flex justify-content-between text-capitalize">
                         <div><span class="fas fa-book"></span>
                         {{sc.name}}</div>
@@ -31,9 +31,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="collapse" :id="sc.id" v-if="sc.data.length > 0">
+                <div class="collapse" :id="sc.id">
                     <div class="card-table w-100">
-                        <div class="card-body">
+                        <div class="card-body" v-if="sc.data.length > 0">
                             <h4 class="card-title">Data siswa rombel {{sc.name}}</h4>
                             <p class="card-description text-capitalize">{{course.caption}} Kelas {{course.entry_year_with_class}}</p>
                             <div class="table-responsive">
@@ -66,6 +66,7 @@
                                 </table>
                             </div>
                         </div>
+                        <div class="card-body text-center">Belum ada siswa terdaftar</div>
                     </div>
                 </div>
             </div>
@@ -201,7 +202,7 @@ export default {
             paginationOpts: {
                 enabled: true,
                 mode: "records",
-                perPage: 5,
+                perPage: 40,
                 position: "bottom",
                 perPageDropdown: [10, 50, 100],
                 dropdownAllowAll: true,
@@ -280,6 +281,7 @@ export default {
             this.edit(payload).then((result) => {
                 this.modalEdit = false;
                 this.getCourse(this.$route.params.course);
+                this.getStudentCourse(this.$route.params.course);
             })
         },
         showModalDelete() {

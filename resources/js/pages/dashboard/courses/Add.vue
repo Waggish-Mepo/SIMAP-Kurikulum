@@ -64,6 +64,12 @@
                 </div>
             </div>
         </div>
+
+        <!-- if data null -->
+        <div v-if="studentCourses.length < 1" class="w-100 card-not-found">
+            <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
+            <h5 class="text-center text-capitalize mt-4">data terkait tidak ditemukan</h5>
+        </div>
     </div>
 </template>
 
@@ -97,7 +103,7 @@ export default {
             paginationOpts: {
                 enabled: true,
                 mode: "records",
-                perPage: 5,
+                perPage: 40,
                 position: "bottom",
                 perPageDropdown: [10, 50, 100],
                 dropdownAllowAll: true,

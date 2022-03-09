@@ -222,7 +222,7 @@ export default {
             this.create(this.addForm).then((result) => {
                 this.modalAdd = false;
                 this.addForm.name = null;
-                this.addForm.major_id = nill;
+                this.addForm.major_id = null;
                 this.getStudentGroups(this.payload);
             })
         }

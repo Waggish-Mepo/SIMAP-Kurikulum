@@ -6,30 +6,65 @@ use App\Models\Course;
 use App\Models\Gradebook;
 use App\Models\ReportPeriod;
 use App\Models\Scorecard;
+use App\Service\Functions\Gradebook as FunctionsGradebook;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Ramsey\Uuid\Uuid;
 
 class ScorecardService{
-    public function index($reportPeriodId, $gradebookId)
-    {
-        ReportPeriod::findOrFail($reportPeriodId);
+
+    public function index($gradebookId, $filter = []) {
+
         Gradebook::findOrFail($gradebookId);
 
-        $scorecards = Scorecard::with([
-            'knowledgeScoreLetter',
-            'skillScoreLetter',
-            'finalScoreLetter',
-        ])->where('gradebook_id', $gradebookId)->orderBy('created_at', 'asc')->paginate($this->perPage());
+        $orderBy = $filter['order_by'] ?? 'ASC';
+        $perPage = $filter['page'] ?? 20;
+        $students = $filter['student_ids'] ?? [];
+        $withStudent = $filter['with_student'] ?? false;
+        $withScorecardComponents = $filter['with_scorecard_components'] ?? false;
+        $withLetter = $filter['with_letter'] ?? false;
+        $withoutPagination = $filter['without_pagination'] ?? false;
 
-        return $scorecards;
+        $query = Scorecard::where('gradebook_id', $gradebookId)->orderBy('created_at', $orderBy);
+
+        if ($students) {
+            $query->whereIn('student_id', $students);
+        }
+
+        if ($withStudent) {
+            $query->with('student');
+        }
+
+        if ($withScorecardComponents) {
+            $query->with('scorecardComponents')->orderBy('created_at', 'ASC');
+        }
+
+        if ($withLetter) {
+            $query->with('predicateLetter');
+        }
+
+        if ($withoutPagination) {
+            return $query->get()->toArray();
+        }
+
+        $courses = $query->paginate($perPage);
+
+        return $courses;
     }
 
-    public function bulkCreate($gradebookId)
+    public function detail($scorecardId)
+    {
+        $scorecard = Scorecard::with('scorecardComponents')->findOrFail($scorecardId);
+
+        return $scorecard->toArray();
+    }
+
+    public function bulkCreate($gradebookId, $payload)
     {
         $gradebook = Gradebook::with('course')->findOrFail($gradebookId);
 
-        Validator::make($this->request->only(['gradebook_id', 'students']), [
+        Validator::make($payload, [
             'students' => 'required|array',
             'students.*.id' => 'required|exists:students,id',
             'gradebook_id' => 'required|exists:gradebooks,id',
@@ -37,11 +72,12 @@ class ScorecardService{
             'students.*.skill_score' => 'nullable|numeric',
             'students.*.final_score' => 'nullable|numeric',
             'students.*.predicate' => 'nullable|string',
-            'locked' => 'boolean',
         ])->validate();
 
-        $students = $this->request->input('students', []);
-        $scorecards = DB::transaction(function () use ($students, $gradebook) {
+        $students = $payload['students'];
+        $isK21 = $gradebook->course->curriculum === Course::K21_SEKOLAH_PENGGERAK;
+
+        $scorecards = DB::transaction(function () use ($students, $gradebook, $isK21) {
             $data = collect([]);
             $result = collect([]);
 
@@ -59,6 +95,7 @@ class ScorecardService{
             }
 
             Scorecard::insert($data->toArray());
+            FunctionsGradebook::syncScorecardComponent($gradebook->id, $isK21);
 
             return [
                 'scorecards' => $result,
