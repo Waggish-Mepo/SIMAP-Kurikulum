@@ -17,6 +17,7 @@ class StudentService {
         $name = $filter['name'] ?? null;
         $studentGroup = $filter['student_group_id'] ?? null;
         $studentGroupRelation = $filter['with_student_group'] ?? false;
+        $absences = $filter['with_student_absence'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = Student::orderBy('nis', $orderBy);
@@ -35,6 +36,10 @@ class StudentService {
 
         if ($studentGroupRelation) {
             $query->with('studentGroup');
+        }
+
+        if ($absences) {
+            $query->with('absences');
         }
 
         if ($withoutPagination) {

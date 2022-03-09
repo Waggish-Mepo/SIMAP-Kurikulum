@@ -43,6 +43,20 @@ class ReportbookService
         return $reportbooks->toArray();
     }
 
+    public function check($reportPeriodId)
+    {
+        $reportbook = Reportbook::where('report_period_id', $reportPeriodId)->get();
+
+        return $reportbook;
+    }
+
+    public function detailByStudentId($studentId)
+    {
+        $reportbook = Reportbook::where('student_id', $studentId)->get();
+
+        return $reportbook;
+    }
+
     public function init($reportPeriodId, $payload)
     {
         ReportPeriod::findOrFail($reportPeriodId);
@@ -61,7 +75,7 @@ class ReportbookService
         return $reportbooks->toArray();
     }
 
-    public function update($reportbookId, $payload, $filter)
+    public function update($reportbookId, $payload = [], $filter = [])
     {
         $reportbook = Reportbook::findOrFail($reportbookId);
 
@@ -88,7 +102,7 @@ class ReportbookService
             return $reportbook->toArray();
         }
 
-        $reportbook = $this->fill($reportbook, $payload['notes']);
+        $reportbook = $this->fill($reportbook, $payload);
 
         $reportbook->save();
 
@@ -97,7 +111,7 @@ class ReportbookService
 
     public function create($reportPeriodId, $studentId)
     {
-        $student = Student::with('user')->findOrFail($studentId);
+        $student = Student::findOrFail($studentId);
 
         $query = Reportbook::with('student');
 
@@ -116,7 +130,7 @@ class ReportbookService
 
         $absence = StudentAbsence::where('student_id', $studentId)
                     ->where('report_period_id', $reportPeriodId)
-                    ->first()->id;
+                    ->first()->id ?? null;
 
         $reportbook = new Reportbook;
         $reportbook->id = Uuid::uuid4()->toString();
@@ -125,7 +139,7 @@ class ReportbookService
         $reportbook->score_config = $scorecardIds;
         $reportbook->student_absence_id = $absence;
         $reportbook->notes = null;
-        $reportbook->report_curriculum = $reportbookExist->report_curriculum;
+        $reportbook->curriculum = $reportbookExist->report_curriculum;
 
         $reportbook->save();
 
@@ -139,7 +153,7 @@ class ReportbookService
         }
 
         $reportbookArray = $reportbook->toArray();
-        $reportbookArray['notes'] = (array) $reportbook['notes'];
+        $reportbookArray['notes'] = $reportbook['notes'];
         $reportbookArray['score_config'] = $reportbook['score_config'];
 
         Validator::make($reportbookArray, [

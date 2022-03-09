@@ -7,10 +7,10 @@ const mutations = {
 };
 
 const actions = {
-    index({ commit }, payload) {
+    checkReportbook({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/students/?studentGroup='+payload.studentGroup)
+            axios.get('/reportbooks/report-period/'+payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -20,10 +20,10 @@ const actions = {
                 })
         })
     },
-    indexWithSG({ commit }) {
+    checkStudent({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/students/with-student-groups')
+            axios.get('/reportbooks/student/'+payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -33,36 +33,10 @@ const actions = {
                 })
         })
     },
-    studentAbsence({ commit }, payload) {
+    reportbookStudent({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/students/student-group/' + payload + '/absence')
-                .then((response) => {
-                    resolve(response.data);
-                    commit('SET_GOOD', null, { root: true });
-                })
-                .catch((error) => {
-                    commit('SET_ERROR', error.response.data, { root: true });
-                })
-        })
-    },
-    studentDetail({ commit }, payload) {
-        commit('SET_LOADING', true, { root: true });
-        return new Promise((resolve, reject) => {
-            axios.get('/students/'+payload)
-                .then((response) => {
-                    resolve(response.data);
-                    commit('SET_GOOD', null, { root: true });
-                })
-                .catch((error) => {
-                    commit('SET_ERROR', error.response.data, { root: true });
-                })
-        })
-    },
-    withPrevNext({ commit }, payload) {
-        commit('SET_LOADING', true, { root: true });
-        return new Promise((resolve, reject) => {
-            axios.get('/students/prev-next/'+payload)
+            axios.get('/reportbooks/?report_period_id='+payload.reportPeriodId+'&student_id='+payload.studentId)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -75,7 +49,7 @@ const actions = {
     create({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.post('/students', payload)
+            axios.post('/reportbooks', payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -85,10 +59,36 @@ const actions = {
                 })
         })
     },
-    update({ commit }, payload) {
+    createOne({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.patch('/students/'+payload.id, payload.data)
+            axios.post('/reportbooks/student', payload)
+                .then((response) => {
+                    resolve(response.data);
+                    commit('SET_GOOD', null, { root: true });
+                })
+                .catch((error) => {
+                    commit('SET_ERROR_VALIDATE', error.response.data, { root: true });
+                })
+        })
+    },
+    edit({ commit }, payload) {
+        commit('SET_LOADING', true, { root: true });
+        return new Promise((resolve, reject) => {
+            axios.patch('/reportbooks/'+payload.id, payload.data)
+                .then((response) => {
+                    resolve(response.data);
+                    commit('SET_GOOD', null, { root: true });
+                })
+                .catch((error) => {
+                    commit('SET_ERROR_VALIDATE', error.response.data, { root: true });
+                })
+        })
+    },
+    editNote({ commit }, payload) {
+        commit('SET_LOADING', true, { root: true });
+        return new Promise((resolve, reject) => {
+            axios.patch('/reportbooks/note/'+payload.id, payload.data)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });

@@ -13,26 +13,31 @@
         {{ errorMessage }}
         </div>
         <h5 class="mt-5 title">Absensi Rombel {{studentGroup.name}}</h5>
-        <div class="table-responsive mt-3">
-            <table class="table table-borderless">
-                <tbody>
+        <div class="table-responsive p-0 card-table mt-4">
+            <table class="table table-bordered text-capitalize bg-white">
+                <thead class="bg-muted text-center">
                     <tr>
-                        <vue-good-table
-                            :columns="columns"
-                            :rows="rows"
-                            :pagination-options="paginationOpts"
-                            :sort-options="sortOpts"
-                            :fixed-header="true"
-                            :line-numbers="true"
-                            max-height="800px"
-                            styleClass="vgt-table condensed striped"
-                        >
-                        <template slot="table-row" slot-scope="props">
-                            <span v-if="props.column.field === 'id'">
-                                <i class="fas fa-expand text-dark"></i>
-                            </span>
-                        </template>
-                        </vue-good-table>
+                        <th>No.</th>
+                        <th>Nama</th>
+                        <th>NIS</th>
+                        <th>Sakit</th>
+                        <th>Izin</th>
+                        <th>Alfa</th>
+                        <th>Ubah</th>
+                    </tr>
+                </thead>
+                <tbody style="border-top: 0;">
+                    <tr v-for="(student, index) in students" :key="index">
+                        <td class="text-center">{{index+1}}</td>
+                        <td>{{student.name}}</td>
+                        <td>{{student.nis}}</td>
+                        <td v-if="student.absences.length > 0">{{student.absences[0].sakit | absenCheck}}</td>
+                        <td v-if="student.absences.length > 0">{{student.absences[0].izin | absenCheck}}</td>
+                        <td v-if="student.absences.length > 0">{{student.absences[0].alpa | absenCheck}}</td>
+                        <td v-if="student.absences.length < 1">-</td>
+                        <td v-if="student.absences.length < 1">-</td>
+                        <td v-if="student.absences.length < 1">-</td>
+                        <td class="text-center"><span class="fas fa-edit" @click="checkAbsen(student.id)"></span></td>
                     </tr>
                 </tbody>
             </table>
@@ -47,15 +52,15 @@
                 </div>
                 <div class="form-group mb-3">
                     <label class="mb-2">Sakit</label>
-                    <input type="number" class="form-control">
+                    <input type="number" class="form-control" v-model="studentAbsencePayload.sakit">
                 </div>
                 <div class="form-group mb-3">
                     <label class="mb-2">Izin</label>
-                    <input type="number" class="form-control">
+                    <input type="number" class="form-control" v-model="studentAbsencePayload.izin">
                 </div>
                 <div class="form-group">
                     <label class="mb-2">Alfa</label>
-                    <input type="number" class="form-control">
+                    <input type="number" class="form-control" v-model="studentAbsencePayload.alpa">
                 </div>
             </div>
         </modal>
@@ -77,61 +82,21 @@ export default {
             period: {},
             studentGroup: {},
             modalUpdate: false,
-            sortOpts: { enabled: true },
-            paginationOpts: {
-                enabled: true,
-                mode: "records",
-                perPage: 40,
-                position: "bottom",
-                perPageDropdown: [10, 50, 100],
-                dropdownAllowAll: true,
-                setCurrentPage: 1,
-                nextLabel: "Next",
-                prevLabel: "Prev",
-                rowsPerPageLabel: "Rows per page",
-                ofLabel: "of",
-                pageLabel: "Page", // for 'pages' mode
-                allLabel: "All",
+            students: [],
+            studentAbsencePayload: {
+                student_id: null,
+                report_period_id: this.$route.params.period,
+                alpa: 0,
+                izin: 0,
+                sakit: 0
             },
-            rows: [],
-            columns: [
-                {
-                    label: "Nama",
-                    field: "student.name",
-                    filterOptions: { enabled: true },
-                },
-                {
-                    label: "NIS",
-                    field: "student.nis",
-                    filterOptions: { enabled: true },
-                },
-                {
-                    label: "Sakit",
-                    field: "sick",
-                    filterOptions: { enabled: true },
-                },
-                {
-                    label: "Izin",
-                    field: "absent",
-                    filterOptions: { enabled: true },
-                },
-                {
-                    label: "Alfa",
-                    field: "alpha",
-                    filterOptions: { enabled: true },
-                },
-                {
-                    label: "Edit",
-                    field: "id",
-                    tdClass: "text-center",
-                    sortable: false,
-                },
-            ],
+            status: ''
         }
     },
     created() {
         this.getPeriod(this.$route.params.period);
         this.getStudentGroup(this.$route.params.group);
+        this.getStudents(this.$route.params.group);
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
@@ -139,6 +104,8 @@ export default {
     methods: {
         ...mapActions('reportPeriods', ['detail']),
         ...mapActions('studentGroups', ['detailStudentGroup']),
+        ...mapActions('students', ['studentAbsence']),
+        ...mapActions('studentAbsences', ['show', 'create', 'edit']),
 
         getPeriod(id) {
             this.detail(id).then((result) => {
@@ -150,8 +117,44 @@ export default {
                 this.studentGroup = result;
             })
         },
+        getStudents(id) {
+            this.studentAbsence(id).then((result) => {
+                this.students = result;
+            })
+        },
+        checkAbsen(id) {
+            let payload = {studentId: id, reportPeriodId: this.$route.params.period};
+            this.show(payload).then((result) => {
+                if(result.length < 1) {
+                    this.studentAbsencePayload.student_id = id;
+                    this.studentAbsencePayload.alpa = 0;
+                    this.studentAbsencePayload.izin = 0;
+                    this.studentAbsencePayload.sakit = 0;
+                    this.status = 'create';
+                    this.modalUpdate = true;
+                } else {
+                    this.studentAbsencePayload = result[0];
+                    this.status = 'update';
+                    this.modalUpdate = true;
+                }
+            })
+        },
         updateAbsence() {
-            console.log('edit');
+            if(this.status === 'create') {
+                this.create(this.studentAbsencePayload).then((result) => {
+                    this.status = '';
+                    this.getStudents(this.$route.params.group);
+                    this.modalUpdate = false;
+                })
+            }
+            if(this.status === 'update') {
+                let payload = {id: this.studentAbsencePayload.id, data: this.studentAbsencePayload};
+                this.edit(payload).then((result) => {
+                    this.status = '';
+                    this.getStudents(this.$route.params.group);
+                    this.modalUpdate = false;
+                })
+            }
         }
     }
 }

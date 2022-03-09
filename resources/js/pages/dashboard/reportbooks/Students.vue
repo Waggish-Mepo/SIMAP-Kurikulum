@@ -12,7 +12,7 @@
         {{ errorMessage }}
         </div>
         <h5 class="title">Rapor per Siswa</h5>
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-3">
                 <h4>Kelas 10</h4>
                 <p>Kurikulum 2021</p>
@@ -28,7 +28,7 @@
             <div class="col-3">
                 <button class="btn btn-outline-blue" @click="modalUpdate = true"><span class="fas fa-pen"></span>Edit Template Rapor</button>
             </div>
-        </div>
+        </div> -->
 
         <div class="d-flex justify-content-between mt-4">
             <div></div>
@@ -54,9 +54,7 @@
                         >
                         <template slot="table-row" slot-scope="props">
                             <span v-if="props.column.field === 'id'">
-                                <router-link v-bind:to="{ name: 'reportbooks.periods.students.report', params: {page: 7, period: period.id, student: props.row.id} }" class="router">
-                                <i class="fas fa-expand text-dark"></i>
-                                </router-link>
+                                <i class="fas fa-expand text-dark" @click="checkStudentExist(props.row.id)"></i>
                             </span>
                         </template>
                         </vue-good-table>
@@ -66,7 +64,7 @@
         </div>
 
         <!-- modal -->
-        <modal v-if="modalUpdate" @close="modalUpdate = false" :action="updateTemplate">
+        <!-- <modal v-if="modalUpdate" @close="modalUpdate = false" :action="updateTemplate">
             <h5 slot="header">Ubah Template Rapor</h5>
             <div slot="body">
                 <div class="alert alert-danger mb-3" v-if="errorMessage">
@@ -118,7 +116,7 @@
                     </div>
                 </div>
             </div>
-        </modal>
+        </modal> -->
     </div>
 </template>
 
@@ -136,7 +134,7 @@ export default {
         return {
             period: {},
             studentGroups: [],
-            modalUpdate: false,
+            // modalUpdate: false,
             sortOpts: { enabled: true },
             paginationOpts: {
                 enabled: true,
@@ -191,6 +189,7 @@ export default {
         ...mapActions('reportPeriods', ['detail']),
         ...mapActions('students', ['indexWithSG']),
         ...mapActions('studentGroups', ['getAll']),
+        ...mapActions('reportbooks', ['createOne', 'checkStudent', 'edit']),
 
         getPeriod(id) {
             this.detail(id).then((result) => {
@@ -212,9 +211,24 @@ export default {
 
             this.$router.push({name: 'reportbooks.periods.students.absence', params: {page: 7, period: this.$route.params.period, group: studentGroup}});
         },
-        updateTemplate() {
-            console.log('edit');
+        checkStudentExist(student) {
+            this.checkStudent(student).then((result) => {
+                if(result.length < 1) {
+                    let payload = {reportPeriodId: this.period.id, studentId: student };
+                    this.createOne(payload).then((result) => {
+                        this.$router.push({name: 'reportbooks.periods.students.report', params: {page: 7, period: this.$route.params.period, student: student}});
+                    })
+                } else {
+                    let payloadEdit = {id: result[0].id, data: {}};
+                    this.edit(payloadEdit).then((result) => {
+                        this.$router.push({name: 'reportbooks.periods.students.report', params: {page: 7, period: this.$route.params.period, student: student}});
+                    })
+                }
+            })
         }
+        // updateTemplate() {
+        //     console.log('edit');
+        // }
     }
 }
 </script>

@@ -52,7 +52,8 @@
                                             <span class="text-secondary">siswa ini sudah tidak terdaftar pada mata pelajaran ini</span>
                                         </td> -->
                                         <td>{{sc.student.nis}}</td>
-                                        <td>{{sc.predicate_letter.letter | scoreCheck}}</td>
+                                        <td v-if="sc.predicate_letter">{{sc.predicate_letter.letter}}</td>
+                                        <td v-if="!sc.predicate_letter">-</td>
                                         <td>
                                             <span class="text-danger" v-if="sc.final_score < gradebookData.scorebar && sc.final_score !== null">
                                                 {{sc.final_score | scoreCheck}}
@@ -110,7 +111,8 @@
                                             <span class="text-secondary">siswa ini sudah tidak terdaftar pada mata pelajaran ini</span>
                                         </td> -->
                                         <td>{{sc.student.nis}}</td>
-                                        <td>{{sc.predicate_letter.letter | scoreCheck}}</td>
+                                        <td v-if="sc.predicate_letter">{{sc.predicate_letter.letter}}</td>
+                                        <td v-if="!sc.predicate_letter">-</td>
                                         <td>
                                             <span class="text-danger" v-if="sc.final_score < gradebookData.scorebar && sc.final_score !== null">
                                                 {{sc.final_score | scoreCheck}}
@@ -190,7 +192,6 @@ export default {
         this.getCourse(this.$route.params.course);
         this.getStudentGroup(this.$route.params.sg);
         this.getGradebook(this.$route.params.gb);
-        this.getScoreCards();
     },
     watch: {
         '$route.params.sg': {
@@ -221,6 +222,7 @@ export default {
         getCourse(id) {
             this.show(id).then((result) => {
                 this.course = result;
+                this.getScoreCards();
             })
         },
         getStudentGroup(id) {

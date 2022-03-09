@@ -5650,6 +5650,13 @@ vue__WEBPACK_IMPORTED_MODULE_5__["default"].filter('scoreCheck', function (num) 
     return '-';
   }
 });
+vue__WEBPACK_IMPORTED_MODULE_5__["default"].filter('absenCheck', function (day) {
+  if (day && day != null) {
+    return day + ' hari';
+  } else {
+    return '-';
+  }
+});
 new vue__WEBPACK_IMPORTED_MODULE_5__["default"]({
   router: _router_js__WEBPACK_IMPORTED_MODULE_0__["default"],
   store: _store_js__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -5848,8 +5855,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _router_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./router.js */ "./resources/js/router.js");
 /* harmony import */ var _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stores/auth/index.js */ "./resources/js/stores/auth/index.js");
 /* harmony import */ var _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./stores/subjects/index.js */ "./resources/js/stores/subjects/index.js");
@@ -5867,6 +5874,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _stores_gradebookComponents_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./stores/gradebookComponents/index.js */ "./resources/js/stores/gradebookComponents/index.js");
 /* harmony import */ var _stores_scorecards_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./stores/scorecards/index.js */ "./resources/js/stores/scorecards/index.js");
 /* harmony import */ var _stores_scorecardComponents_index_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./stores/scorecardComponents/index.js */ "./resources/js/stores/scorecardComponents/index.js");
+/* harmony import */ var _stores_reportbooks_index_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./stores/reportbooks/index.js */ "./resources/js/stores/reportbooks/index.js");
+/* harmony import */ var _stores_studentAbsences_index_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./stores/studentAbsences/index.js */ "./resources/js/stores/studentAbsences/index.js");
 
 
  //IMPORT MODULE SECTION
@@ -5887,9 +5896,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_17__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_18__["default"]);
+
+
+vue__WEBPACK_IMPORTED_MODULE_19__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_20__["default"]);
 var debug = "development" !== 'production';
-var store = new vuex__WEBPACK_IMPORTED_MODULE_18__["default"].Store({
+var store = new vuex__WEBPACK_IMPORTED_MODULE_20__["default"].Store({
   modules: {
     auth: _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_1__["default"],
     subjects: _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_2__["default"],
@@ -5906,7 +5917,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_18__["default"].Store({
     predicateLetters: _stores_predicateLetters_index_js__WEBPACK_IMPORTED_MODULE_13__["default"],
     gradebookComponents: _stores_gradebookComponents_index_js__WEBPACK_IMPORTED_MODULE_14__["default"],
     scorecards: _stores_scorecards_index_js__WEBPACK_IMPORTED_MODULE_15__["default"],
-    scorecardComponents: _stores_scorecardComponents_index_js__WEBPACK_IMPORTED_MODULE_16__["default"]
+    scorecardComponents: _stores_scorecardComponents_index_js__WEBPACK_IMPORTED_MODULE_16__["default"],
+    reportbooks: _stores_reportbooks_index_js__WEBPACK_IMPORTED_MODULE_17__["default"],
+    studentAbsences: _stores_studentAbsences_index_js__WEBPACK_IMPORTED_MODULE_18__["default"]
   },
   state: {
     errors: [],
@@ -6820,6 +6833,163 @@ var actions = {
 
 /***/ }),
 
+/***/ "./resources/js/stores/reportbooks/index.js":
+/*!**************************************************!*\
+  !*** ./resources/js/stores/reportbooks/index.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var state = function state() {
+  return {};
+};
+
+var mutations = {};
+var actions = {
+  checkReportbook: function checkReportbook(_ref, payload) {
+    var commit = _ref.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/reportbooks/report-period/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  checkStudent: function checkStudent(_ref2, payload) {
+    var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/reportbooks/student/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  reportbookStudent: function reportbookStudent(_ref3, payload) {
+    var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/reportbooks/?report_period_id=' + payload.reportPeriodId + '&student_id=' + payload.studentId).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  create: function create(_ref4, payload) {
+    var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/reportbooks', payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  createOne: function createOne(_ref5, payload) {
+    var commit = _ref5.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/reportbooks/student', payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  edit: function edit(_ref6, payload) {
+    var commit = _ref6.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/reportbooks/' + payload.id, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  editNote: function editNote(_ref7, payload) {
+    var commit = _ref7.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/reportbooks/note/' + payload.id, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: state,
+  actions: actions,
+  mutations: mutations
+});
+
+/***/ }),
+
 /***/ "./resources/js/stores/scorecardComponents/index.js":
 /*!**********************************************************!*\
   !*** ./resources/js/stores/scorecardComponents/index.js ***!
@@ -6939,6 +7109,91 @@ var actions = {
         });
       })["catch"](function (error) {
         commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: state,
+  actions: actions,
+  mutations: mutations
+});
+
+/***/ }),
+
+/***/ "./resources/js/stores/studentAbsences/index.js":
+/*!******************************************************!*\
+  !*** ./resources/js/stores/studentAbsences/index.js ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var state = function state() {
+  return {};
+};
+
+var mutations = {};
+var actions = {
+  show: function show(_ref, payload) {
+    var commit = _ref.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/student-absences/check-get/?student_id=' + payload.studentId + '&report_period_id=' + payload.reportPeriodId).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  create: function create(_ref2, payload) {
+    var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/student-absences', payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  edit: function edit(_ref3, payload) {
+    var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/student-absences/' + payload.id, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
           root: true
         });
       });
@@ -7253,8 +7508,26 @@ var actions = {
       });
     });
   },
-  studentDetail: function studentDetail(_ref3, payload) {
+  studentAbsence: function studentAbsence(_ref3, payload) {
     var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/students/student-group/' + payload + '/absence').then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  studentDetail: function studentDetail(_ref4, payload) {
+    var commit = _ref4.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -7271,8 +7544,8 @@ var actions = {
       });
     });
   },
-  withPrevNext: function withPrevNext(_ref4, payload) {
-    var commit = _ref4.commit;
+  withPrevNext: function withPrevNext(_ref5, payload) {
+    var commit = _ref5.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -7289,8 +7562,8 @@ var actions = {
       });
     });
   },
-  create: function create(_ref5, payload) {
-    var commit = _ref5.commit;
+  create: function create(_ref6, payload) {
+    var commit = _ref6.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -7307,8 +7580,8 @@ var actions = {
       });
     });
   },
-  update: function update(_ref6, payload) {
-    var commit = _ref6.commit;
+  update: function update(_ref7, payload) {
+    var commit = _ref7.commit;
     commit('SET_LOADING', true, {
       root: true
     });

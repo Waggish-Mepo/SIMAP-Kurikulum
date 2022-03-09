@@ -32,7 +32,31 @@
         </div>
         <h4 class="mt-4">A. Pengetahuan dan Keterampilan</h4>
         <div class="table-responsive p-0 card-table mt-4">
-            <!-- <table class="table table-bordered text-capitalize bg-white">
+            <table class="table table-bordered text-capitalize bg-white" v-if="reportbook.curriculum === 'K21 | Sekolah Penggerak'">
+                <thead class="bg-muted text-center">
+                    <tr>
+                        <th>No.</th>
+                        <th>Mata Pelajaran</th>
+                        <th>Skor Minimal</th>
+                        <th>Nilai Akhir</th>
+                        <th>Predikat</th>
+                    </tr>
+                </thead>
+                <tbody style="border-top: 0;" v-for="(group, index) in subjectGroups" :key="index">
+                    <tr>
+                        <td colspan="5" class="r-category">{{group | groupSubject}}</td>
+                    </tr>
+                    <tr v-for="(scorecard,index) in filterSubjects(group)" :key="index">
+                        <td class="text-center">{{index + 1}}</td>
+                        <td>{{scorecard.gradebook.course.subject['name']}}</td>
+                        <td class="text-center">{{scorecard.gradebook.scorebar}}</td>
+                        <td class="text-center" v-if="scorecard.final_score < scorecard.gradebook.scorebar && scorecard.final_score !== null">{{scorecard.final_score}}</td>
+                        <td class="text-center" v-else>{{scorecard.final_score}}</td>
+                        <td class="text-center">{{scorecard.predicate_desc['letter']}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-bordered text-capitalize bg-white" v-else>
                 <thead class="text-center bg-muted">
                     <tr>
                         <th rowspan="2" style="vertical-align : middle;">No.</th>
@@ -47,95 +71,18 @@
                         <th>K</th>
                     </tr>
                 </thead>
-                <tbody style="border-top: 0;">
+                <tbody style="border-top: 0;" v-for="(group, index) in subjectGroups" :key="index">
                     <tr>
-                        <td colspan="7" class="r-category">A. (Muatan Nasional)</td>
+                        <td colspan="7" class="r-category">{{group | groupSubject}}</td>
                     </tr>
-                    <tr>
-                        <td class="text-center">1</td>
-                        <td>Bahasa Indonesia</td>
-                        <td class="text-center">75.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">B</td>
-                    </tr>
-                    <tr>
-                        <td class="text-center">2</td>
-                        <td>Bahasa Inggris</td>
-                        <td class="text-center">75.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">B</td>
-                    </tr>
-                    <tr>
-                        <td colspan="7" class="r-category">C. (Muatan Keahlian)</td>
-                    </tr>
-                    <tr>
-                        <td class="text-center">1</td>
-                        <td>Pemrograman Web</td>
-                        <td class="text-center">75.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">B</td>
-                    </tr>
-                    <tr>
-                        <td class="text-center">2</td>
-                        <td>Pemrograman Dasar</td>
-                        <td class="text-center">75.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">B</td>
-                    </tr>
-                </tbody>
-            </table> -->
-            <table class="table table-bordered text-capitalize bg-white">
-                <thead class="bg-muted text-center">
-                    <tr>
-                        <th>No.</th>
-                        <th>Mata Pelajaran</th>
-                        <th>Skor Minimal</th>
-                        <th>Nilai Akhir</th>
-                        <th>Predikat</th>
-                    </tr>
-                </thead>
-                <tbody style="border-top: 0;">
-                    <tr>
-                        <td colspan="5" class="r-category">A. (Muatan Nasional)</td>
-                    </tr>
-                    <tr>
-                        <td class="text-center">1</td>
-                        <td>Bahasa Indonesia</td>
-                        <td class="text-center">75.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">B</td>
-                    </tr>
-                    <tr>
-                        <td class="text-center">2</td>
-                        <td>Bahasa Inggris</td>
-                        <td class="text-center">75.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">B</td>
-                    </tr>
-                    <tr>
-                        <td colspan="7" class="r-category">C. (Muatan Keahlian)</td>
-                    </tr>
-                    <tr>
-                        <td class="text-center">1</td>
-                        <td>Pemrograman Web</td>
-                        <td class="text-center">75.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">B</td>
-                    </tr>
-                    <tr>
-                        <td class="text-center">2</td>
-                        <td>Pemrograman Dasar</td>
-                        <td class="text-center">75.00</td>
-                        <td class="text-center">80.00</td>
-                        <td class="text-center">B</td>
+                    <tr v-for="(scorecard,index) in filterSubjects(group)" :key="index">
+                        <td class="text-center">{{index+1}}</td>
+                        <td>{{scorecard.gradebook.course.subject['name']}}</td>
+                        <td class="text-center">{{scorecard.gradebook.scorebar}}</td>
+                        <td class="text-center">{{scorecard.knowledge_score}}</td>
+                        <td class="text-center">{{scorecard.skill_score}}</td>
+                        <td class="text-center">{{scorecard.final_score}}</td>
+                        <td class="text-center">{{scorecard.predicate_desc['letter']}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -154,17 +101,20 @@
                 <tbody style="border-top: 0;" class="text-center">
                     <tr>
                         <td>Sakit</td>
-                        <td>2 hari</td>
+                        <td v-if="reportbook.absences">{{reportbook.absences.sakit | absenCheck}}</td>
+                        <td v-else>-</td>
                         <td>-</td>
                     </tr>
                     <tr>
                         <td>Izin</td>
-                        <td>-</td>
+                        <td v-if="reportbook.absences">{{reportbook.absences.izin | absenCheck}}</td>
+                        <td v-else>-</td>
                         <td>-</td>
                     </tr>
                     <tr>
                         <td>Alfa</td>
-                        <td>-</td>
+                        <td v-if="reportbook.absences">{{reportbook.absences.alpa | absenCheck}}</td>
+                        <td v-else>-</td>
                         <td>-</td>
                     </tr>
                 </tbody>
@@ -177,7 +127,8 @@
             <button class="btn btn-white text-blue1 mb-2" @click="modalNote = true"><span class="fas fa-pen"></span>Edit</button>
         </div>
         <div class="card card-note w-100 bg-muted p-3">
-            <p class="text-secondary">Buat cacatan akademik...</p>
+            <p class="text-secondary" v-if="!reportbook.notes">Buat cacatan akademik...</p>
+            <p class="text-capitalize" v-if="reportbook.notes">{{reportbook.notes}}</p>
         </div>
 
         <div class="d-flex justify-content-between mt-5 mb-3">
@@ -197,7 +148,7 @@
                 </div>
                 <div class="form-group">
                     <label class="mb-2">Catatan</label>
-                    <textarea class="form-control" rows="4"></textarea>
+                    <textarea class="form-control" rows="4" v-model="reportbook.notes"></textarea>
                 </div>
             </div>
         </modal>
@@ -219,17 +170,21 @@ export default {
             period: {},
             student: {},
             studentGroup: {},
-            modalNote: false
+            modalNote: false,
+            subjectGroups: [],
+            reportbook: {}
         }
     },
     created() {
         this.getPeriod(this.$route.params.period);
         this.getStudentPrevNext(this.$route.params.student);
+        this.getReportDetail();
     },
     watch: {
         '$route.params.student': {
             handler: function() {
                 this.getStudentPrevNext(this.$route.params.student);
+                this.getReportDetail();
             },
             deep: true,
             immediate: true
@@ -242,6 +197,7 @@ export default {
         ...mapActions('reportPeriods', ['detail']),
         ...mapActions('students', ['withPrevNext']),
         ...mapActions('studentGroups', ['detailStudentGroup']),
+        ...mapActions('reportbooks', ['reportbookStudent', 'editNote']),
 
         getPeriod(id) {
             this.detail(id).then((result) => {
@@ -259,8 +215,24 @@ export default {
         prevNext(id) {
             this.$router.push({ name: 'reportbooks.periods.students.report', params: {page: 7, period: this.period.id, student: id} });
         },
+        getReportDetail() {
+            let payload = {reportPeriodId: this.$route.params.period, studentId: this.$route.params.student};
+            this.reportbookStudent(payload).then((result) => {
+                this.reportbook = result;
+                this.subjectGroups = result.subjectGroups;
+            })
+        },
+        filterSubjects(group) {
+            return this.reportbook.scorecard.filter(function(sc) {
+                return sc.gradebook.course.subject['group'] == group;
+            });
+        },
         addNote() {
-            console.log('add');
+            let payload = {id: this.reportbook.id, data: {notes: this.reportbook.notes}};
+            this.editNote(payload).then((result) => {
+                this.modalNote = false;
+                this.getReportDetail();
+            })
         }
     }
 }

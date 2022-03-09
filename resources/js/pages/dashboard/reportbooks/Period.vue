@@ -19,8 +19,7 @@
         </div>
 
         <div v-if="periods.length > 0">
-            <a v-for="(period, index) in periods" :key="index" href="#" class="card w-100 bg-white shadow-sm p-3 d-flex">
-                <router-link v-bind:to="{ name: 'reportbooks.periods.students', params: {page: 7, period: period.id} }" class="router">
+            <a v-for="(period, index) in periods" :key="index" href="#" class="card w-100 bg-white shadow-sm p-3 d-flex" @click="showModal(period.id, period.school_year)">
                 <div class="d-flex">
                     <i class="far fa-calendar text-dark-gray"></i>
                     <div class="d-flex flex-column text-secondary">
@@ -29,7 +28,6 @@
                         <span class="text-date" v-else>{{period.start_date | dateFormat}} - {{period.end_date | dateFormat}}</span>
                     </div>
                 </div>
-                </router-link>
             </a>
             <pagination class="mt-3" :pagination="pages" @paginate="getPeriods" :offset="2" :data="payload"></pagination>
         </div>
@@ -39,18 +37,76 @@
             <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
             <h5 class="text-center text-capitalize mt-4">data terkait tidak ditemukan</h5>
         </div>
+
+        <!-- modal -->
+        <modal v-if="modalCurriculum" @close="modalCurriculum = false" :action="setCurriculum">
+            <h5 slot="header">Ubah Template Rapor</h5>
+            <div slot="body">
+                <div class="alert alert-danger mb-3" v-if="errorMessage">
+                    {{ errorMessage }}
+                </div>
+                <div class="form-group mb-3">
+                    <label class="mb-2"><b>Kelas 10</b></label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="10-k13" value="K13 Revisi 2017 | Permendikbud No. 37 Tahun 2018" v-model="grade10.curriculum">
+                        <label class="form-check-label" for="10-k13">
+                            Kurikulum 2013
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="10-k21" value="K21 | Sekolah Penggerak" v-model="grade10.curriculum">
+                        <label class="form-check-label" for="10-k21">
+                            Kurikulum Sekolah Penggerak
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="mb-2"><b>Kelas 11</b></label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="11-k13" value="K13 Revisi 2017 | Permendikbud No. 37 Tahun 2018" v-model="grade11.curriculum">
+                        <label class="form-check-label" for="11-k13">
+                            Kurikulum 2013
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="11-k21" value="K21 | Sekolah Penggerak" v-model="grade11.curriculum">
+                        <label class="form-check-label" for="11-k21">
+                            Kurikulum Sekolah Penggerak
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="mb-2"><b>Kelas 12</b></label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="12-k13" value="K13 Revisi 2017 | Permendikbud No. 37 Tahun 2018" v-model="grade12.curriculum">
+                        <label class="form-check-label" for="12-k13">
+                            Kurikulum 2013
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="12-k21" value="K21 | Sekolah Penggerak" v-model="grade12.curriculum">
+                        <label class="form-check-label" for="12-k21">
+                            Kurikulum Sekolah Penggerak
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </modal>
     </div>
 </template>
 
 <script>
 // vuex
 import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
+// modal
+import modalComponent from '../../../components/Modal.vue';
 // pagination
 import paginateComponent from '../../../components/Pagination.vue';
 export default {
     name: 'reportPeriods',
     components: {
-        "pagination": paginateComponent
+        "pagination": paginateComponent,
+        "modal": modalComponent
     },
     data() {
         return {
@@ -69,17 +125,38 @@ export default {
                 search: '',
                 page: 1,
                 per_page: 5
-            }
+            },
+            modalCurriculum: false,
+            entry_years: [],
+            grade10: {
+                curriculum: 'K21 | Sekolah Penggerak',
+                entry_year: null,
+                school_year: null,
+            },
+            grade11: {
+                curriculum: 'K13 Revisi 2017 | Permendikbud No. 37 Tahun 2018',
+                entry_year: null,
+                school_year: null,
+            },
+            grade12: {
+                curriculum: 'K13 Revisi 2017 | Permendikbud No. 37 Tahun 2018',
+                entry_year: null,
+                school_year: null,
+            },
+            periodId: null
         }
     },
     created() {
+        this.getEntryYears();
         this.getPeriods(this.payload);
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
     },
     methods: {
-        ...mapActions('reportPeriods', ['index']),
+        ...mapActions('reportPeriods', ['index', 'show']),
+        ...mapActions('courses', ['entryYears']),
+        ...mapActions('reportbooks', ['checkReportbook', 'create']),
 
         getPeriods(search) {
             this.index(search).then((result) => {
@@ -100,6 +177,35 @@ export default {
             this.payload.schoolYear = '';
             this.payload.search = '';
             this.getPeriods(this.payload);
+        },
+        getEntryYears() {
+            this.entryYears().then((result) => {
+                this.entry_years = result;
+                this.grade10.entry_year = result[10];
+                this.grade11.entry_year = result[11];
+                this.grade12.entry_year = result[12];
+            })
+        },
+        showModal(period, schoolYear) {
+            this.checkReportbook(period).then((result) => {
+                if(result.length >= 1) {
+                    this.$router.push({name: 'reportbooks.periods.students', params: {page: 7, period: period}});
+                } else {
+                    this.periodId = period;
+                    this.grade10.school_year = schoolYear;
+                    this.grade11.school_year = schoolYear;
+                    this.grade12.school_year = schoolYear;
+                    this.modalCurriculum = true;
+                }
+            })
+        },
+        setCurriculum() {
+            let array = [];
+            array.push(this.grade10, this.grade11, this.grade12);
+            let payload = {reportPeriodId: this.periodId, data: array};
+            this.create(payload).then((result) => {
+                this.$router.push({name: 'reportbooks.periods.students', params: {page: 7, period: this.periodId}});
+            })
         }
     }
 }
