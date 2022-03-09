@@ -84,6 +84,20 @@ class GradebookComponentService{
         return $gradebookComponent->toArray();
     }
 
+    public function delete($gradebookComponentId) {
+        $gradebookComponent = GradebookComponent::findOrFail($gradebookComponentId);
+        $gradebook = Gradebook::findOrFail($gradebookComponent->gradebook_id);
+        $isK21 = $gradebook->course->curriculum === Course::K21_SEKOLAH_PENGGERAK;
+
+        DB::transaction(function () use ($gradebookComponent, $gradebook, $isK21) {
+
+            $gradebookComponent->scorecardComponents()->delete();
+            $gradebookComponent->delete();
+
+            FunctionsGradebook::recalculate($gradebook->id, $isK21);
+        });
+    }
+
 
     private function fill(GradebookComponent $gradebookComponent, array $payload) {
         foreach ($payload as $key => $value) {

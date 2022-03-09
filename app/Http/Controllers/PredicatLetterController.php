@@ -88,6 +88,10 @@ class PredicatLetterController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $predicateDB = new PredicateLetterService;
+
+        $predicateDB->delete($id);
+
+        return response()->json(['message' => 'ok']);
     }
 }
