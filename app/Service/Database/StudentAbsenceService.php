@@ -28,18 +28,6 @@ class StudentAbsenceService{
             $query->where('report_period_id', $reportPeriodId);
         }
 
-        if ($alpa) {
-            $query->where('alpa', $alpa);
-        }
-
-        if ($izin) {
-            $query->where('izin', $izin);
-        }
-
-        if ($sakit) {
-            $query->where('sakit', $sakit);
-        }
-
         if ($withoutPagination) {
             return $query->get()->toArray();
         }
