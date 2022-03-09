@@ -20,16 +20,11 @@ class StudentController extends Controller
         return response()->json($students->index(['student_group_id' => $studentGroup, 'without_pagination' => true]));
     }
 
-    public function getWithStudentGroup(Request $request)
+    public function getWithStudentGroup()
     {
         $studentDB = new StudentService;
-        $studentGroup = $request->studentGroup;
 
-        if($studentGroup == ""){
-            return response()->json($studentDB->index(['with_student_group' => true, 'without_pagination' => true]));
-        } else {
-            return response()->json($studentDB->index(['student_group_id' => $studentGroup, 'with_student_group' => true, 'without_pagination' => true]));
-        }
+        return response()->json($studentDB->index(['order' => true,'with_student_group' => true, 'without_pagination' => true]));
     }
 
     /**
@@ -64,6 +59,29 @@ class StudentController extends Controller
     {
         $studentDB = new StudentService;
         return response()->json($studentDB->detail($id));
+    }
+
+    public function showWithNextPrev($id)
+    {
+        $studentDB = new StudentService;
+
+        $student = $studentDB->detail($id);
+
+        $studentNext = $studentDB->next($student['nis'], $student['student_group_id'], $id);
+        if($studentNext) {
+            $student['next'] = $studentNext['id'];
+        } else {
+            $student['next'] = null;
+        }
+
+        $studentPrev = $studentDB->prev($student['nis'], $student['student_group_id'], $id);
+        if($studentPrev) {
+            $student['prev'] = $studentPrev['id'];
+        } else {
+            $student['prev'] = null;
+        }
+
+        return response()->json($student);
     }
 
     /**

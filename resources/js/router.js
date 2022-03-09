@@ -105,6 +105,11 @@ const router = new Router({
                 name: 'reportbooks.periods.students.report',
                 component: loadView('dashboard/reportbooks/StudentReport')
             },
+            {
+                path: '/:page/reportbooks/periods/:period/groups/:group',
+                name: 'reportbooks.periods.students.absence',
+                component: loadView('dashboard/reportbooks/StudentAbsence')
+            },
             ]
         },
         {

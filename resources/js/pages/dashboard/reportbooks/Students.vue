@@ -11,23 +11,34 @@
         <div class="alert alert-danger my-3" v-if="errorMessage">
         {{ errorMessage }}
         </div>
-        <h5>Rapor per Siswa</h5>
+        <h5 class="title">Rapor per Siswa</h5>
         <div class="row">
-            <div class="col-4">
+            <div class="col-3">
                 <h4>Kelas 10</h4>
                 <p>Kurikulum 2021</p>
             </div>
-            <div class="col-4">
+            <div class="col-3">
                 <h4>Kelas 11</h4>
                 <p>Kurikulum 2013</p>
             </div>
-            <div class="col-4">
+            <div class="col-3">
                 <h4>Kelas 12</h4>
                 <p>Kurikulum 2013</p>
             </div>
+            <div class="col-3">
+                <button class="btn btn-outline-blue" @click="modalUpdate = true"><span class="fas fa-pen"></span>Edit Template Rapor</button>
+            </div>
         </div>
 
-        <div class="table-responsive mt-3s">
+        <div class="d-flex justify-content-between mt-4">
+            <div></div>
+            <select class="form-select btn bg-blue1 text-white w-20" @change="redirectPage">
+                <option selected hidden>Atur Kehadiran Siswa</option>
+                <option v-for="(group,index) in studentGroups" :key="index" :value="group.id">{{group.name}}</option>
+            </select>
+        </div>
+
+        <div class="table-responsive mt-3">
             <table class="table table-borderless">
                 <tbody>
                     <tr>
@@ -37,6 +48,7 @@
                             :pagination-options="paginationOpts"
                             :sort-options="sortOpts"
                             :fixed-header="true"
+                            :line-numbers="true"
                             max-height="800px"
                             styleClass="vgt-table condensed striped"
                         >
@@ -52,18 +64,79 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- modal -->
+        <modal v-if="modalUpdate" @close="modalUpdate = false" :action="updateTemplate">
+            <h5 slot="header">Ubah Template Rapor</h5>
+            <div slot="body">
+                <div class="alert alert-danger mb-3" v-if="errorMessage">
+                    {{ errorMessage }}
+                </div>
+                <div class="form-group mb-3">
+                    <label class="mb-2"><b>Kelas 10</b></label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="10-k13" value="k13">
+                        <label class="form-check-label" for="10-k13">
+                            Kurikulum 2013
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="10-k21" value="k21">
+                        <label class="form-check-label" for="10-k21">
+                            Kurikulum Sekolah Penggerak
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="mb-2"><b>Kelas 11</b></label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="11-k13" value="k13">
+                        <label class="form-check-label" for="11-k13">
+                            Kurikulum 2013
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="11-k21" value="k21">
+                        <label class="form-check-label" for="11-k21">
+                            Kurikulum Sekolah Penggerak
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="mb-2"><b>Kelas 12</b></label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="12-k13" value="k13">
+                        <label class="form-check-label" for="12-k13">
+                            Kurikulum 2013
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="12-k21" value="k21">
+                        <label class="form-check-label" for="12-k21">
+                            Kurikulum Sekolah Penggerak
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </modal>
     </div>
 </template>
 
 <script>
 // vuex
 import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
+// modal
+import modalComponent from '../../../components/Modal.vue';
 export default {
     name: "allStudents",
+    components: {
+        "modal": modalComponent
+    },
     data() {
         return {
             period: {},
-            studentGroup: '',
+            studentGroups: [],
+            modalUpdate: false,
             sortOpts: { enabled: true },
             paginationOpts: {
                 enabled: true,
@@ -109,6 +182,7 @@ export default {
     created() {
         this.getPeriod(this.$route.params.period);
         this.getStudents();
+        this.getStudentGroups();
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
@@ -116,6 +190,7 @@ export default {
     methods: {
         ...mapActions('reportPeriods', ['detail']),
         ...mapActions('students', ['indexWithSG']),
+        ...mapActions('studentGroups', ['getAll']),
 
         getPeriod(id) {
             this.detail(id).then((result) => {
@@ -123,16 +198,29 @@ export default {
             })
         },
         getStudents() {
-            this.indexWithSG(this.studentGroup).then((result) => {
+            this.indexWithSG().then((result) => {
                 this.rows = result;
             })
+        },
+        getStudentGroups() {
+            this.getAll().then((result) => {
+                this.studentGroups = result;
+            })
+        },
+        redirectPage(e) {
+            let studentGroup = e.target.value;
+
+            this.$router.push({name: 'reportbooks.periods.students.absence', params: {page: 7, period: this.$route.params.period, group: studentGroup}});
+        },
+        updateTemplate() {
+            console.log('edit');
         }
     }
 }
 </script>
 
 <style scoped>
-h5 {
+h5.title {
     font-weight: 600 !important;
     font-size: 1.3rem;
     margin-top: 20px;
@@ -152,8 +240,25 @@ a.router {
     color: #000 !important;
 }
 
+.w-20 {
+    width: 20%;
+}
+
+.btn.bg-blue1 {
+    margin-right: 1rem !important;
+}
+
+.btn-outline-blue {
+    border: 1px solid #182A36;
+    color: #182A36 !important;
+}
+
+span.fas.fa-pen {
+    margin-right: 5px;
+}
+
 @media (max-width: 575px) {
-    h5 {
+    h5.title {
         font-size: 1rem;
     }
     h4 {

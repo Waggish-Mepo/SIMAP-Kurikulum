@@ -84,6 +84,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::prefix('student-groups')->group(function () {
         Route::get('/', [StudentGroupController::class, 'index']);
+        Route::get('/all', [StudentGroupController::class, 'getAll']);
         Route::post('/', [StudentGroupController::class, 'store']);
         Route::get('/{id}', [StudentGroupController::class, 'show']);
         Route::get('/by-course/{id}', [StudentGroupController::class, 'getByCourse']);
@@ -91,6 +92,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::prefix('students')->group(function () {
         Route::get('/', [StudentController::class, 'index']);
+        Route::get('/prev-next/{id}', [StudentController::class, 'showWithNextPrev']);
         Route::get('/with-student-groups', [StudentController::class, 'getWithStudentGroup']);
         Route::post('/', [StudentController::class, 'store']);
         Route::get('/{id}', [StudentController::class, 'show']);

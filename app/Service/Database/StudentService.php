@@ -11,17 +11,22 @@ use Ramsey\Uuid\Uuid;
 class StudentService {
     public function index($filter = [])
     {
-        $orderBy = $filter['order_by'] ?? 'DESC';
+        $orderBy = $filter['order_by'] ?? 'ASC';
+        $anotherOrderBy = $filter['order'] ?? false;
         $per_page = $filter['per_page'] ?? 99;
         $name = $filter['name'] ?? null;
         $studentGroup = $filter['student_group_id'] ?? null;
         $studentGroupRelation = $filter['with_student_group'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
-        $query = Student::orderBy('created_at', $orderBy);
+        $query = Student::orderBy('nis', $orderBy);
 
         if ($name) {
             $query->where('name', 'LIKE', '%' . $name . '%');
+        }
+
+        if ($anotherOrderBy) {
+            $query->orderBy('student_group_id', 'ASC');
         }
 
         if ($studentGroup) {
@@ -46,6 +51,28 @@ class StudentService {
         $student = Student::findOrFail($studentId);
 
         return $student->toArray();
+    }
+
+    public function next($nis, $sg, $id)
+    {
+        $student = Student::where([
+            ['nis', '>=', $nis],
+            ['student_group_id', $sg],
+            ['id', '!=', $id]
+        ])->oldest()->first();
+
+        return $student;
+    }
+
+    public function prev($nis, $sg, $id)
+    {
+        $student = Student::where([
+            ['nis', '<=', $nis],
+            ['student_group_id', $sg],
+            ['id', '!=', $id]
+        ])->oldest()->first();
+
+        return $student;
     }
 
     public function bulkDetail($studentIds)

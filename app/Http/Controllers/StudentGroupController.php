@@ -39,6 +39,13 @@ class StudentGroupController extends Controller
         }
     }
 
+    public function getAll()
+    {
+        $studentGroupDB = new StudentGroupService;
+
+        return response()->json($studentGroupDB->index(['without_pagination' => true]));
+    }
+
     public function getByCourse($courseId)
     {
         $courseService = new CourseService;

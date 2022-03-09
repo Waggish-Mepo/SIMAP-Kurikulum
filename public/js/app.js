@@ -5802,6 +5802,10 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/:page/reportbooks/periods/:period/students/:student',
       name: 'reportbooks.periods.students.report',
       component: loadView('dashboard/reportbooks/StudentReport')
+    }, {
+      path: '/:page/reportbooks/periods/:period/groups/:group',
+      name: 'reportbooks.periods.students.absence',
+      component: loadView('dashboard/reportbooks/StudentAbsence')
     }]
   }, {
     path: '/dashboard/gradebooks',
@@ -7092,8 +7096,26 @@ var actions = {
       });
     });
   },
-  detailStudentGroup: function detailStudentGroup(_ref2, payload) {
+  getAll: function getAll(_ref2) {
     var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/student-groups/all').then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  detailStudentGroup: function detailStudentGroup(_ref3, payload) {
+    var commit = _ref3.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -7110,8 +7132,8 @@ var actions = {
       });
     });
   },
-  getByCourse: function getByCourse(_ref3, payload) {
-    var commit = _ref3.commit;
+  getByCourse: function getByCourse(_ref4, payload) {
+    var commit = _ref4.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -7128,8 +7150,8 @@ var actions = {
       });
     });
   },
-  create: function create(_ref4, payload) {
-    var commit = _ref4.commit;
+  create: function create(_ref5, payload) {
+    var commit = _ref5.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -7146,8 +7168,8 @@ var actions = {
       });
     });
   },
-  edit: function edit(_ref5, payload) {
-    var commit = _ref5.commit;
+  edit: function edit(_ref6, payload) {
+    var commit = _ref6.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -7213,13 +7235,13 @@ var actions = {
       });
     });
   },
-  indexWithSG: function indexWithSG(_ref2, payload) {
+  indexWithSG: function indexWithSG(_ref2) {
     var commit = _ref2.commit;
     commit('SET_LOADING', true, {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/students/with-student-groups/?studentGroup=' + payload).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/students/with-student-groups').then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
@@ -7249,8 +7271,26 @@ var actions = {
       });
     });
   },
-  create: function create(_ref4, payload) {
+  withPrevNext: function withPrevNext(_ref4, payload) {
     var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/students/prev-next/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  create: function create(_ref5, payload) {
+    var commit = _ref5.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -7267,8 +7307,8 @@ var actions = {
       });
     });
   },
-  update: function update(_ref5, payload) {
-    var commit = _ref5.commit;
+  update: function update(_ref6, payload) {
+    var commit = _ref6.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -41403,7 +41443,7 @@ var render = function () {
   var _c = _vm._self._c || _h
   return _c("transition", { attrs: { name: "modal" } }, [
     _c("div", { staticClass: "vue-modal-mask" }, [
-      _c("div", { staticClass: "modal-dialog" }, [
+      _c("div", { staticClass: "modal-dialog modal-dialog-scrollable" }, [
         _c("div", { staticClass: "modal-content" }, [
           _c(
             "div",
@@ -58484,6 +58524,10 @@ var map = {
 		"./resources/js/pages/dashboard/reportbooks/Period.vue",
 		"resources_js_pages_dashboard_reportbooks_Period_vue"
 	],
+	"./dashboard/reportbooks/StudentAbsence.vue": [
+		"./resources/js/pages/dashboard/reportbooks/StudentAbsence.vue",
+		"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue"
+	],
 	"./dashboard/reportbooks/StudentReport.vue": [
 		"./resources/js/pages/dashboard/reportbooks/StudentReport.vue",
 		"resources_js_pages_dashboard_reportbooks_StudentReport_vue"
@@ -58635,7 +58679,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};
