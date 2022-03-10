@@ -18,7 +18,7 @@
                 <p class="text-secondary">{{student.name}} - {{studentGroup.name}}</p>
             </div>
             <div class="pt-3">
-                <button class="btn btn-white text-dark" v-if="student.prev"><span class="fas fa-arrow-left" @click="prevNext(student.prev)"></span>Sebelumnya</button>
+                <button class="btn btn-white text-dark" v-if="student.prev" @click="prevNext(student.prev)"><span class="fas fa-arrow-left"></span>Sebelumnya</button>
                 <button class="btn btn-white text-dark" v-if="!student.prev" disabled><span class="fas fa-arrow-left"></span>Sebelumnya</button>
                 <button class="btn btn-white text-dark" v-if="student.next" @click="prevNext(student.next)">Selanjutnya <span class="fas fa-arrow-right"></span></button>
                 <button class="btn btn-white text-dark" v-if="!student.next" disabled>Selanjutnya <span class="fas fa-arrow-right"></span></button>
@@ -30,6 +30,11 @@
                 <a href="#" class="btn bg-blue1 text-white">Cetak Rapor</a>
             </div>
         </div>
+        <div v-if="reportbook === 'failed'" class="w-100 card-not-found mt-5">
+            <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
+            <h5 class="text-center mt-4">siswa belum terdaftar dipelajaran apapun.</h5>
+        </div>
+        <div v-else>
         <h4 class="mt-4">A. Pengetahuan dan Keterampilan</h4>
         <div class="table-responsive p-0 card-table mt-4">
             <table class="table table-bordered text-capitalize bg-white" v-if="reportbook.curriculum === 'K21 | Sekolah Penggerak'">
@@ -50,8 +55,10 @@
                         <td class="text-center">{{index + 1}}</td>
                         <td>{{scorecard.gradebook.course.subject['name']}}</td>
                         <td class="text-center">{{scorecard.gradebook.scorebar}}</td>
-                        <td class="text-center" v-if="scorecard.final_score < scorecard.gradebook.scorebar && scorecard.final_score !== null">{{scorecard.final_score}}</td>
-                        <td class="text-center" v-else>{{scorecard.final_score}}</td>
+                        <td class="text-center">
+                            <span class="text-danger" v-if="scorecard.final_score < scorecard.gradebook.scorebar && scorecard.final_score !== null">{{scorecard.final_score | scoreCheck}}</span>
+                            <span class="text-dark" v-else>{{scorecard.final_score | scoreCheck}}</span>
+                        </td>
                         <td class="text-center">{{scorecard.predicate_desc['letter']}}</td>
                     </tr>
                 </tbody>
@@ -79,9 +86,18 @@
                         <td class="text-center">{{index+1}}</td>
                         <td>{{scorecard.gradebook.course.subject['name']}}</td>
                         <td class="text-center">{{scorecard.gradebook.scorebar}}</td>
-                        <td class="text-center">{{scorecard.knowledge_score}}</td>
-                        <td class="text-center">{{scorecard.skill_score}}</td>
-                        <td class="text-center">{{scorecard.final_score}}</td>
+                        <td class="text-center">
+                            <span class="text-danger" v-if="scorecard.knowledge_score < scorecard.gradebook.scorebar && scorecard.knowledge_score !== null">{{scorecard.knowledge_score | scoreCheck}}</span>
+                            <span class="text-dark" v-else>{{scorecard.knowledge_score | scoreCheck}}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="text-danger" v-if="scorecard.skill_score < scorecard.gradebook.scorebar && scorecard.skill_score !== null">{{scorecard.skill_score | scoreCheck}}</span>
+                            <span class="text-dark" v-else>{{scorecard.skill_score | scoreCheck}}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="text-danger" v-if="scorecard.final_score < scorecard.gradebook.scorebar && scorecard.final_score !== null">{{scorecard.final_score | scoreCheck}}</span>
+                            <span class="text-dark" v-else>{{scorecard.final_score | scoreCheck}}</span>
+                        </td>
                         <td class="text-center">{{scorecard.predicate_desc['letter']}}</td>
                     </tr>
                 </tbody>
@@ -137,6 +153,7 @@
                 <p>Wali Kelas</p>
                 <button class="btn btn-secondary">Beri Tanda Tangan</button>
             </div>
+        </div>
         </div>
 
         <!-- modal -->

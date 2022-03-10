@@ -60,7 +60,12 @@ class StudentGroupController extends Controller
 
         $studentGroupMajor = $batches->pluck('studentGroups')->flatten()->whereIn('major_id', $course['majors']);
 
-        return response()->json($studentGroupMajor);
+        $result = [];
+        foreach ($studentGroupMajor as $sgMajor) {
+            $result[] = $sgMajor;
+        }
+
+        return response()->json($result);
     }
 
     /**

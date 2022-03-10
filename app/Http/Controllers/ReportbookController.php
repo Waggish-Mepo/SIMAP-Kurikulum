@@ -25,18 +25,22 @@ class ReportbookController extends Controller
 
         $reportbook = $reportbookDB->byStudent($reportPeriodId, $studentId);
 
-        $groups = [];
-        foreach ($reportbook[0]['scorecard'] as $scorecard) {
-            $subject = $subjectDB->detail($scorecard['gradebook']['course']['subject_id']);
-            $scorecard['gradebook']['course']['subject'] = $subject;
-            $scorecard['predicate_desc'] = $predicateLetterDB->detail($scorecard['predicate_letter_id']);
-            if(!in_array($subject['group'], $groups)) {
-                $groups[] = $subject['group'];
+        if($reportbook) {
+            $groups = [];
+            foreach ($reportbook[0]['scorecard'] as $scorecard) {
+                $subject = $subjectDB->detail($scorecard['gradebook']['course']['subject_id']);
+                $scorecard['gradebook']['course']['subject'] = $subject;
+                $scorecard['predicate_desc'] = $predicateLetterDB->detail($scorecard['predicate_letter_id']);
+                if (!in_array($subject['group'], $groups)) {
+                    $groups[] = $subject['group'];
+                }
             }
+            $reportbook[0]['subjectGroups'] = $groups;
+
+            return response()->json($reportbook[0]);
+        } else {
+            return response()->json('failed');
         }
-        $reportbook[0]['subjectGroups'] = $groups;
-        
-        return response()->json($reportbook[0]);
     }
 
     public function checkByPeriod($period)

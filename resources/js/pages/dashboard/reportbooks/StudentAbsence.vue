@@ -26,7 +26,7 @@
                         <th>Ubah</th>
                     </tr>
                 </thead>
-                <tbody style="border-top: 0;">
+                <tbody style="border-top: 0;" v-if="students.length > 0">
                     <tr v-for="(student, index) in students" :key="index">
                         <td class="text-center">{{index+1}}</td>
                         <td>{{student.name}}</td>
@@ -37,7 +37,15 @@
                         <td v-if="student.absences.length < 1">-</td>
                         <td v-if="student.absences.length < 1">-</td>
                         <td v-if="student.absences.length < 1">-</td>
-                        <td class="text-center"><span class="fas fa-edit" @click="checkAbsen(student.id)"></span></td>
+                        <td class="text-center"><span class="fas fa-edit cursor-pointer" @click="checkAbsen(student.id)"></span></td>
+                    </tr>
+                </tbody>
+                <tbody style="border-top: 0;" v-else>
+                    <tr>
+                        <td colspan="7" class="pt-4">
+                            <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
+                            <h5 class="text-center mt-4">belum terdapat siswa di rombel ini.</h5>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -165,6 +173,10 @@ h5.title {
     font-weight: 600 !important;
     font-size: 1.3rem;
     margin-top: 20px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }
 
 @media (max-width: 575px) {

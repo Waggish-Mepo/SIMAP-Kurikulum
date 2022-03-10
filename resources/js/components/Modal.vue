@@ -1,7 +1,7 @@
 <template>
     <transition name="modal">
         <div class="vue-modal-mask">
-            <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header pb-1">
                         <slot name="header" class="font-weight-bold header"></slot>
