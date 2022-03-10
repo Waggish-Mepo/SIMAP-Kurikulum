@@ -18,6 +18,8 @@ use App\Http\Controllers\PredicatLetterController;
 use App\Http\Controllers\GradebookComponentController;
 use App\Http\Controllers\ScorecardController;
 use App\Http\Controllers\ScorecardComponentController;
+use App\Http\Controllers\ReportbookController;
+use App\Http\Controllers\StudentAbsenceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,6 +86,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::prefix('student-groups')->group(function () {
         Route::get('/', [StudentGroupController::class, 'index']);
+        Route::get('/all', [StudentGroupController::class, 'getAll']);
         Route::post('/', [StudentGroupController::class, 'store']);
         Route::get('/{id}', [StudentGroupController::class, 'show']);
         Route::get('/by-course/{id}', [StudentGroupController::class, 'getByCourse']);
@@ -91,6 +94,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::prefix('students')->group(function () {
         Route::get('/', [StudentController::class, 'index']);
+        Route::get('/student-group/{id}/absence', [StudentController::class, 'withAbsence']);
+        Route::get('/prev-next/{id}', [StudentController::class, 'showWithNextPrev']);
+        Route::get('/with-student-groups', [StudentController::class, 'getWithStudentGroup']);
         Route::post('/', [StudentController::class, 'store']);
         Route::get('/{id}', [StudentController::class, 'show']);
         Route::patch('/{id}', [StudentController::class, 'update']);
@@ -126,5 +132,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('scorecard-components')->group(function () {
         Route::get('/{id}', [ScorecardComponentController::class, 'show']);
         Route::patch('/{id}', [ScorecardComponentController::class, 'update']);
+    });
+    Route::prefix('reportbooks')->group(function () {
+        Route::get('/report-period/{id}', [ReportbookController::class, 'checkByPeriod']);
+        Route::get('/student/{id}', [ReportbookController::class, 'checkByStudent']);
+        Route::get('/', [ReportbookController::class, 'index']);
+        Route::post('/', [ReportbookController::class, 'store']);
+        Route::post('/student', [ReportbookController::class, 'storeStudent']);
+        Route::patch('/{id}', [ReportbookController::class, 'update']);
+        Route::patch('/note/{id}', [ReportbookController::class, 'updateNote']);
+    });
+    Route::prefix('student-absences')->group(function () {
+        Route::get('/check-get', [StudentAbsenceController::class, 'checkAndGet']);
+        Route::post('/', [StudentAbsenceController::class, 'store']);
+        Route::patch('/{id}', [StudentAbsenceController::class, 'update']);
     });
 });

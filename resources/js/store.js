@@ -19,6 +19,8 @@ import predicateLetters from './stores/predicateLetters/index.js'
 import gradebookComponents from './stores/gradebookComponents/index.js'
 import scorecards from './stores/scorecards/index.js'
 import scorecardComponents from './stores/scorecardComponents/index.js'
+import reportbooks from './stores/reportbooks/index.js'
+import studentAbsences from './stores/studentAbsences/index.js'
 
 Vue.use(Vuex);
 
@@ -41,7 +43,9 @@ const store = new Vuex.Store({
         predicateLetters,
         gradebookComponents,
         scorecards,
-        scorecardComponents
+        scorecardComponents,
+        reportbooks,
+        studentAbsences
     },
     state: {
         errors: [],

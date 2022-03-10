@@ -79,7 +79,7 @@ class Reportbook
                 );;
 
                 $scorecard = $groupbyScorecard[$studentId] ?? [];
-                $studentAbsenceId = $studentAbsenceIds[$studentId];
+                $studentAbsenceId = $studentAbsenceIds[$studentId] ?? null;
 
                 if (!$isExist) {
                     $reportbook = new ModelsReportbook;

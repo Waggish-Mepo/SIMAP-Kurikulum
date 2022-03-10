@@ -24,8 +24,8 @@ class ScorecardController extends Controller
             [
                 'with_scorecard_components' => true,
                 'with_student' => true,
-                'without_pagination' => true,
-                'with_letter' => true
+                'with_letter' => true,
+                'without_pagination' => true
             ]
         );
 

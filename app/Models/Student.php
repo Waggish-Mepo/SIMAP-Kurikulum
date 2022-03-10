@@ -18,4 +18,8 @@ class Student extends Model
     public function studentGroup() {
         return $this->belongsTo(StudentGroup::class);
     }
+
+    public function absences() {
+        return $this->hasMany(StudentAbsence::class);
+    }
 }

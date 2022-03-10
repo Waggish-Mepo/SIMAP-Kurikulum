@@ -92,6 +92,14 @@ Vue.filter('scoreCheck', function(num) {
     }
 });
 
+Vue.filter('absenCheck', function(day) {
+    if(day && day != null){
+        return day + ' hari';
+    } else {
+        return '-';
+    }
+});
+
 new Vue({
     router,
     store,

@@ -54,7 +54,12 @@
                                         <td>{{sc.student.nis}}</td>
                                         <td v-if="sc.predicate_letter">{{sc.predicate_letter.letter}}</td>
                                         <td v-if="!sc.predicate_letter">-</td>
-                                        <td>{{sc.final_score | scoreCheck}}</td>
+                                        <td>
+                                            <span class="text-danger" v-if="sc.final_score < gradebookData.scorebar && sc.final_score !== null">
+                                                {{sc.final_score | scoreCheck}}
+                                            </span>
+                                            <span v-else>{{sc.final_score | scoreCheck}}</span>
+                                        </td>
                                         <td>{{sc.knowledge_score | scoreCheck}}</td>
                                         <td>{{sc.skill_score | scoreCheck}}</td>
                                         <td v-for="index in componentTotal" :key="index" class="cursor-pointer" @click="showModalUpdate(sc.student.name, index, sc.id)">
@@ -108,7 +113,12 @@
                                         <td>{{sc.student.nis}}</td>
                                         <td v-if="sc.predicate_letter">{{sc.predicate_letter.letter}}</td>
                                         <td v-if="!sc.predicate_letter">-</td>
-                                        <td>{{sc.final_score | scoreCheck}}</td>
+                                        <td>
+                                            <span class="text-danger" v-if="sc.final_score < gradebookData.scorebar && sc.final_score !== null">
+                                                {{sc.final_score | scoreCheck}}
+                                            </span>
+                                            <span v-else>{{sc.final_score | scoreCheck}}</span>
+                                        </td>
                                         <td v-for="(scComponent, index) in sc.scorecard_components" :key="index" class="cursor-pointer" @click="showModalUpdateGeneral(sc.student.name, sc.id, scComponent.id, scComponent.title)">
                                             <span v-if="scComponent.general_score < gradebookData.scorebar && scComponent.general_score !== null" class="text-danger">
                                                 {{scComponent.general_score | scoreCheck}}
@@ -182,7 +192,6 @@ export default {
         this.getCourse(this.$route.params.course);
         this.getStudentGroup(this.$route.params.sg);
         this.getGradebook(this.$route.params.gb);
-        this.getScoreCards();
     },
     watch: {
         '$route.params.sg': {
@@ -213,6 +222,7 @@ export default {
         getCourse(id) {
             this.show(id).then((result) => {
                 this.course = result;
+                this.getScoreCards();
             })
         },
         getStudentGroup(id) {

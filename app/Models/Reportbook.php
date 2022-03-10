@@ -9,6 +9,8 @@ class Reportbook extends Model
 {
     use HasFactory;
 
+    public $incrementing = false;
+
     protected $casts = [
         'score_config' => 'array',
     ];
