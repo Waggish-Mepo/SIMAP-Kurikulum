@@ -54,10 +54,11 @@ class SubjectTeacherService {
     public function update($subjectTeacherId, $payload, $subjectId = null)
     {
         if($subjectId) {
-            $subject = SubjectTeacher::where('subject_id', '=', $subjectId);
+            $subject = SubjectTeacher::where('subject_id', '=', $subjectId)->get()->first();
         }else {
             $subject = SubjectTeacher::findOrFail($subjectTeacherId);
         }
+
         $subject = $this->fill($subject, $payload);
         $subject->save();
 
