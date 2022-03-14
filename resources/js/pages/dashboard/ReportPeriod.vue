@@ -148,7 +148,7 @@ export default {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
     },
     methods: {
-        ...mapActions('reportPeriods', ['create', 'index', 'show', 'edit', 'schoolYears']),
+        ...mapActions('reportPeriods', ['create', 'index', 'detail', 'edit', 'schoolYears']),
 
         getSchoolYears() {
             this.schoolYears().then((result) => {
@@ -180,7 +180,7 @@ export default {
             });
         },
         showReportPeriod(id) {
-            this.show(id).then((result) => {
+            this.detail(id).then((result) => {
                 this.submitEditForm = result;
                 this.modalEdit = true;
             });

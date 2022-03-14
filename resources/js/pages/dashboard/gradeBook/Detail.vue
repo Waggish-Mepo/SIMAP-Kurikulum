@@ -559,16 +559,10 @@ export default {
         },
         redirectPage() {
             this.getByCourse(this.course.id).then((result) => {
-                let sg;
-                if(result[0]) {
-                    sg = 0;
-                } else {
-                    sg = 1;
-                }
                 if(result.length < 1) {
                     this.modalRedirect = true;
                 } else {
-                    this.$router.push({ name: 'gradebooks.course.detail.group', params: {period: this.period.id, course: this.course.id, gb: this.$route.params.gb, sg: result[sg].id} });
+                    this.$router.push({ name: 'gradebooks.course.detail.group', params: {period: this.period.id, course: this.course.id, gb: this.$route.params.gb, sg: result[0].id} });
                 }
             });
         }

@@ -2,7 +2,7 @@
     <div class="l-navbar" id="nav-bar">
         <nav class="nav">
             <div> 
-                <a href="#" class="nav_logo"><i class="fas fa-user nav_logo-icon"></i> <span class="nav_logo-name">Hellow</span></a>
+                <a href="#" class="nav_logo"><i class="fas fa-user nav_logo-icon"></i> <span class="nav_logo-name">{{user.name}}</span></a>
                 <hr>
                 <div class="nav_list"> 
                     <router-link v-bind:to="{ name: 'dashboard' }">
@@ -75,15 +75,24 @@ export default {
     },
     data() {
         return {
-            modalShow: false
+            modalShow: false,
+            user: {}
         }
     },
+    created() {
+        this.getUser();
+    },
     methods: {
-        ...mapActions('auth', ['logout']),
+        ...mapActions('auth', ['logout', 'getMe']),
 
         handleLogout() {
             this.logout().then(() => { });
-        }
+        },
+        getUser() {
+            this.getMe().then((result) => {
+                this.user = result.data;
+            });
+        },
     }
 }
 </script>

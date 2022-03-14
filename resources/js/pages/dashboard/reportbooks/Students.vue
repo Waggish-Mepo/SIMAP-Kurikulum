@@ -54,7 +54,7 @@
                         >
                         <template slot="table-row" slot-scope="props">
                             <span v-if="props.column.field === 'id'">
-                                <i class="fas fa-expand text-dark" @click="checkStudentExist(props.row.id)"></i>
+                                <i class="fas fa-expand text-dark cursor-pointer" @click="checkStudentExist(props.row.id)"></i>
                             </span>
                         </template>
                         </vue-good-table>
@@ -269,6 +269,10 @@ a.router {
 
 span.fas.fa-pen {
     margin-right: 5px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }
 
 @media (max-width: 575px) {

@@ -5496,12 +5496,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   data: function data() {
     return {
-      modalShow: false
+      modalShow: false,
+      user: {}
     };
   },
-  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('auth', ['logout'])), {}, {
+  created: function created() {
+    this.getUser();
+  },
+  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('auth', ['logout', 'getMe'])), {}, {
     handleLogout: function handleLogout() {
       this.logout().then(function () {});
+    },
+    getUser: function getUser() {
+      var _this = this;
+
+      this.getMe().then(function (result) {
+        _this.user = result.data;
+      });
     }
   })
 });
@@ -41752,7 +41763,7 @@ var render = function () {
   var _c = _vm._self._c || _h
   return _c("transition", { attrs: { name: "modal" } }, [
     _c("div", { staticClass: "vue-modal-mask" }, [
-      _c("div", { staticClass: "modal-dialog modal-dialog-scrollable" }, [
+      _c("div", { staticClass: "modal-dialog" }, [
         _c("div", { staticClass: "modal-content" }, [
           _c(
             "div",
@@ -41875,7 +41886,13 @@ var render = function () {
     [
       _c("nav", { staticClass: "nav" }, [
         _c("div", [
-          _vm._m(0),
+          _c("a", { staticClass: "nav_logo", attrs: { href: "#" } }, [
+            _c("i", { staticClass: "fas fa-user nav_logo-icon" }),
+            _vm._v(" "),
+            _c("span", { staticClass: "nav_logo-name" }, [
+              _vm._v(_vm._s(_vm.user.name)),
+            ]),
+          ]),
           _vm._v(" "),
           _c("hr"),
           _vm._v(" "),
@@ -42123,18 +42140,7 @@ var render = function () {
     1
   )
 }
-var staticRenderFns = [
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("a", { staticClass: "nav_logo", attrs: { href: "#" } }, [
-      _c("i", { staticClass: "fas fa-user nav_logo-icon" }),
-      _vm._v(" "),
-      _c("span", { staticClass: "nav_logo-name" }, [_vm._v("Hellow")]),
-    ])
-  },
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
