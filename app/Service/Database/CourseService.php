@@ -3,6 +3,7 @@
 namespace App\Service\Database;
 
 use App\Models\Course;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
@@ -82,6 +83,19 @@ class CourseService{
         return $course->toArray();
     }
 
+    public function delete($courseId) {
+        $course = Course::findOrFail($courseId);
+        DB::transaction(function () use ($course) {
+            $course->gradebookComponents()->delete();
+            $course->scorecards()->delete();
+            $course->predicateLetters()->delete();
+            $course->gradebooks()->delete();
+            $course->students()->detach();
+            $course->delete();
+        });
+
+        return 'ok';
+    }
 
     private function fill(Course $course, array $payload) {
         foreach ($payload as $key => $value) {

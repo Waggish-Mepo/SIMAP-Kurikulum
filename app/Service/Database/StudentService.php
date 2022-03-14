@@ -92,7 +92,7 @@ class StudentService {
     public function accountStatistics() {
 
         $teacherCount = User::where('role', User::TEACHER)->count();
-        $studentCount = User::where('role', User::STUDENT)->count();
+        $studentCount = Student::all()->count();
         $adminCount = User::where('role', User::ADMIN)->count();
 
         $statistics = [

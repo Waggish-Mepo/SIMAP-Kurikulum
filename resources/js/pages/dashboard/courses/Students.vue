@@ -228,7 +228,7 @@ export default {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
     },
     methods: {
-        ...mapActions('courses', ['show', 'edit', 'allCurriculums', 'entryYears']),
+        ...mapActions('courses', ['show', 'edit', 'allCurriculums', 'entryYears', 'deleteCourseCascade']),
         ...mapActions('majors', ['allData']),
         ...mapActions('subjects', ['getAll']),
         ...mapActions('studentCourses', ['index']),
@@ -289,7 +289,9 @@ export default {
             this.modalDelete = true;
         },
         deleteCourse() {
-            console.log('delete');
+            this.deleteCourseCascade(this.course.id).then((result) => {
+                this.modalDelete = false;
+            });
         },
         showModalDeleteStudent(id, name) {
             this.payloadDelete.id = id;
@@ -383,3 +385,4 @@ label.mb-2 {
     }
 }
 </style>
+
