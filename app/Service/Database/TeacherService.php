@@ -45,7 +45,7 @@ class TeacherService {
 
     public function accountStatistics() {
 
-        $teacherCount = User::where('role', User::TEACHER)->count();
+        $teacherCount = Teacher::all()->count();
         $studentCount = Student::all()->count();
         $adminCount = User::where('role', User::ADMIN)->count();
 

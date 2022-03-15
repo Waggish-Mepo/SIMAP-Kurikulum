@@ -86,8 +86,8 @@
                         {{ errors.entry_year[0] }}
                     </small>
                     <div v-for="(year, index) in entry_years" :key="index" class="form-check">
-                        <input class="form-check-input" type="radio" :value="year" v-model="submitForm.entry_year">
-                        <label class="form-check-label text-capitalize">
+                        <input class="form-check-input" type="radio" :value="year" v-model="submitForm.entry_year" :id="index">
+                        <label class="form-check-label text-capitalize" :for="index">
                             {{ "Kelas " +  index + " | Angkatan Masuk " + year.substr(0, 4) }}
                         </label>
                     </div>

@@ -17,12 +17,10 @@
                 <h5 class="text-capitalize">{{subject.name}}</h5>
                 <div v-if="subject.data.length > 0">
                     <div class="card w-100 p-3 mb-2" v-for="(course, index) in subject.data" :key="index" @click="checkGradebook(course.id)">
-                        <!-- <router-link v-bind:to="{ name: 'gradebooks.course.detail', params: {page: 6, period: period.id, course: course.id, gb: 1} }" class="router"> -->
                         <div class="d-flex align-items-center text-capitalize">
                             <span class="fas fa-book"></span>
                             {{period.title}} {{period.school_year}} - {{course.caption}} Kelas {{course.entry_year_with_class}}
                         </div>
-                        <!-- </router-link> -->
                     </div>
                 </div>
                 <div v-else>
@@ -142,6 +140,7 @@ export default {
                         this.gradebook.title = this.period.title + ' ' + this.period.school_year + ' - ' + value.caption + ' Kelas ' + value.entry_year_with_class;
                         if (value.curriculum == "K21 | Sekolah Penggerak") {
                             this.gradebook.components.push('GENERAL');
+                            this.K13 = false;
                         } else {
                             this.gradebook.components.push('KNOWLEDGE', 'SKILL');
                             this.K13 = true;

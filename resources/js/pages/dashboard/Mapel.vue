@@ -198,6 +198,7 @@ export default {
                 this.teacherSubject.name = result.name;
                 this.teacherSubject.group = result.group;
                 this.teacherSubject.order = result.order;
+                this.teacherSubject.teachers = result.teachers;
                 this.subjectId = result.id;
                 this.modalEdit = true;
             })
