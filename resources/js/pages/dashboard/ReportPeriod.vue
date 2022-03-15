@@ -89,7 +89,7 @@
     <modal v-if="modalDelete" @close="modalDelete = false" :deleteOpt="deleteReportPeriod">
         <h5 slot="header">Hapus Periode Rapor</h5>
         <div slot="body">
-            <span><b>Semua data</b> yang berkaitan dengan periode <b class="text-capitalize">{{submitEditForm.title}}</b> juga akan <b>terhapus</b> dan <b>tidak dapat diakses kembali</b>. Yakin tetap menghapus periode rapor <b class="text-capitalize">{{submitEditForm.title}}</b>?</span>
+            <span><b>Semua data</b> yang berkaitan dengan periode <b class="text-capitalize">{{submitEditForm.title + ' - ' + submitEditForm.school_year}}</b> juga akan <b>terhapus</b> dan <b>tidak dapat diakses kembali</b>. Yakin tetap menghapus periode rapor <b class="text-capitalize">{{submitEditForm.title + ' - ' + submitEditForm.school_year}}</b>?</span>
         </div>
     </modal>
   </div>

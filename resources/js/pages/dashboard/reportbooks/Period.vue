@@ -48,13 +48,13 @@
                 <div class="form-group mb-3">
                     <label class="mb-2"><b>Kelas 10</b></label>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="10-k13" value="K13 Revisi 2017 | Permendikbud No. 37 Tahun 2018" v-model="grade10.curriculum">
+                        <input class="form-check-input" type="radio" id="10-k13" value="K13 Revisi 2017 | Permendikbud No. 37 Tahun 2018" v-model="grade10.curriculum">
                         <label class="form-check-label" for="10-k13">
                             Kurikulum 2013
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="10-k21" value="K21 | Sekolah Penggerak" v-model="grade10.curriculum">
+                        <input class="form-check-input" type="radio" id="10-k21" value="K21 | Sekolah Penggerak" v-model="grade10.curriculum">
                         <label class="form-check-label" for="10-k21">
                             Kurikulum Sekolah Penggerak
                         </label>
@@ -63,13 +63,13 @@
                 <div class="form-group mb-3">
                     <label class="mb-2"><b>Kelas 11</b></label>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="11-k13" value="K13 Revisi 2017 | Permendikbud No. 37 Tahun 2018" v-model="grade11.curriculum">
+                        <input class="form-check-input" type="radio" id="11-k13" value="K13 Revisi 2017 | Permendikbud No. 37 Tahun 2018" v-model="grade11.curriculum">
                         <label class="form-check-label" for="11-k13">
                             Kurikulum 2013
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="11-k21" value="K21 | Sekolah Penggerak" v-model="grade11.curriculum">
+                        <input class="form-check-input" type="radio" id="11-k21" value="K21 | Sekolah Penggerak" v-model="grade11.curriculum">
                         <label class="form-check-label" for="11-k21">
                             Kurikulum Sekolah Penggerak
                         </label>
@@ -78,13 +78,13 @@
                 <div class="form-group mb-3">
                     <label class="mb-2"><b>Kelas 12</b></label>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="12-k13" value="K13 Revisi 2017 | Permendikbud No. 37 Tahun 2018" v-model="grade12.curriculum">
+                        <input class="form-check-input" type="radio" id="12-k13" value="K13 Revisi 2017 | Permendikbud No. 37 Tahun 2018" v-model="grade12.curriculum">
                         <label class="form-check-label" for="12-k13">
                             Kurikulum 2013
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="12-k21" value="K21 | Sekolah Penggerak" v-model="grade12.curriculum">
+                        <input class="form-check-input" type="radio" id="12-k21" value="K21 | Sekolah Penggerak" v-model="grade12.curriculum">
                         <label class="form-check-label" for="12-k21">
                             Kurikulum Sekolah Penggerak
                         </label>

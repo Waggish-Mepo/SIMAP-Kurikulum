@@ -3,6 +3,7 @@
 namespace App\Service\Database;
 
 use App\Models\Student;
+use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -91,7 +92,7 @@ class StudentService {
 
     public function accountStatistics() {
 
-        $teacherCount = User::where('role', User::TEACHER)->count();
+        $teacherCount = Teacher::all()->count();
         $studentCount = Student::all()->count();
         $adminCount = User::where('role', User::ADMIN)->count();
 

@@ -86,7 +86,7 @@
         </modal>
 
         <modal v-if="modalDeleteStudentGroup" @close="modalDeleteStudentGroup = false" :deleteOpt="deleteStudentGroup">
-            <h5 slot="header">Hapus Angkatan</h5>
+            <h5 slot="header">Hapus Rombel</h5>
             <div slot="body">
                 <span><b>Semua data</b> yang berkaitan dengan <b class="text-capitalize">{{studentGroup}}</b> juga akan <b>terhapus</b> dan <b>tidak dapat diakses kembali</b>. Yakin tetap menghapus data <b class="text-capitalize">{{studentGroup}}</b>?</span>
             </div>
@@ -118,12 +118,12 @@
                         {{ errors.jk[0] }}
                     </small>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" value="Laki-Laki" v-model="studentEditForm.jk">
-                        <label class="form-check-label text-capitalize">Laki-Laki</label>
+                        <input class="form-check-input" type="radio" value="Laki-Laki" v-model="studentEditForm.jk" id="male">
+                        <label class="form-check-label text-capitalize" for="male">Laki-Laki</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" value="Perempuan" v-model="studentEditForm.jk">
-                        <label class="form-check-label text-capitalize">Perempuan</label>
+                        <input class="form-check-input" type="radio" value="Perempuan" v-model="studentEditForm.jk" id="female">
+                        <label class="form-check-label text-capitalize" for="female">Perempuan</label>
                     </div>
                 </div>
             </div>
@@ -156,12 +156,12 @@
                         {{ errors.jk[0] }}
                     </small>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" value="Laki-Laki" v-model="studentAddForm.jk">
-                        <label class="form-check-label text-capitalize">Laki-Laki</label>
+                        <input class="form-check-input" type="radio" value="Laki-Laki" v-model="studentAddForm.jk" id="male">
+                        <label class="form-check-label text-capitalize" for="male">Laki-Laki</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" value="Perempuan" v-model="studentAddForm.jk">
-                        <label class="form-check-label text-capitalize">Perempuan</label>
+                        <input class="form-check-input" type="radio" value="Perempuan" v-model="studentAddForm.jk" id="female">
+                        <label class="form-check-label text-capitalize" for="female">Perempuan</label>
                     </div>
                 </div>
             </div>
