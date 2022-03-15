@@ -142,6 +142,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/student', [ReportbookController::class, 'storeStudent']);
         Route::patch('/{id}', [ReportbookController::class, 'update']);
         Route::patch('/note/{id}', [ReportbookController::class, 'updateNote']);
+        Route::get('/print', [ReportbookController::class, 'print']);
     });
     Route::prefix('student-absences')->group(function () {
         Route::get('/check-get', [StudentAbsenceController::class, 'checkAndGet']);

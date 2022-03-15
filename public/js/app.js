@@ -7052,6 +7052,38 @@ var actions = {
         });
       });
     });
+  },
+  print: function print(_ref8, payload) {
+    var commit = _ref8.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/reportbooks/print/?report_period_id=' + payload.reportPeriodId + '&student_id=' + payload.studentId, {
+        responseType: 'arraybuffer',
+        headers: {
+          'Accept': 'application/pdf'
+        }
+      }).then(function (response) {
+        // resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+        var name = payload.studentNIS + '-' + payload.studentName + '.pdf';
+        var url = window.URL.createObjectURL(new Blob([response.data], {
+          type: 'application/pdf'
+        }));
+        var link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', name);
+        document.body.appendChild(link);
+        link.click();
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({

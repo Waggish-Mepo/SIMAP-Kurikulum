@@ -27,10 +27,10 @@
         <div class="mt-3 d-flex justify-content-between">
             <div></div>
             <div>
-                <a href="#" class="btn bg-blue1 text-white">Cetak Rapor</a>
+                <a href="#" class="btn bg-blue1 text-white" @click="printReport">Cetak Rapor</a>
             </div>
         </div>
-        <div v-if="reportbook === 'failed'" class="w-100 card-not-found mt-5">
+        <div v-if="subjectGroups.length < 1" class="w-100 card-not-found mt-5">
             <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
             <h5 class="text-center mt-4">siswa belum terdaftar dipelajaran apapun.</h5>
         </div>
@@ -105,6 +105,7 @@
         </div>
 
         <h4 class="mt-3">B. Ketidakhadiran</h4>
+        <div class="alert alert-info mb-3 mt-2" v-if="reportbook.absences.length < 1">Data kehadiran <b>{{student.name}}</b> belum diatur.Silahkan mengatur data kehadiran siswa terlebih dahulu.</div>
         <div class="table-responsive p-0 card-table mt-4">
             <table class="table table-bordered text-capitalize bg-white w-auto">
                 <thead class="bg-muted">
@@ -117,20 +118,17 @@
                 <tbody style="border-top: 0;" class="text-center">
                     <tr>
                         <td>Sakit</td>
-                        <td v-if="reportbook.absences">{{reportbook.absences.sakit | absenCheck}}</td>
-                        <td v-else>-</td>
+                        <td>{{reportbook.absences.sakit | absenCheck}}</td>
                         <td>-</td>
                     </tr>
                     <tr>
-                        <td>Izin</td>
-                        <td v-if="reportbook.absences">{{reportbook.absences.izin | absenCheck}}</td>
-                        <td v-else>-</td>
+                        <td>Ijin</td>
+                        <td>{{reportbook.absences.izin | absenCheck}}</td>
                         <td>-</td>
                     </tr>
                     <tr>
-                        <td>Alfa</td>
-                        <td v-if="reportbook.absences">{{reportbook.absences.alpa | absenCheck}}</td>
-                        <td v-else>-</td>
+                        <td>Tanpa Keterangan</td>
+                        <td>{{reportbook.absences.alpa | absenCheck}}</td>
                         <td>-</td>
                     </tr>
                 </tbody>
@@ -142,12 +140,12 @@
             <div></div>
             <button class="btn btn-white text-blue1 mb-2" @click="modalNote = true"><span class="fas fa-pen"></span>Edit</button>
         </div>
-        <div class="card card-note w-100 bg-muted p-3">
+        <div class="card card-note w-100 bg-muted p-3 mb-5">
             <p class="text-secondary" v-if="!reportbook.notes">Buat cacatan akademik...</p>
             <p class="text-capitalize" v-if="reportbook.notes">{{reportbook.notes}}</p>
         </div>
 
-        <div class="d-flex justify-content-between mt-5 mb-3">
+        <div class="d-none justify-content-between mt-5 mb-3">
             <div></div>
             <div class="card w-auto p-4 bg-white">
                 <p>Wali Kelas</p>
@@ -169,6 +167,13 @@
                 </div>
             </div>
         </modal>
+
+        <modal v-if="modalPrint" @close="modalPrint = false">
+            <h5 slot="header">Gagal!</h5>
+            <div slot="body">
+                <p>Data tidak ditemukan! <b>Tidak dapat mengunduh rapor siswa {{student.name}}.</b> Silahkan untuk mengatur nilai pada siswa terlebih dahulu.</p>
+            </div>
+        </modal>
     </div>
 </template>
 
@@ -188,6 +193,7 @@ export default {
             student: {},
             studentGroup: {},
             modalNote: false,
+            modalPrint: false,
             subjectGroups: [],
             reportbook: {}
         }
@@ -214,7 +220,7 @@ export default {
         ...mapActions('reportPeriods', ['detail']),
         ...mapActions('students', ['withPrevNext']),
         ...mapActions('studentGroups', ['detailStudentGroup']),
-        ...mapActions('reportbooks', ['reportbookStudent', 'editNote']),
+        ...mapActions('reportbooks', ['reportbookStudent', 'editNote', 'print']),
 
         getPeriod(id) {
             this.detail(id).then((result) => {
@@ -250,6 +256,14 @@ export default {
                 this.modalNote = false;
                 this.getReportDetail();
             })
+        },
+        printReport() {
+            let payload = {reportPeriodId: this.$route.params.period, studentId: this.$route.params.student, studentName: this.student.name, studentNIS: this.student.nis};
+            if (this.subjectGroups.length < 1) {
+                this.modalPrint = true;
+            } else {
+                this.print(payload).then(() => {})
+            }
         }
     }
 }
