@@ -31,7 +31,7 @@ class CourseController extends Controller
         } else {
             $subjects = $subjectDB->index(['name' => $search,'without_pagination' => true]);
         }
-        
+
         $subjectsNameID = [];
         foreach ($subjects as $v) {
             $subjectsNameID[$v['id']] = $v['name'];
@@ -40,7 +40,7 @@ class CourseController extends Controller
         $subjectWithCourse = [];
         foreach ($subjectsNameID as $subject_id => $subject) {
             $courses = $courseDB->index(['subject_id' => $subject_id, 'without_pagination' => true]);
-            
+
             $coursesWithMajors = [];
             foreach ($courses as $course) {
                 if (!$course['majors']) {
@@ -167,6 +167,10 @@ class CourseController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $courseDB = new CourseService;
+
+        $courseDB->delete($id);
+
+        return response()->json(['ok']);
     }
 }

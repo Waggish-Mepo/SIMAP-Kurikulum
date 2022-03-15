@@ -25,8 +25,24 @@ class Course extends Model
         return $this->belongsTo(Subject::class);
     }
 
+    public function gradebooks() {
+        return $this->hasMany(Gradebook::class);
+    }
+
     public function studentCourses() {
         return $this->hasMany(StudentCourse::class);
+    }
+
+    public function predicateLetters() {
+        return $this->hasManyThrough(PredicateLetter::class, Gradebook::class);
+    }
+
+    public function scorecards() {
+        return $this->hasManyThrough(Scorecard::class, Gradebook::class);
+    }
+
+    public function gradebookComponents() {
+        return $this->hasManyThrough(GradebookComponent::class, Gradebook::class);
     }
 
     public function students()

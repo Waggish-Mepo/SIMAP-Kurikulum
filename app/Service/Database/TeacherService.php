@@ -2,6 +2,7 @@
 
 namespace App\Service\Database;
 
+use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
@@ -45,7 +46,7 @@ class TeacherService {
     public function accountStatistics() {
 
         $teacherCount = User::where('role', User::TEACHER)->count();
-        $studentCount = User::where('role', User::STUDENT)->count();
+        $studentCount = Student::all()->count();
         $adminCount = User::where('role', User::ADMIN)->count();
 
         $statistics = [

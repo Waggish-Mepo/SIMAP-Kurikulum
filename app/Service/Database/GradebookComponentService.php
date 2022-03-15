@@ -98,7 +98,6 @@ class GradebookComponentService{
         });
     }
 
-
     private function fill(GradebookComponent $gradebookComponent, array $payload) {
         foreach ($payload as $key => $value) {
             $gradebookComponent->$key = $value;
