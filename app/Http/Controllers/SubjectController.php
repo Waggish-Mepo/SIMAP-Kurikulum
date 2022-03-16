@@ -17,42 +17,24 @@ class SubjectController extends Controller
     public function index(Request $request)
     {
         $subjectService = new SubjectService;
-        $teacherService = new TeacherService;
         $search = $request->search;
         if($search == "") {
             $subjects = $subjectService->index(['without_pagination' => true, 'relation' => true]);
 
-            $subjectsWithTeacher = [];
-            foreach ($subjects as $subject) {
-                if(!$subject['subject_teacher']) {
-                    $subjectsWithTeacher[] = $subject;
-                    continue;
-                }
-
-                $teachers = $teacherService->bulkDetail($subject['subject_teacher']['teachers'])['data'];
-                $subject['teacher_details'] = $teachers;
-                $subject['teacher_details_string'] = collect($teachers)->pluck('name')->join(', ');
-                $subjectsWithTeacher[] = $subject;
+            foreach($subjects as $key => $subject) {
+                $subjects[$key]['teacher_details_string'] = collect($subject['teachers'])->pluck('name')->join(', ');
             }
 
-            return response()->json($subjectsWithTeacher);
+            return response()->json($subjects);
         } else {
 
             $subjects = $subjectService->index(['name' => $search,'without_pagination' => true, 'relation' => true]);
 
-            $subjectsWithTeacher = [];
-            foreach ($subjects as $subject) {
-                if(!$subject['subject_teacher']) {
-                    $subjectsWithTeacher[] = $subject;
-                    continue;
-                }
-
-                $teachers = $teacherService->bulkDetail($subject['subject_teacher']['teachers'])['data'];
-                $subject['teacher_details_string'] = collect($teachers)->pluck('name')->join(', ');
-                $subjectsWithTeacher[] = $subject;
+            foreach($subjects as $key => $subject) {
+                $subjects[$key]['teacher_details_string'] = collect($subject['teachers'])->pluck('name')->join(', ');
             }
 
-            return response()->json($subjectsWithTeacher);
+            return response()->json($subjects);
         }
     }
 
@@ -120,12 +102,11 @@ class SubjectController extends Controller
 
         $subject = $subjectDB->detail($id, true);
 
-        if(!$subject['subject_teacher']) {
+        if(!$subject['teachers']) {
             return response()->json($subject);
         }
 
-        $teachers = $teacherService->bulkDetail($subject['subject_teacher']['teachers'])['data'];
-        $subject['teachers'] = $teachers;
+        $subject['teachers'] = collect($subject['teachers'])->pluck('id');
 
         return response()->json($subject);
     }
@@ -166,6 +147,10 @@ class SubjectController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $subjectDB = new SubjectService;
+
+        $subjectDB->delete($id);
+
+        return response()->json(['status' => 'ok']);
     }
 }

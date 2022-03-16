@@ -17,8 +17,8 @@ class SubjectTeacherService {
 
         $query = SubjectTeacher::orderBy('created_at', $orderBy);
 
-        if ($teacherId !== null) {
-            $query->whereJsonContains('teachers', $teacherId);
+        if ($teacherId) {
+            $query->where('teacher_id', $teacherId);
         }
 
         if ($subjectId) {
@@ -65,16 +65,15 @@ class SubjectTeacherService {
         return $subject;
     }
 
-    private function fill(SubjectTeacher $subject, array $attributes)
+    private function fill($subject, array $attributes)
     {
-
         foreach ($attributes as $key => $value) {
             $subject->$key = $value;
         }
 
         $validate = Validator::make($subject->toArray(), [
             'subject_id' => 'required|string',
-            'teachers' => 'nullable|array',
+            'teacher_id' => 'required|string',
         ]);
 
         if($validate->fails()) {

@@ -39,7 +39,7 @@
                 <tr v-for="(subject,index) in filterSubjects(category)" :key="index">
                     <td class="text-center">:</td>
                     <td><a href="#" class="text-dark" @click="showSubject(subject.id)">{{subject.name}}</a></td>
-                    <td v-if="subject.subject_teacher">
+                    <td v-if="subject.teachers">
                         <a href="#" class="text-dark">{{subject.teacher_details_string}}</a>
                         <hr class="hr-teachers">
                         <a href="#" class="text-primary" @click="showSubject(subject.id)">tambah guru</a>
@@ -176,7 +176,7 @@ export default {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
     },
     methods: {
-        ...mapActions('subjects', ['create', 'index', 'show', 'edit']),
+        ...mapActions('subjects', ['create', 'index', 'show', 'edit', 'deleteSubjectCascade']),
         ...mapActions('teachers', ['getAll']),
         ...mapActions('subjectTeachers', ['update', 'indexSubjectTeacher']),
 
@@ -237,7 +237,10 @@ export default {
             this.modalDelete = true;
         },
         deleteSubject() {
-            console.log('hapus');
+            this.deleteSubjectCascade(this.subjectId).then((result) => {
+                this.modalDelete = false;
+                this.getSubjects('');
+            });
         }
     }
 }

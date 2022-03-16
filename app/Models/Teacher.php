@@ -14,4 +14,8 @@ class Teacher extends Model
     //gender
     public const LAKILAKI = "Laki-Laki";
     public const PEREMPUAN = "Perempuan";
+
+    public function subjects() {
+        return $this->hasManyThrough(Subject::class, SubjectTeacher::class);
+    }
 }
