@@ -3,6 +3,7 @@
 namespace App\Service\Database;
 
 use App\Models\Subject;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
@@ -28,7 +29,7 @@ class SubjectService{
         }
 
         if($withRelation) {
-            $query->with('subjectTeacher');
+            $query->with('teachers');
         }
 
         if ($withoutPagination) {
@@ -45,7 +46,7 @@ class SubjectService{
         $query = Subject::where('id', $subjectId);
 
         if($withRelation) {
-            $query->with('subjectTeacher');
+            $query->with('teachers');
         }
 
         $subject = $query->first();
@@ -72,6 +73,27 @@ class SubjectService{
         $subject->save();
 
         return $subject->toArray();
+    }
+
+    public function delete($subjectId) {
+        $subject = Subject::findOrFail($subjectId);
+        DB::transaction(function () use ($subject) {
+            $courses = $subject->courses;
+
+            foreach($courses as $course) {
+                $course->gradebookComponents()->delete();
+                $course->scorecards()->delete();
+                $course->predicateLetters()->delete();
+                $course->gradebooks()->delete();
+                $course->students()->detach();
+                $course->delete();
+            }
+
+            $subject->subjectTeachers()->delete();
+            $subject->delete();
+        });
+
+        return 'ok';
     }
 
 

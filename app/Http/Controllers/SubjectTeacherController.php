@@ -71,20 +71,24 @@ class SubjectTeacherController extends Controller
     public function update(Request $request, $id)
     {
         $subjectTeachers = new SubjectTeacherService;
+        $created = [];
         if($request->teachers) {
-            $check = $subjectTeachers->index(['subject_id' => $id]);
-            if (!count($check)) {
-                return response()->json($subjectTeachers->create([
-                    'subject_id' => $request->subject_id,
-                    'teachers' => $request->teachers
-                ]));
-            } else {
-                return response()->json($subjectTeachers->update(null, [
-                    'subject_id' => $request->subject_id,
-                    'teachers' => $request->teachers
-                ], $request->subject_id));
+            foreach ($request->teachers as $teacher) {
+                $check = $subjectTeachers->index(['subject_id' => $id, 'teacher_id' => $teacher]);
+                if (!count($check)) {
+                    $created[] = $subjectTeachers->create([
+                        'subject_id' => $request->subject_id,
+                        'teacher_id' => $teacher
+                    ]);
+                } else {
+                    $created[] = $subjectTeachers->update($check[0]['id'], [
+                        'subject_id' => $request->subject_id,
+                        'teacher_id' => $teacher
+                    ]);
+                }
             }
         }
+        return response()->json($created);
     }
 
     /**
