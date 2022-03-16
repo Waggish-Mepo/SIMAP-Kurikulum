@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/courses', [SubjectController::class, 'searchByCourse']);
         Route::get('/{id}', [SubjectController::class, 'show']);
         Route::patch('/{id}', [SubjectController::class, 'update']);
+        Route::delete('/{id}', [SubjectController::class, 'destroy']);
     });
     Route::prefix('teachers')->group(function () {
         Route::get('/', [TeacherController::class, 'index']);

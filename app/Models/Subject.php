@@ -18,7 +18,15 @@ class Subject extends Model
     public const MUATAN_C2 = "C2 (Dasar Program Keahlian)";
     public const MUATAN_C3 = "C3 (Dasar Kompetensi Keahlian)";
 
-    public function subjectTeacher() {
-        return $this->hasOne(SubjectTeacher::class);
+    public function subjectTeachers() {
+        return $this->hasMany(SubjectTeacher::class);
+    }
+
+    public function courses() {
+        return $this->hasMany(Course::class);
+    }
+
+    public function teachers() {
+        return $this->belongsToMany(Teacher::class, 'subject_teachers');
     }
 }
