@@ -87,7 +87,12 @@ class ReportbookController extends Controller
                 $groups[] = $subject['group'];
             }
         }
-        $reportbook[0]['subjectGroups'] = $groups;
+        
+        foreach ($groups as $group) {
+            $reportbook[0]['subjectGroups'][$group] = array_filter($reportbook[0]['scorecard']->toArray(), function ($sc) use ($group) {
+                return ($sc['gradebook']['course']['subject']['group'] == $group);
+            });
+        }
 
         $student = $studentDB->detail($studentId);
 

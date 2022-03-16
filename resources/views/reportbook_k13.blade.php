@@ -24,6 +24,7 @@
             height: 30px;
         }
         .footer-div::after {
+            counter-reset: page;
             counter-increment: page;
             content: counter(page);
             color: #000;
@@ -174,25 +175,24 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($subjectgroup as $group)
+                                @foreach ($subjectgroup as $group => $scorecard)
                                     <tr>
                                         {{$groupFilter = str_replace("(", "", $group)}}
                                         {{$groupFilterNew = str_replace(")", "", $groupFilter)}}
                                         <td colspan="6" class="td-bold">{{substr($groupFilterNew, 0, 1)}}. {{substr($groupFilterNew, 1, strlen($groupFilterNew))}}</td>
                                     </tr>
-                                    @foreach ($reportbook['scorecard'] as $scorecard)
-                                        @if ($scorecard['gradebook']['course']['subject']['group'] == $group)
+                                    @foreach ($scorecard as $sc)
                                         {{$index++}}
                                         <tr>
                                             <td class="td-center">{{$index}}</td>
-                                            <td>{{$scorecard['gradebook']['course']['subject']['name']}}</td>
-                                            <td class="td-center">{{$scorecard['knowledge_score']}}</td>
-                                            <td class="td-center">{{$scorecard['skill_score']}}</td>
-                                            <td class="td-center">{{$scorecard['final_score']}}</td>
-                                            <td class="td-center">{{$scorecard['predicate_desc']['letter']}}</td>
+                                            <td>{{$sc['gradebook']['course']['subject']['name']}}</td>
+                                            <td class="td-center">{{$sc['knowledge_score']}}</td>
+                                            <td class="td-center">{{$sc['skill_score']}}</td>
+                                            <td class="td-center">{{$sc['final_score']}}</td>
+                                            <td class="td-center">{{$sc['predicate_desc']['letter']}}</td>
                                         </tr>
-                                        @endif
                                     @endforeach
+                                    {{$index = 0}}
                                 @endforeach
                             </tbody>
                         </table>
