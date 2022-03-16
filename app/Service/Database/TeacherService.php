@@ -5,7 +5,7 @@ namespace App\Service\Database;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
-use Faker\Factory as Faker;
+use App\Services\UsernameService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -62,13 +62,12 @@ class TeacherService {
 
     public function create($payload)
     {
-        $faker = Faker::create();
         $teacher = new Teacher;
         $teacher->id = Uuid::uuid4()->toString();
         $teacher = $this->fill($teacher, $payload);
         $teacher->save();
 
-        $username = $teacher->name.$faker->numerify('####');
+        $username = UsernameService::generateUsername($teacher->name);
         $user = new User;
         $user->id = Uuid::uuid4()->toString();
         $user->name = $teacher->name;
