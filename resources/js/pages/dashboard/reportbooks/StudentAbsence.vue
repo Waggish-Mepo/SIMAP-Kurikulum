@@ -15,9 +15,9 @@
         <h5 class="mt-5 title">Absensi Rombel {{studentGroup.name}}</h5>
         <div class="table-responsive p-0 card-table mt-4">
             <table class="table table-bordered text-capitalize bg-white">
-                <thead class="bg-muted text-center">
+                <thead class="bg-muted text-left">
                     <tr>
-                        <th>No.</th>
+                        <th class="text-center">No.</th>
                         <th>Nama</th>
                         <th>NIS</th>
                         <th>Sakit</th>
