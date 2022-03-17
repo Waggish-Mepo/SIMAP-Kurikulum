@@ -43,11 +43,25 @@
             <div class="alert alert-danger mb-3" v-if="errorMessage">
                 {{ errorMessage }}
             </div>
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label class="mb-2">Periode Rapor</label>
                 <input type="text" class="form-control" v-model="submitAddForm.title" :class="{'is-invalid': errors.title}">
                 <div class="invalid-feedback" v-if="errors.title">
                     {{ errors.title[0] }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="mb-2">Tipe</label>
+                <small class="text-danger" v-if="errors.type">
+                    {{ errors.type[0] }}
+                </small>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="ODD" v-model="submitAddForm.type" id="odd">
+                    <label class="form-check-label text-capitalize" for="odd">Ganjil</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="EVEN" v-model="submitAddForm.type" id="even">
+                    <label class="form-check-label text-capitalize" for="even">Genap</label>
                 </div>
             </div>
         </div>
@@ -66,7 +80,7 @@
                     {{ errors.title[0] }}
                 </div>
             </div>
-            <div class="row">
+            <div class="row mb-2">
                 <div class="form-group col-sm-6">
                     <label>Tanggal Mulai</label>
                     <input type="date" class="form-control" v-model="submitEditForm.start_date" :class="{'is-invalid': errors.start_date}">
@@ -80,6 +94,20 @@
                     <div class="invalid-feedback" v-if="errors.end_date">
                         {{ errors.end_date[0] }}
                     </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="mb-2">Tipe</label>
+                <small class="text-danger" v-if="errors.type">
+                    {{ errors.type[0] }}
+                </small>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="ODD" v-model="submitEditForm.type" id="odd">
+                    <label class="form-check-label text-capitalize" for="odd">Ganjil</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="EVEN" v-model="submitEditForm.type" id="even">
+                    <label class="form-check-label text-capitalize" for="even">Genap</label>
                 </div>
             </div>
         </div>
@@ -131,11 +159,13 @@ export default {
             data: [],
             submitAddForm: {
                 title: null,
+                type: null
             },
             submitEditForm: {
                 title: null,
                 start_date: null,
-                end_date: null
+                end_date: null,
+                type: null
             },
             schoolYearList: []
         }
