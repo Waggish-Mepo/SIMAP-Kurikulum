@@ -9,5 +9,8 @@ class ReportPeriod extends Model
 {
     use HasFactory;
 
+    public const ODD = 'ODD';
+    public const EVEN = 'EVEN';
+
     public $incrementing = false;
 }
