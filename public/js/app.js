@@ -7988,13 +7988,13 @@ var actions = {
       });
     });
   },
-  withSubject: function withSubject(_ref2) {
+  withSubject: function withSubject(_ref2, payload) {
     var commit = _ref2.commit;
     commit('SET_LOADING', true, {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/teachers/subjects').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/teachers/subjects/?page=' + payload.page + '&per_page=' + payload.per_page + '&search=' + payload.search).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
@@ -8006,8 +8006,62 @@ var actions = {
       });
     });
   },
-  getStatistics: function getStatistics(_ref3) {
+  detail: function detail(_ref3, payload) {
     var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/teachers/show/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  create: function create(_ref4, payload) {
+    var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/teachers', payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  update: function update(_ref5, payload) {
+    var commit = _ref5.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/teachers/' + payload.id, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  getStatistics: function getStatistics(_ref6) {
+    var commit = _ref6.commit;
     commit('SET_LOADING', true, {
       root: true
     });

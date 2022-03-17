@@ -52,8 +52,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::prefix('teachers')->group(function () {
         Route::get('/', [TeacherController::class, 'index']);
+        Route::get('/show/{id}', [TeacherController::class, 'show']);
+        Route::patch('/{id}', [TeacherController::class, 'update']);
         Route::get('/subjects', [TeacherController::class, 'withSubject']);
         Route::get('/statistics', [TeacherController::class, 'accountStatistics']);
+        Route::post('/', [TeacherController::class, 'store']);
     });
     Route::prefix('subject-teachers')->group(function () {
         Route::get('/', [SubjectTeacherController::class, 'index']);

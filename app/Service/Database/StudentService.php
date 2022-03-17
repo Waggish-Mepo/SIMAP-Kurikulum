@@ -5,7 +5,8 @@ namespace App\Service\Database;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
-use App\Services\UsernameService;
+use App\Service\Functions\Username;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
@@ -113,7 +114,7 @@ class StudentService {
         $student = $this->fill($student, $payload);
         $student->save();
 
-        $username = UsernameService::generateUsername($student->name);
+        $username = Username::generateUsername($student->name);
         $user = new User;
         $user->id = Uuid::uuid4()->toString();
         $user->name = $student->name;

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\Service\Functions;
 
 use App\Models\User;
 use Illuminate\Support\Str;
 
-class UsernameService
+class Username
 {
     public static function generateUsername(String $name)
     {

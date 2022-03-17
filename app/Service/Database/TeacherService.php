@@ -5,7 +5,7 @@ namespace App\Service\Database;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
-use App\Services\UsernameService;
+use App\Service\Functions\Username;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -14,15 +14,20 @@ use Ramsey\Uuid\Uuid;
 class TeacherService {
     public function index($filter = [])
     {
-        $orderBy = $filter['order_by'] ?? 'DESC';
+        $orderBy = $filter['order_by'] ?? 'ASC';
         $per_page = $filter['per_page'] ?? 99;
         $withSubject = $filter['with_subject'] ?? false;
+        $name = $filter['teacher_name'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
-        $query = Teacher::orderBy('created_at', $orderBy);
+        $query = Teacher::orderBy('name', $orderBy);
 
         if ($withSubject) {
             $query->with('subjects');
+        }
+
+        if ($name) {
+            $query->where('name', 'LIKE', '%' . $name . '%');
         }
 
         if ($withoutPagination) {
@@ -76,7 +81,7 @@ class TeacherService {
         $teacher = $this->fill($teacher, $payload);
         $teacher->save();
 
-        $username = UsernameService::generateUsername($teacher->name);
+        $username = Username::generateUsername($teacher->name);
         $user = new User;
         $user->id = Uuid::uuid4()->toString();
         $user->name = $teacher->name;
