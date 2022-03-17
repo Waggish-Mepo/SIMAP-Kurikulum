@@ -16,9 +16,14 @@ class TeacherService {
     {
         $orderBy = $filter['order_by'] ?? 'DESC';
         $per_page = $filter['per_page'] ?? 99;
+        $withSubject = $filter['with_subject'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = Teacher::orderBy('created_at', $orderBy);
+
+        if ($withSubject) {
+            $query->with('subjects');
+        }
 
         if ($withoutPagination) {
             return $query->get()->toArray();
@@ -29,11 +34,15 @@ class TeacherService {
         return $users;
     }
 
-    public function detail($teacherId)
+    public function detail($teacherId, $withSubject = false)
     {
-        $teacher = Teacher::findOrFail($teacherId);
+        $teacher = Teacher::where('id', $teacherId);
 
-        return $teacher->toArray();
+        if ($withSubject) {
+            $teacher->with('subjects');
+        }
+
+        return $teacher->first()->toArray();
     }
 
     public function bulkDetail($teacherIds)

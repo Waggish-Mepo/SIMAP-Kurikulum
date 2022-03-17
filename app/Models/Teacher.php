@@ -16,6 +16,6 @@ class Teacher extends Model
     public const PEREMPUAN = "Perempuan";
 
     public function subjects() {
-        return $this->hasManyThrough(Subject::class, SubjectTeacher::class);
+        return $this->belongsToMany(Subject::class, 'subject_teachers');
     }
 }
