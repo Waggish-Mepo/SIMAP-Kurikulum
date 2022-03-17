@@ -5,6 +5,8 @@ namespace App\Service\Database;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
+use App\Services\UsernameService;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
@@ -14,9 +16,14 @@ class TeacherService {
     {
         $orderBy = $filter['order_by'] ?? 'DESC';
         $per_page = $filter['per_page'] ?? 99;
+        $withSubject = $filter['with_subject'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = Teacher::orderBy('created_at', $orderBy);
+
+        if ($withSubject) {
+            $query->with('subjects');
+        }
 
         if ($withoutPagination) {
             return $query->get()->toArray();
@@ -27,11 +34,15 @@ class TeacherService {
         return $users;
     }
 
-    public function detail($teacherId)
+    public function detail($teacherId, $withSubject = false)
     {
-        $teacher = Teacher::findOrFail($teacherId);
+        $teacher = Teacher::where('id', $teacherId);
 
-        return $teacher->toArray();
+        if ($withSubject) {
+            $teacher->with('subjects');
+        }
+
+        return $teacher->first()->toArray();
     }
 
     public function bulkDetail($teacherIds)
@@ -65,6 +76,17 @@ class TeacherService {
         $teacher = $this->fill($teacher, $payload);
         $teacher->save();
 
+        $username = UsernameService::generateUsername($teacher->name);
+        $user = new User;
+        $user->id = Uuid::uuid4()->toString();
+        $user->name = $teacher->name;
+        $user->username = $username;
+        $user->password = Hash::make($username);
+        $user->role = User::TEACHER;
+        $user->status = true;
+        $user->userable_id = $teacher->id;
+        $user->save();
+
         return $teacher;
     }
 
@@ -79,7 +101,6 @@ class TeacherService {
 
     private function fill(Teacher $teacher, array $attributes)
     {
-
         foreach ($attributes as $key => $value) {
             $teacher->$key = $value;
         }
