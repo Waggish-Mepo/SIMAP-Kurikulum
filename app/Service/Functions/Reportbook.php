@@ -10,6 +10,7 @@ use App\Models\Scorecard;
 use App\Models\StudentAbsence;
 use App\Models\StudentCourse;
 use App\Models\StudentGroup;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
@@ -106,5 +107,33 @@ class Reportbook
 
             return $reportbooks;
         });
+    }
+
+    public static function determineSemester($academicYear, $type) {
+        $currDate = Carbon::now();
+        $nextDate = Carbon::now();
+        $nextDate->setDay(19);
+        $nextDate->setMonth(6);
+
+        $yearNow = Carbon::now()->year;
+        if ($currDate <= $nextDate) {
+            $yearNow -= 1;
+        }
+
+        if ($type === ReportPeriod::EVEN) {
+            $grade = [
+                $yearNow . '/' . ($yearNow + 1) => '2',
+                ($yearNow - 1) . '/' . $yearNow => '4',
+                ($yearNow - 2) . '/' . ($yearNow - 1) => '6',
+            ];
+        } else {
+            $grade = [
+                $yearNow . '/' . ($yearNow + 1) => '1',
+                ($yearNow - 1) . '/' . $yearNow => '3',
+                ($yearNow - 2) . '/' . ($yearNow - 1) => '5',
+            ];
+        }
+
+        return $grade[$academicYear];
     }
 }
