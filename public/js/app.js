@@ -5318,6 +5318,8 @@ __webpack_require__.r(__webpack_exports__);
         this.title = 'buku nilai';
       } else if (this.$route.params.page == 7) {
         this.title = 'rapor siswa';
+      } else if (this.$route.params.page == 8) {
+        this.title = 'guru';
       } else {
         this.title = 'dashboard';
       }
@@ -5420,6 +5422,12 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5768,6 +5776,10 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/:page/mata-pelajaran',
       name: 'mata_pelajaran',
       component: loadView('dashboard/Mapel')
+    }, {
+      path: '/:page/teachers',
+      name: 'teachers',
+      component: loadView('dashboard/Teacher')
     }, {
       path: '/:page/periode-rapor',
       name: 'periode_rapor',
@@ -7976,8 +7988,26 @@ var actions = {
       });
     });
   },
-  getStatistics: function getStatistics(_ref2) {
+  withSubject: function withSubject(_ref2) {
     var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/teachers/subjects').then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  getStatistics: function getStatistics(_ref3) {
+    var commit = _ref3.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -41999,6 +42029,29 @@ var render = function () {
               _vm._v(" "),
               _c(
                 "router-link",
+                { attrs: { to: { name: "teachers", params: { page: 8 } } } },
+                [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "nav_link",
+                      class: { active: _vm.$route.params.page == 8 },
+                      attrs: { href: "#" },
+                    },
+                    [
+                      _c("i", {
+                        staticClass: "fas fa-chalkboard-teacher nav_icon",
+                        attrs: { title: "Guru" },
+                      }),
+                      _vm._v(" "),
+                      _c("span", { staticClass: "nav_name" }, [_vm._v("Guru")]),
+                    ]
+                  ),
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "router-link",
                 {
                   attrs: {
                     to: { name: "mata_pelajaran", params: { page: 2 } },
@@ -58871,6 +58924,10 @@ var map = {
 	"./dashboard/Root.vue": [
 		"./resources/js/pages/dashboard/Root.vue"
 	],
+	"./dashboard/Teacher.vue": [
+		"./resources/js/pages/dashboard/Teacher.vue",
+		"resources_js_pages_dashboard_Teacher_vue"
+	],
 	"./dashboard/batches/Batch.vue": [
 		"./resources/js/pages/dashboard/batches/Batch.vue",
 		"resources_js_pages_dashboard_batches_Batch_vue"
@@ -59070,7 +59127,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_Teacher_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

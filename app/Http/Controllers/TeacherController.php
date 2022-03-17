@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Service\Database\TeacherService;
+use App\Service\Database\SubjectTeacherService;
+use App\Service\Database\SubjectService;
 
 class TeacherController extends Controller
 {
@@ -16,6 +18,33 @@ class TeacherController extends Controller
     {
         $teachers = new TeacherService;
         return response()->json($teachers->index(['without_pagination' => true]));
+    }
+
+    public function withSubject()
+    {
+        $teachersDB = new TeacherService;
+        $subjectTeachersDB = new SubjectTeacherService;
+        $subjectsDB = new SubjectService;
+
+        $teachers = $teachersDB->index(['without_pagination' => true]);
+
+        foreach ($teachers as $teacher) {
+            $subjectTeachers = $subjectTeachersDB->index(['teacher_id' => $teacher['id'], 'without_pagination' => true]);
+
+            if(!count($subjectTeachers)) {
+                $teacher['subjects'] = null;
+            } else {
+                $subjectAssigned = [];
+                foreach ($subjectTeachers as $st) {
+                    $subjects = $subjectsDB->detail($st['subject_id']);
+                    $subjectAssigned[] = $subjects['name'];
+                }
+
+                $teacher['subjects'] = $subjectAssigned;
+            }
+        }
+
+        return response()->json($teachers);
     }
 
     public function accountStatistics()
