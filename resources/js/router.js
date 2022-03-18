@@ -41,6 +41,11 @@ const router = new Router({
                 component: loadView('dashboard/Mapel')
             },
             {
+                path: '/:page/teachers',
+                name: 'teachers',
+                component: loadView('dashboard/Teacher')
+            },
+            {
                 path: '/:page/periode-rapor',
                 name: 'periode_rapor',
                 component: loadView('dashboard/ReportPeriod')

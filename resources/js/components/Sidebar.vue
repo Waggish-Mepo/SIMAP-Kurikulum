@@ -11,6 +11,12 @@
                         <span class="nav_name">Dashboard</span> 
                     </a> 
                     </router-link>
+                    <router-link v-bind:to="{ name: 'teachers', params: {page: 8} }">
+                    <a href="#" class="nav_link" :class="{active: $route.params.page == 8}"> 
+                        <i class="fas fa-chalkboard-teacher nav_icon" title="Guru"></i> 
+                        <span class="nav_name">Guru</span> 
+                    </a> 
+                    </router-link>
                     <router-link v-bind:to="{ name: 'mata_pelajaran', params: {page: 2} }">
                     <a href="#" class="nav_link" :class="{active: $route.params.page == 2}"> 
                         <i class="fas fa-stream nav_icon" title="Mata Pelajaran"></i> 

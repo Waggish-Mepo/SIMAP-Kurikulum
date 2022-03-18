@@ -39,7 +39,7 @@
                 <tr v-for="(subject,index) in filterSubjects(category)" :key="index">
                     <td class="text-center">:</td>
                     <td><a href="#" class="text-dark" @click="showSubject(subject.id)">{{subject.name}}</a></td>
-                    <td v-if="subject.teachers">
+                    <td v-if="subject.teachers.length >= 1">
                         <a href="#" class="text-dark">{{subject.teacher_details_string}}</a>
                         <hr class="hr-teachers">
                         <a href="#" class="text-primary" @click="showSubject(subject.id)">tambah guru</a>

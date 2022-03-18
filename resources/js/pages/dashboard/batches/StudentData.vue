@@ -113,6 +113,13 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="mb-2">NISN</label>
+                    <input type="number" class="form-control" v-model="studentEditForm.nisn" :class="{'is-invalid': errors.nisn}">
+                    <div class="invalid-feedback" v-if="errors.nisn">
+                        {{ errors.nisn[0] }}
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="mb-2">Jenis Kelamin</label>
                     <small class="text-danger" v-if="errors.jk">
                         {{ errors.jk[0] }}
@@ -148,6 +155,13 @@
                     <input type="number" class="form-control" v-model="studentAddForm.nis" :class="{'is-invalid': errors.nis}">
                     <div class="invalid-feedback" v-if="errors.nis">
                         {{ errors.nis[0] }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="mb-2">NISN</label>
+                    <input type="number" class="form-control" v-model="studentAddForm.nisn" :class="{'is-invalid': errors.nisn}">
+                    <div class="invalid-feedback" v-if="errors.nisn">
+                        {{ errors.nisn[0] }}
                     </div>
                 </div>
                 <div class="form-group">
@@ -210,6 +224,11 @@ export default {
                     filterOptions: { enabled: true },
                 },
                 {
+                    label: "NISN",
+                    field: "nisn",
+                    filterOptions: { enabled: true },
+                },
+                {
                     label: "Nama",
                     field: "name",
                     filterOptions: { enabled: true },
@@ -249,6 +268,7 @@ export default {
             studentAddForm: {
                 name: null,
                 nis: null,
+                nisn: null,
                 jk: null,
                 student_group_id: this.$route.params.group,
             }
