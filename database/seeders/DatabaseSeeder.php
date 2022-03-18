@@ -90,18 +90,22 @@ class DatabaseSeeder extends Seeder
             [
                 'title' => 'Tengah Semester Ganjil',
                 'school_year' => '2021/2022',
+                'type' => ReportPeriod::ODD
             ],
             [
                 'title' => 'Semester Ganjil',
                 'school_year' => '2021/2022',
+                'type' => ReportPeriod::ODD
             ],
             [
                 'title' => 'Tengah Semester Genap',
                 'school_year' => '2021/2022',
+                'type' => ReportPeriod::EVEN
             ],
             [
                 'title' => 'Semester Genap',
                 'school_year' => '2021/2022',
+                'type' => ReportPeriod::EVEN
             ],
         ];
 
