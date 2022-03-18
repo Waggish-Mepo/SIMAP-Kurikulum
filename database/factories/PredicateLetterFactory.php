@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Gradebook;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PredicateLetterFactory extends Factory
@@ -18,7 +19,7 @@ class PredicateLetterFactory extends Factory
             'min_score' => $this->faker->numerify('##'),
             'max_score' => $this->faker->numerify('##'),
             'letter' => $this->faker->text(),
-            'gradebook_id' => GradeBook::factory()->create()->id,
+            'gradebook_id' => Gradebook::factory()->create()->id,
         ];
     }
 }
