@@ -10,6 +10,7 @@ use App\Service\Database\StudentService;
 use App\Service\Database\ReportPeriodService;
 use App\Service\Database\StudentGroupService;
 use App\Service\Database\MajorService;
+use App\Service\Functions\Reportbook;
 use PDF;
 use Carbon\Carbon;
 
@@ -72,11 +73,14 @@ class ReportbookController extends Controller
         $reportPeriodDB = new ReportPeriodService;
         $studentGroupDB = new StudentGroupService;
         $majorDB = new MajorService;
+        $reportbookFunctionService = new Reportbook;
 
         $reportPeriodId = $request->report_period_id;
         $studentId = $request->student_id;
 
         $reportbook = $reportbookDB->byStudent($reportPeriodId, $studentId);
+
+        $entryYear = $reportbook[0]['scorecard'][0]['gradebook']['course']['entry_year'];
         
         $groups = [];
         foreach ($reportbook[0]['scorecard'] as $scorecard) {
@@ -104,6 +108,22 @@ class ReportbookController extends Controller
 
         $date = Carbon::now()->locale('id_ID');
 
+        $semester = $reportbookFunctionService->determineSemester($entryYear, $reportperiod['type']);
+
+        if ((int)$semester == 1) {
+            $semesterWithText = $semester." (Satu)";
+        } else if ((int)$semester == 2) {
+            $semesterWithText = $semester . " (Dua)";
+        } else if ((int)$semester == 3) {
+            $semesterWithText = $semester . " (Tiga)";
+        } else if ((int)$semester == 4) {
+            $semesterWithText = $semester . " (Empat)";
+        } else if ((int)$semester == 5) {
+            $semesterWithText = $semester . " (Lima)";
+        } else if ((int)$semester == 6) {
+            $semesterWithText = $semester . " (Enam)";
+        }
+
         $data = [
             'reportbook' => $reportbook[0],
             'student' => $student,
@@ -113,6 +133,7 @@ class ReportbookController extends Controller
             'subjectgroup' => $reportbook[0]['subjectGroups'],
             'index' => 0,
             'date' => $date->day.' '.$date->monthName.' '.$date->year,
+            'semester' => $semesterWithText,
         ];
 
         if($reportbook[0]['curriculum'] === 'K21 | Sekolah Penggerak') {

@@ -287,7 +287,7 @@
                         </div>
                         <div class="wrap-text">
                             <span class="title">Semester</span>
-                            : 5 (Lima)
+                            : {{$semester}}
                         </div>
                         <div class="wrap-text">
                             <span class="title">Kelas</span>
