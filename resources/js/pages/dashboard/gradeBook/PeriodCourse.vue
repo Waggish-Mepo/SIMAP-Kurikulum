@@ -30,6 +30,12 @@
             </div>
         </div>
 
+        <!-- if data null -->
+        <div v-if="courses.length < 1" class="w-100 card-not-found">
+            <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
+            <h5 class="text-center text-capitalize mt-4">data terkait tidak ditemukan. guru belum terdaftar pada mata pelajaran apapun.</h5>
+        </div>
+
         <!-- modal -->
         <modal v-if="modalAdd" @close="modalAdd = false" :action="addGradebook">
             <h5 slot="header">Buat Buku Nilai</h5>
@@ -117,7 +123,7 @@ export default {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
     },
     methods: {
-        ...mapActions('courses', ['index', 'show']),
+        ...mapActions('courses', ['index', 'show', 'indexForTeacher']),
         ...mapActions('reportPeriods', ['detail']),
         ...mapActions('gradebooks', ['checkPeriodCourse', 'create', 'getGradebook']),
 
@@ -127,9 +133,18 @@ export default {
             })
         },
         getCourses(payload) {
-            this.index(payload).then((result) => {
-                this.courses = result;
-            })
+            let user = JSON.parse(localStorage.getItem('user_data'));
+
+            if(user.role === 'TEACHER') {
+                let teacherId = user.userable_id;
+                this.indexForTeacher(teacherId).then((result) => {
+                    this.courses = result.data;
+                })
+            } else if(user.role === 'ADMIN') {
+                this.index(payload).then((result) => {
+                    this.courses = result;
+                })
+            }
         },
         checkGradebook(courseId, periodId) {
             let payload = {report_period: this.$route.params.period, course: courseId};

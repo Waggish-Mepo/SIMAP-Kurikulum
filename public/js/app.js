@@ -5493,6 +5493,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // modal
  // vuex
 
@@ -5754,6 +5775,9 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
   routes: [{
     path: '/',
     component: _pages_dashboard_Root__WEBPACK_IMPORTED_MODULE_0__["default"],
+    meta: {
+      auth: true
+    },
     redirect: '/dashboard'
   }, {
     path: '*',
@@ -5775,19 +5799,38 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
     }, {
       path: '/:page/mata-pelajaran',
       name: 'mata_pelajaran',
+      meta: {
+        isAdmin: true
+      },
       component: loadView('dashboard/Mapel')
     }, {
       path: '/:page/teachers',
       name: 'teachers',
+      meta: {
+        isAdmin: true
+      },
       component: loadView('dashboard/Teacher')
     }, {
       path: '/:page/periode-rapor',
       name: 'periode_rapor',
+      meta: {
+        isAdmin: true
+      },
       component: loadView('dashboard/ReportPeriod')
     }, {
       path: '/:page/courses',
       name: 'courses',
+      meta: {
+        isAdmin: true
+      },
       component: loadView('dashboard/courses/Course')
+    }, {
+      path: '/:page/teacher-role/courses',
+      name: 'courses.teacher-role',
+      meta: {
+        isTeacher: true
+      },
+      component: loadView('dashboard/teacherRole/Course')
     }, {
       path: '/:page/courses/:course',
       name: 'courses.students',
@@ -5799,14 +5842,23 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
     }, {
       path: '/:page/batches',
       name: 'batches',
+      meta: {
+        isAdmin: true
+      },
       component: loadView('dashboard/batches/Batch')
     }, {
       path: '/:page/batches/:batch/student-groups',
       name: 'student_groups',
+      meta: {
+        isAdmin: true
+      },
       component: loadView('dashboard/batches/StudentGroup')
     }, {
       path: '/:page/batches/:batch/student-groups/:group/students',
       name: 'students',
+      meta: {
+        isAdmin: true
+      },
       component: loadView('dashboard/batches/StudentData')
     }, {
       path: '/:page/gradebooks/periods',
@@ -5823,18 +5875,30 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
     }, {
       path: '/:page/reportbooks/periods',
       name: 'reportbooks.periods',
+      meta: {
+        isAdmin: true
+      },
       component: loadView('dashboard/reportbooks/Period')
     }, {
       path: '/:page/reportbooks/periods/:period/students',
       name: 'reportbooks.periods.students',
+      meta: {
+        isAdmin: true
+      },
       component: loadView('dashboard/reportbooks/Students')
     }, {
       path: '/:page/reportbooks/periods/:period/students/:student',
       name: 'reportbooks.periods.students.report',
+      meta: {
+        isAdmin: true
+      },
       component: loadView('dashboard/reportbooks/StudentReport')
     }, {
       path: '/:page/reportbooks/periods/:period/groups/:group',
       name: 'reportbooks.periods.students.absence',
+      meta: {
+        isAdmin: true
+      },
       component: loadView('dashboard/reportbooks/StudentAbsence')
     }]
   }, {
@@ -5849,16 +5913,48 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       component: loadView('dashboard/gradeBook/DetailGroup')
     }]
   }]
-});
+}); // router.beforeEach((to, from, next) => {
+//     const token = localStorage.getItem("token_kurikulum");
+//     if (to.matched.some((record) => record.meta.auth) && !token) {
+//         next("/login");
+//         return;
+//     }
+//     next();
+// });
+
 router.beforeEach(function (to, from, next) {
-  // const loggedIn = localStorage.getItem('user');
-  var token = localStorage.getItem("token_kurikulum");
+  var loggedIn = localStorage.getItem('user_data');
+  var token = localStorage.getItem('token_kurikulum');
 
   if (to.matched.some(function (record) {
     return record.meta.auth;
-  }) && !token) {
-    next("/login");
-    return;
+  })) {
+    if (!loggedIn && !token) {
+      next('/login');
+    } else {
+      var user = JSON.parse(localStorage.getItem('user_data'));
+      var role = user.role;
+
+      if (to.matched.some(function (record) {
+        return record.meta.isAdmin;
+      })) {
+        if (role.includes('ADMIN')) next();else if (role === 'TEACHER') {
+          next({
+            name: 'dashboard'
+          });
+        } else next('/login');
+      } else if (to.matched.some(function (record) {
+        return record.meta.isTeacher;
+      })) {
+        if (role.includes('TEACHER')) next();else if (role === 'ADMIN') {
+          next({
+            name: 'dashboard'
+          });
+        } else next('/login');
+      } else {
+        next();
+      }
+    }
   }
 
   next();
@@ -6035,9 +6131,11 @@ var actions = {
         axios__WEBPACK_IMPORTED_MODULE_0___default().post('/login', payload).then(function (res) {
           var data = res.data;
           (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.headers.common.Authorization) = 'Bearer ' + data.access_token;
-          localStorage.setItem('token_kurikulum', data.access_token); // localStorage.setItem('user', JSON.stringify(data.user));
-          // commit('SET_USER', data.user_data, { root: true });
-
+          localStorage.setItem('token_kurikulum', data.access_token);
+          localStorage.setItem('user_data', JSON.stringify(data.user_data));
+          commit('SET_USER', data.user_data, {
+            root: true
+          });
           commit('SET_GOOD', null, {
             root: true
           });
@@ -6062,8 +6160,10 @@ var actions = {
       axios__WEBPACK_IMPORTED_MODULE_0___default().get('/logout').then(function (response) {
         commit('CLEAR_ERROR', null, {
           root: true
-        }); // commit('SET_USER', {}, { root: true });
-
+        });
+        commit('SET_USER', {}, {
+          root: true
+        });
         localStorage.clear();
         delete (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.headers.common.Authorization);
         resolve();
@@ -6261,8 +6361,26 @@ var actions = {
       });
     });
   },
-  allCurriculums: function allCurriculums(_ref2) {
+  indexForTeacher: function indexForTeacher(_ref2, payload) {
     var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/courses/teacher/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  allCurriculums: function allCurriculums(_ref3) {
+    var commit = _ref3.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -6279,8 +6397,8 @@ var actions = {
       });
     });
   },
-  entryYears: function entryYears(_ref3) {
-    var commit = _ref3.commit;
+  entryYears: function entryYears(_ref4) {
+    var commit = _ref4.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -6297,8 +6415,8 @@ var actions = {
       });
     });
   },
-  show: function show(_ref4, payload) {
-    var commit = _ref4.commit;
+  show: function show(_ref5, payload) {
+    var commit = _ref5.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -6315,8 +6433,8 @@ var actions = {
       });
     });
   },
-  create: function create(_ref5, payload) {
-    var commit = _ref5.commit;
+  create: function create(_ref6, payload) {
+    var commit = _ref6.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -6333,8 +6451,8 @@ var actions = {
       });
     });
   },
-  edit: function edit(_ref6, payload) {
-    var commit = _ref6.commit;
+  edit: function edit(_ref7, payload) {
+    var commit = _ref7.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -6351,8 +6469,8 @@ var actions = {
       });
     });
   },
-  deleteCourseCascade: function deleteCourseCascade(_ref7, payload) {
-    var commit = _ref7.commit;
+  deleteCourseCascade: function deleteCourseCascade(_ref8, payload) {
+    var commit = _ref8.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -7867,7 +7985,7 @@ var actions = {
       });
     });
   },
-  show: function show(_ref4, payload) {
+  detail: function detail(_ref4, payload) {
     var commit = _ref4.commit;
     commit('SET_LOADING', true, {
       root: true
@@ -42056,220 +42174,322 @@ var render = function () {
           _vm._v(" "),
           _c("hr"),
           _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "nav_list" },
-            [
-              _c("router-link", { attrs: { to: { name: "dashboard" } } }, [
-                _c(
-                  "a",
-                  {
-                    staticClass: "nav_link",
-                    class: { active: !_vm.$route.params.page },
-                    attrs: { href: "#" },
-                  },
-                  [
-                    _c("i", {
-                      staticClass: "fas fa-home nav_icon",
-                      attrs: { title: "Dashboard" },
-                    }),
-                    _vm._v(" "),
-                    _c("span", { staticClass: "nav_name" }, [
-                      _vm._v("Dashboard"),
-                    ]),
-                  ]
-                ),
-              ]),
-              _vm._v(" "),
-              _c(
-                "router-link",
-                { attrs: { to: { name: "teachers", params: { page: 8 } } } },
+          _vm.user.role === "ADMIN"
+            ? _c(
+                "div",
+                { staticClass: "nav_list" },
                 [
+                  _c("router-link", { attrs: { to: { name: "dashboard" } } }, [
+                    _c(
+                      "a",
+                      {
+                        staticClass: "nav_link",
+                        class: { active: !_vm.$route.params.page },
+                        attrs: { href: "#" },
+                      },
+                      [
+                        _c("i", {
+                          staticClass: "fas fa-home nav_icon",
+                          attrs: { title: "Dashboard" },
+                        }),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "nav_name" }, [
+                          _vm._v("Dashboard"),
+                        ]),
+                      ]
+                    ),
+                  ]),
+                  _vm._v(" "),
                   _c(
-                    "a",
+                    "router-link",
                     {
-                      staticClass: "nav_link",
-                      class: { active: _vm.$route.params.page == 8 },
-                      attrs: { href: "#" },
+                      attrs: { to: { name: "teachers", params: { page: 8 } } },
                     },
                     [
-                      _c("i", {
-                        staticClass: "fas fa-chalkboard-teacher nav_icon",
-                        attrs: { title: "Guru" },
-                      }),
-                      _vm._v(" "),
-                      _c("span", { staticClass: "nav_name" }, [_vm._v("Guru")]),
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav_link",
+                          class: { active: _vm.$route.params.page == 8 },
+                          attrs: { href: "#" },
+                        },
+                        [
+                          _c("i", {
+                            staticClass: "fas fa-chalkboard-teacher nav_icon",
+                            attrs: { title: "Guru" },
+                          }),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "nav_name" }, [
+                            _vm._v("Guru"),
+                          ]),
+                        ]
+                      ),
                     ]
                   ),
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "router-link",
-                {
-                  attrs: {
-                    to: { name: "mata_pelajaran", params: { page: 2 } },
-                  },
-                },
-                [
+                  _vm._v(" "),
                   _c(
-                    "a",
+                    "router-link",
                     {
-                      staticClass: "nav_link",
-                      class: { active: _vm.$route.params.page == 2 },
-                      attrs: { href: "#" },
+                      attrs: {
+                        to: { name: "mata_pelajaran", params: { page: 2 } },
+                      },
                     },
                     [
-                      _c("i", {
-                        staticClass: "fas fa-stream nav_icon",
-                        attrs: { title: "Mata Pelajaran" },
-                      }),
-                      _vm._v(" "),
-                      _c("span", { staticClass: "nav_name" }, [
-                        _vm._v("Mata Pelajaran"),
-                      ]),
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav_link",
+                          class: { active: _vm.$route.params.page == 2 },
+                          attrs: { href: "#" },
+                        },
+                        [
+                          _c("i", {
+                            staticClass: "fas fa-stream nav_icon",
+                            attrs: { title: "Mata Pelajaran" },
+                          }),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "nav_name" }, [
+                            _vm._v("Mata Pelajaran"),
+                          ]),
+                        ]
+                      ),
                     ]
                   ),
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "router-link",
-                {
-                  attrs: { to: { name: "periode_rapor", params: { page: 3 } } },
-                },
-                [
+                  _vm._v(" "),
                   _c(
-                    "a",
+                    "router-link",
                     {
-                      staticClass: "nav_link",
-                      class: { active: _vm.$route.params.page == 3 },
-                      attrs: { href: "#" },
+                      attrs: {
+                        to: { name: "periode_rapor", params: { page: 3 } },
+                      },
                     },
                     [
-                      _c("i", {
-                        staticClass: "fas fa-book-open nav_icon",
-                        attrs: { title: "Periode Rapor" },
-                      }),
-                      _vm._v(" "),
-                      _c("span", { staticClass: "nav_name" }, [
-                        _vm._v("Periode Rapor"),
-                      ]),
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav_link",
+                          class: { active: _vm.$route.params.page == 3 },
+                          attrs: { href: "#" },
+                        },
+                        [
+                          _c("i", {
+                            staticClass: "fas fa-book-open nav_icon",
+                            attrs: { title: "Periode Rapor" },
+                          }),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "nav_name" }, [
+                            _vm._v("Periode Rapor"),
+                          ]),
+                        ]
+                      ),
                     ]
                   ),
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "router-link",
-                { attrs: { to: { name: "batches", params: { page: 4 } } } },
-                [
+                  _vm._v(" "),
                   _c(
-                    "a",
+                    "router-link",
+                    { attrs: { to: { name: "batches", params: { page: 4 } } } },
+                    [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav_link",
+                          class: { active: _vm.$route.params.page == 4 },
+                          attrs: { href: "#" },
+                        },
+                        [
+                          _c("i", {
+                            staticClass: "fas fa-users nav_icon",
+                            attrs: { title: "Data Siswa" },
+                          }),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "nav_name" }, [
+                            _vm._v("Data Siswa"),
+                          ]),
+                        ]
+                      ),
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "router-link",
+                    { attrs: { to: { name: "courses", params: { page: 5 } } } },
+                    [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav_link",
+                          class: { active: _vm.$route.params.page == 5 },
+                          attrs: { href: "#" },
+                        },
+                        [
+                          _c("i", {
+                            staticClass: "fas fa-inbox nav_icon",
+                            attrs: { title: "Pelajaran" },
+                          }),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "nav_name" }, [
+                            _vm._v("Pelajaran"),
+                          ]),
+                        ]
+                      ),
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "router-link",
                     {
-                      staticClass: "nav_link",
-                      class: { active: _vm.$route.params.page == 4 },
-                      attrs: { href: "#" },
+                      attrs: {
+                        to: { name: "gradebooks.period", params: { page: 6 } },
+                      },
                     },
                     [
-                      _c("i", {
-                        staticClass: "fas fa-users nav_icon",
-                        attrs: { title: "Data Siswa" },
-                      }),
-                      _vm._v(" "),
-                      _c("span", { staticClass: "nav_name" }, [
-                        _vm._v("Data Siswa"),
-                      ]),
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav_link",
+                          class: { active: _vm.$route.params.page == 6 },
+                          attrs: { href: "#" },
+                        },
+                        [
+                          _c("i", {
+                            staticClass: "fas fa-book nav_icon",
+                            attrs: { title: "Buku Nilai" },
+                          }),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "nav_name" }, [
+                            _vm._v("Buku Nilai"),
+                          ]),
+                        ]
+                      ),
                     ]
                   ),
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "router-link",
-                { attrs: { to: { name: "courses", params: { page: 5 } } } },
-                [
+                  _vm._v(" "),
                   _c(
-                    "a",
+                    "router-link",
                     {
-                      staticClass: "nav_link",
-                      class: { active: _vm.$route.params.page == 5 },
-                      attrs: { href: "#" },
+                      attrs: {
+                        to: {
+                          name: "reportbooks.periods",
+                          params: { page: 7 },
+                        },
+                      },
                     },
                     [
-                      _c("i", {
-                        staticClass: "fas fa-inbox nav_icon",
-                        attrs: { title: "Pelajaran" },
-                      }),
-                      _vm._v(" "),
-                      _c("span", { staticClass: "nav_name" }, [
-                        _vm._v("Pelajaran"),
-                      ]),
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav_link",
+                          class: { active: _vm.$route.params.page == 7 },
+                          attrs: { href: "#" },
+                        },
+                        [
+                          _c("i", {
+                            staticClass: "fas fa-copy nav_icon",
+                            attrs: { title: "Rapor Siswa" },
+                          }),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "nav_name" }, [
+                            _vm._v("Rapor Siswa"),
+                          ]),
+                        ]
+                      ),
                     ]
                   ),
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "router-link",
-                {
-                  attrs: {
-                    to: { name: "gradebooks.period", params: { page: 6 } },
-                  },
-                },
+                ],
+                1
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.user.role === "TEACHER"
+            ? _c(
+                "div",
+                { staticClass: "nav_list" },
                 [
+                  _c("router-link", { attrs: { to: { name: "dashboard" } } }, [
+                    _c(
+                      "a",
+                      {
+                        staticClass: "nav_link",
+                        class: { active: !_vm.$route.params.page },
+                        attrs: { href: "#" },
+                      },
+                      [
+                        _c("i", {
+                          staticClass: "fas fa-home nav_icon",
+                          attrs: { title: "Dashboard" },
+                        }),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "nav_name" }, [
+                          _vm._v("Dashboard"),
+                        ]),
+                      ]
+                    ),
+                  ]),
+                  _vm._v(" "),
                   _c(
-                    "a",
+                    "router-link",
                     {
-                      staticClass: "nav_link",
-                      class: { active: _vm.$route.params.page == 6 },
-                      attrs: { href: "#" },
+                      attrs: {
+                        to: {
+                          name: "courses.teacher-role",
+                          params: { page: 5 },
+                        },
+                      },
                     },
                     [
-                      _c("i", {
-                        staticClass: "fas fa-book nav_icon",
-                        attrs: { title: "Buku Nilai" },
-                      }),
-                      _vm._v(" "),
-                      _c("span", { staticClass: "nav_name" }, [
-                        _vm._v("Buku Nilai"),
-                      ]),
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav_link",
+                          class: { active: _vm.$route.params.page == 5 },
+                          attrs: { href: "#" },
+                        },
+                        [
+                          _c("i", {
+                            staticClass: "fas fa-inbox nav_icon",
+                            attrs: { title: "Pelajaran" },
+                          }),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "nav_name" }, [
+                            _vm._v("Pelajaran"),
+                          ]),
+                        ]
+                      ),
                     ]
                   ),
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "router-link",
-                {
-                  attrs: {
-                    to: { name: "reportbooks.periods", params: { page: 7 } },
-                  },
-                },
-                [
+                  _vm._v(" "),
                   _c(
-                    "a",
+                    "router-link",
                     {
-                      staticClass: "nav_link",
-                      class: { active: _vm.$route.params.page == 7 },
-                      attrs: { href: "#" },
+                      attrs: {
+                        to: { name: "gradebooks.period", params: { page: 6 } },
+                      },
                     },
                     [
-                      _c("i", {
-                        staticClass: "fas fa-copy nav_icon",
-                        attrs: { title: "Rapor Siswa" },
-                      }),
-                      _vm._v(" "),
-                      _c("span", { staticClass: "nav_name" }, [
-                        _vm._v("Rapor Siswa"),
-                      ]),
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav_link",
+                          class: { active: _vm.$route.params.page == 6 },
+                          attrs: { href: "#" },
+                        },
+                        [
+                          _c("i", {
+                            staticClass: "fas fa-book nav_icon",
+                            attrs: { title: "Buku Nilai" },
+                          }),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "nav_name" }, [
+                            _vm._v("Buku Nilai"),
+                          ]),
+                        ]
+                      ),
                     ]
                   ),
-                ]
-              ),
-            ],
-            1
-          ),
+                ],
+                1
+              )
+            : _vm._e(),
         ]),
         _vm._v(" "),
         _c(
@@ -59038,6 +59258,10 @@ var map = {
 		"./resources/js/pages/dashboard/reportbooks/Students.vue",
 		"resources_js_pages_dashboard_reportbooks_Students_vue"
 	],
+	"./dashboard/teacherRole/Course.vue": [
+		"./resources/js/pages/dashboard/teacherRole/Course.vue",
+		"resources_js_pages_dashboard_teacherRole_Course_vue"
+	],
 	"./errors/404.vue": [
 		"./resources/js/pages/errors/404.vue",
 		"resources_js_pages_errors_404_vue"
@@ -59181,7 +59405,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_Teacher_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_Teacher_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_dashboard_teacherRole_Course_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

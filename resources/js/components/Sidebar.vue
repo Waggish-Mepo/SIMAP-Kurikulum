@@ -4,7 +4,7 @@
             <div> 
                 <a href="#" class="nav_logo"><i class="fas fa-user nav_logo-icon"></i> <span class="nav_logo-name">{{user.name}}</span></a>
                 <hr>
-                <div class="nav_list"> 
+                <div class="nav_list" v-if="user.role === 'ADMIN'"> 
                     <router-link v-bind:to="{ name: 'dashboard' }">
                     <a href="#" class="nav_link" :class="{active: !$route.params.page}"> 
                         <i class="fas fa-home nav_icon" title="Dashboard"></i> 
@@ -54,6 +54,27 @@
                     </a>
                     </router-link>
                 </div> 
+
+                <div class="nav_list" v-if="user.role === 'TEACHER'">
+                    <router-link v-bind:to="{ name: 'dashboard' }">
+                    <a href="#" class="nav_link" :class="{active: !$route.params.page}"> 
+                        <i class="fas fa-home nav_icon" title="Dashboard"></i> 
+                        <span class="nav_name">Dashboard</span> 
+                    </a> 
+                    </router-link>
+                    <router-link v-bind:to="{ name: 'courses.teacher-role', params: {page: 5} }">
+                    <a href="#" class="nav_link" :class="{active: $route.params.page == 5}"> 
+                        <i class="fas fa-inbox nav_icon" title="Pelajaran"></i> 
+                        <span class="nav_name">Pelajaran</span>
+                    </a>
+                    </router-link>
+                    <router-link v-bind:to="{ name: 'gradebooks.period', params: {page: 6} }">
+                    <a href="#" class="nav_link" :class="{active: $route.params.page == 6}"> 
+                        <i class="fas fa-book nav_icon" title="Buku Nilai"></i> 
+                        <span class="nav_name">Buku Nilai</span>
+                    </a>
+                    </router-link>
+                </div>
             </div>
             <a href="#" class="nav_link" @click="modalShow = true">
                 <i class="fas fa-power-off nav_icon"></i> 

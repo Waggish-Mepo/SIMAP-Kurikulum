@@ -4,8 +4,9 @@
     <div class="alert alert-danger mb-3" v-if="errorMessage">
       {{ errorMessage }}
     </div>
-    <h4 class="text-capitalize my-3 font-weight-bold">selamat datang, {{user.name}}</h4>
-    <div class="d-flex flex-wrap justify-content-center mt-5">
+    <h4 class="text-capitalize mb-3 font-weight-bold text-center" v-if="user.role === 'TEACHER'" style="margin-top: 7%">selamat datang, {{user.name}}</h4>
+    <h4 class="text-capitalize my-3 font-weight-bold" v-if="user.role === 'ADMIN'">selamat datang, {{user.name}}</h4>
+    <div class="d-flex flex-wrap justify-content-center mt-5" v-if="user.role === 'ADMIN'">
       <div class="w-box mb-3 shadow">
         <div class="box bg-white">
           <div class="d-flex align-items-center">

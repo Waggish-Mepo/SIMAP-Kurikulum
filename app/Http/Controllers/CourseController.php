@@ -8,6 +8,7 @@ use App\Service\Database\MajorService;
 use App\Service\Functions\AcademicCalendar;
 use App\Service\Database\ReportPeriodService;
 use App\Service\Database\SubjectService;
+use App\Service\Database\TeacherService;
 
 class CourseController extends Controller
 {
@@ -60,6 +61,48 @@ class CourseController extends Controller
         }
 
         return response()->json($subjectWithCourse);
+    }
+
+    public function indexForTeacher($id)
+    {
+        $teachersDB = new TeacherService;
+        $majorDB = new MajorService;
+        $academicCalendar = new AcademicCalendar;
+        $courseDB = new CourseService;
+
+        $teachers = $teachersDB->detail($id, true);
+
+        $subjectsNameID = [];
+        foreach ($teachers['subjects'] as $v) {
+            $subjectsNameID[$v['id']] = $v['name'];
+        }
+
+        $subjectWithCourse = [];
+        foreach ($subjectsNameID as $subject_id => $subject) {
+            $courses = $courseDB->index(['subject_id' => $subject_id, 'without_pagination' => true]);
+
+            $coursesWithMajors = [];
+            foreach ($courses as $course) {
+                if (!$course['majors']) {
+                    $coursesWithMajors[] = $course;
+                    continue;
+                }
+
+                $majors = $majorDB->bulkDetail($course['majors'])['data'];
+                $course['major_details'] = $majors;
+                $course['major_details_string'] = collect($majors)->pluck('abbreviation')->join(', ');
+                $course['entry_year_with_class'] = $academicCalendar->gradeByAcademicYear($course['entry_year']);
+                $coursesWithMajors[] = $course;
+            }
+            $subjectWithCourse[$subject . '-index']['data'] = $coursesWithMajors;
+            $subjectWithCourse[$subject . '-index']['id'] = $subject_id;
+            $subjectWithCourse[$subject . '-index']['name'] = $subject;
+        }
+
+        return response()->json([
+            'data' => $subjectWithCourse,
+            'subjects' => $teachers['subjects']
+        ]);
     }
 
     public function getCurriculums()

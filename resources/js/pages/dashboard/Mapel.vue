@@ -176,7 +176,7 @@ export default {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
     },
     methods: {
-        ...mapActions('subjects', ['create', 'index', 'show', 'edit', 'deleteSubjectCascade']),
+        ...mapActions('subjects', ['create', 'index', 'detail', 'edit', 'deleteSubjectCascade']),
         ...mapActions('teachers', ['getAll']),
         ...mapActions('subjectTeachers', ['update', 'indexSubjectTeacher']),
 
@@ -194,7 +194,7 @@ export default {
             });
         },
         showSubject(id) {
-            this.show(id).then((result) => {
+            this.detail(id).then((result) => {
                 this.teacherSubject.name = result.name;
                 this.teacherSubject.group = result.group;
                 this.teacherSubject.order = result.order;
