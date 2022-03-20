@@ -4,23 +4,11 @@
         <div class="alert alert-danger mb-3" v-if="errorMessage">
         {{ errorMessage }}
         </div>
-        <div class="row">
-            <div class="col-md-8">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Mata Pelajaran...." @keyup="searchSubject" v-model="payload.search">
-                    <div class="input-group-append">
-                        <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white" @click="searchSubject"><i class="fa fa-search"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <a href="#" class="btn btn-secondary btn-block mt-md-1" @click="refreshDataSubjects">Refresh Data</a>
-            </div>
-        </div>
-        <div class="card w-100 bg-white p-2 mt-3" @click="modalAdd = true">
-            <a href="#"><span class="fas fa-plus mr-3"></span> Tambah Pelajaran</a>
-        </div>
         <div class="col-12 mt-3">
+            <h5 class="mt-3 mb-3">Mata Pelajaran</h5>
+            <div class="card w-100 bg-white p-2 mt-3 mb-4" v-if="courses.length > 0" @click="modalAdd = true">
+                <a href="#"><span class="fas fa-plus mr-3"></span> Tambah Pelajaran</a>
+            </div>
             <div v-for="(subject, index) in courses" :key="index" class="mb-2">
                 <div class="card card-subject w-100 shadow-sm bg-white p-3" data-bs-toggle="collapse" aria-expanded="false" @click="showPanelCollapse(subject.id, index)">
                     <div class="d-flex justify-content-between text-capitalize">
@@ -49,7 +37,7 @@
         <!-- if data null -->
         <div v-if="courses.length < 1" class="w-100 card-not-found">
             <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
-            <h5 class="text-center text-capitalize mt-4">data terkait tidak ditemukan</h5>
+            <h5 class="text-center text-capitalize mt-4">data terkait tidak ditemukan. guru belum terdaftar pada mata pelajaran apapun.</h5>
         </div>
 
         <!-- modal -->
@@ -105,26 +93,27 @@
 </template>
 
 <script>
+// vuex
+import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
 // modal
 import modalComponent from '../../../components/Modal.vue';
 // vue-select
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
-// vuex
-import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
 export default {
-    name: "Courses",
+    name: "teacherCourses",
     components: {
         "modal": modalComponent,
         "select2": vSelect,
     },
     data() {
         return {
+            courses: [],
             modalAdd: false,
-            subjects: [],
             curriculums: [],
             majors: [],
-            courses: [],
+            entry_years: [],
+            subjects: [],
             submitForm: {
                 curriculum: null,
                 caption: null,
@@ -132,26 +121,19 @@ export default {
                 majors: [],
                 subject_id: null
             },
-            payload: {
-                search: '',
-                period: ''
-            },
-            entry_years: [],
         }
     },
     created() {
-        this.getSubjects();
-        this.getCurriculums();
         this.getMajors();
-        this.getCourses(this.payload);
         this.getEntryYears();
+        this.getCurriculums();
+        this.getCourses();
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
     },
     methods: {
-        ...mapActions('courses', ['create', 'index', 'allCurriculums', 'entryYears']),
-        ...mapActions('subjects', ['getAll', 'searchByCourse']),
+        ...mapActions('courses', ['create', 'indexForTeacher', 'allCurriculums', 'entryYears']),
         ...mapActions('majors', ['allData']),
 
         getMajors() {
@@ -164,21 +146,18 @@ export default {
                 this.entry_years = result;
             })
         },
-        searchSubject() {
-            this.getCourses(this.payload);
-        },
-        refreshDataSubjects() {
-            this.payload.search = '';
-            this.getCourses(this.payload);
-        },
-        getSubjects() {
-            this.getAll().then((result) => {
-                this.subjects = result;
-            })
-        },
         getCurriculums() {
             this.allCurriculums().then((result) => {
                 this.curriculums = result;
+            })
+        },
+        getCourses() {
+            let teacher = JSON.parse(localStorage.getItem('user_data'));
+            let teacherId = teacher.userable_id;
+
+            this.indexForTeacher(teacherId).then((result) => {
+                this.courses = result.data;
+                this.subjects = result.subjects;
             })
         },
         showPanelCollapse(PBody, PTitle) {
@@ -188,11 +167,6 @@ export default {
             iconTitle.classList.toggle('fa-arrow-down');
             iconTitle.classList.toggle('fa-arrow-up');
         },
-        getCourses(payload) {
-            this.index(payload).then((result) => {
-                this.courses = result;
-            });
-        },
         addCourse() {
             this.create(this.submitForm).then((result) => {
                 this.modalAdd = false;
@@ -201,7 +175,7 @@ export default {
                 this.submitForm.entry_year = null;
                 this.submitForm.majors = [];
                 this.submitForm.subject_id = null;
-                this.getCourses(this.payload);
+                this.getCourses();
             });
         },
     }
@@ -211,12 +185,6 @@ export default {
 <style scoped>
 a:hover {
     text-decoration: none;
-}
-
-.btn-outline-muted {
-    color: #535353;
-    border-color: #B4ADAD;
-    border-radius: 0px !important;
 }
 
 .card {

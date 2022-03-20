@@ -99,12 +99,16 @@
                         {{ errors.majors[0] }}
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" v-if="roleUser === 'ADMIN'">
                     <label class="mb-2">Mata Pelajaran</label>
                     <select2 :options="subjects" :reduce="subject => subject.id" label="name" v-model="updateForm.subject_id" :class="{'is-invalid': errors.subject_id}"></select2>
                     <div class="invalid-feedback" v-if="errors.subject_id">
                         {{ errors.subject_id[0] }}
                     </div>
+                </div>
+                <div class="form-group" v-if="roleUser === 'TEACHER'">
+                    <label class="mb-2">Mata Pelajaran</label>
+                    <input type="text" class="form-control" :value="subjectName" disabled>
                 </div>
                 <div class="form-group">
                     <label class="mb-2">Kelas/Angkatan Masuk</label>
@@ -161,6 +165,8 @@ export default {
     },
     data() {
         return {
+            roleUser: null,
+            subjectName: null,
             course: {},
             modalEdit: false,
             modalDelete: false,
@@ -217,6 +223,7 @@ export default {
         }
     },
     created() {
+        this.getRole();
         this.getCourse(this.$route.params.course);
         this.getStudentCourse(this.$route.params.course);
         this.getSubjects();
@@ -230,9 +237,13 @@ export default {
     methods: {
         ...mapActions('courses', ['show', 'edit', 'allCurriculums', 'entryYears', 'deleteCourseCascade']),
         ...mapActions('majors', ['allData']),
-        ...mapActions('subjects', ['getAll']),
+        ...mapActions('subjects', ['getAll', 'detail']),
         ...mapActions('studentCourses', ['index']),
 
+        getRole() {
+            let user = JSON.parse(localStorage.getItem('user_data'));
+            this.roleUser = user.role;
+        },
         getCourse(id) {
             this.show(id).then((result) => {
                 this.course = result;
@@ -273,6 +284,9 @@ export default {
         showCourse(id) {
             this.show(id).then((result) => {
                 this.updateForm = result;
+                this.detail(result.subject_id).then((result) => {
+                    this.subjectName = result.name;
+                });
                 this.modalEdit = true;
             });
         },

@@ -16,8 +16,8 @@ const actions = {
                     let data = res.data;
                     axios.defaults.headers.common['Authorization'] = 'Bearer ' + data.access_token;
                     localStorage.setItem('token_kurikulum', data.access_token);
-                    // localStorage.setItem('user', JSON.stringify(data.user));
-                    // commit('SET_USER', data.user_data, { root: true });
+                    localStorage.setItem('user_data', JSON.stringify(data.user_data));
+                    commit('SET_USER', data.user_data, { root: true });
                     commit('SET_GOOD', null, { root: true });
                     router.push({ name: 'dashboard' });
                     resolve(res.data);
@@ -33,7 +33,7 @@ const actions = {
             axios.get('/logout')
                 .then((response) => {
                     commit('CLEAR_ERROR', null, { root: true });
-                    // commit('SET_USER', {}, { root: true });
+                    commit('SET_USER', {}, { root: true });
                     localStorage.clear();
                     delete axios.defaults.headers.common['Authorization'];
                     resolve();

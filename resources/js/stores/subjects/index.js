@@ -46,7 +46,7 @@ const actions = {
                 })
         })
     },
-    show({ commit }, payload) {
+    detail({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
             axios.get('/subjects/'+payload)
