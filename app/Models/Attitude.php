@@ -11,12 +11,8 @@ class Attitude extends Model
 
     public $incrementing = false;
 
-    // public function attitude() {
-    //     return $this->belongsTo(Attitude::class);
-    // }
-
-    public function reportPeriods() {
-        return $this->hasMany(ReportPeriod::class);
+    public function reportPeriod() {
+        return $this->belongsTo(ReportPeriod::class);
     }
 
 }
