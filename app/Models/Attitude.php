@@ -11,6 +11,10 @@ class Attitude extends Model
 
     public $incrementing = false;
 
+    public function attitudePredicates() {
+        return $this->hasMany(AttitudePredicate::class);
+    }
+    
     public function reportPeriod() {
         return $this->belongsTo(ReportPeriod::class);
     }
