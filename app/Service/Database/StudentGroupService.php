@@ -2,7 +2,6 @@
 
 namespace App\Service\Database;
 
-use App\Models\Batch;
 use App\Models\StudentGroup;
 use App\Service\Functions\AcademicCalendar;
 use Illuminate\Support\Facades\Validator;

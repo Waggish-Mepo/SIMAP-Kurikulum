@@ -3,12 +3,7 @@
 namespace App\Service\Database;
 
 use App\Models\Attitude;
-use App\Models\Course;
-use App\Models\Gradebook;
-use App\Models\PredicateLetter;
 use App\Models\ReportPeriod;
-use App\Service\Functions\AcademicCalendar;
-use App\Service\Functions\Gradebook as FunctionsGradebook;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
