@@ -77,7 +77,7 @@ class Reportbook
             foreach ($studentIds as $studentId) {
                 $isExist = isset(
                     $reportbookExists[$reportPeriodId.$studentId],
-                );;
+                );
 
                 $scorecard = $groupbyScorecard[$studentId] ?? [];
                 $studentAbsenceId = $studentAbsenceIds[$studentId] ?? null;
