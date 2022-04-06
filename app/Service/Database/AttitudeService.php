@@ -19,9 +19,14 @@ class AttitudeService {
         $orderBy = $filter['order_by'] ?? 'ASC';
         $perPage = $filter['page'] ?? 20;
         $type = $filter['type'] ?? null;
+        $withPredicates = $filter['with_predicates'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = Attitude::orderBy('order', $orderBy);
+
+        if ($withPredicates) {
+            $query->with('attitudePredicates');
+        }
 
         if ($type) {
             $query->where('type', $type);
@@ -79,7 +84,7 @@ class AttitudeService {
         }
 
         $validate = Validator::make($attitude->toArray(), [
-            'name' => 'required|numeric',
+            'name' => 'required|string',
             'order' => 'required|numeric',
             'type' => ['required', Rule::in(config('constant.report_period.attitudes'))],
             'report_period_id' => 'required|uuid',

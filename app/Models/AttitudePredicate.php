@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Attitude;
-use App\Models\StudesntAttitude;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
