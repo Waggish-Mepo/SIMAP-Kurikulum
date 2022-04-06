@@ -36,7 +36,11 @@ class ReportPeriodService{
         return $reports;
     }
 
-    public function detail($reportPeriodId) {
+    public function detail($reportPeriodId, $withAttitude = false) {
+
+        if($withAttitude) {
+            return ReportPeriod::with('attitudes')->findOrFail($reportPeriodId);
+        }
 
         $report = ReportPeriod::findOrFail($reportPeriodId);
 

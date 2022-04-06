@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Attitude;
 use App\Models\Gradebook;
 use App\Models\Student;
 use App\Models\Subject;
@@ -206,5 +207,13 @@ return [
             Gradebook::SKILL,
             Gradebook::GENERAL,
         ]
+    ],
+    'report_period' => [
+        'attitudes' => [
+            Attitude::CHARACTER,
+            Attitude::COMPETENCE,
+            Attitude::PANCASILA,
+        ]
     ]
+
 ];
