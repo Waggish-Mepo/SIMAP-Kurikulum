@@ -14,6 +14,7 @@ class AttitudeService {
         $orderBy = $filter['order_by'] ?? 'ASC';
         $perPage = $filter['page'] ?? 20;
         $type = $filter['type'] ?? null;
+        $reportPeriodId = $filter['report_period_id'] ?? null;
         $withPredicates = $filter['with_predicates'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
@@ -21,6 +22,10 @@ class AttitudeService {
 
         if ($withPredicates) {
             $query->with('attitudePredicates');
+        }
+
+        if ($reportPeriodId) {
+            $query->where('report_period_id', $reportPeriodId);
         }
 
         if ($type) {
