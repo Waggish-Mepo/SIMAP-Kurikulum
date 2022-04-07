@@ -4,8 +4,6 @@ namespace App\Service\Database;
 
 use App\Models\Course;
 use App\Models\StudentCourse;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
 
 class StudentCourseService{

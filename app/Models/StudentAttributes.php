@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\AttitudePredicate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class StudentAttributes extends Model
+class StudentAttitude extends Model
 {
     use HasFactory;
 

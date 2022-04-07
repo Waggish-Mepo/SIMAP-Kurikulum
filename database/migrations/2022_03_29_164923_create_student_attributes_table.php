@@ -13,9 +13,8 @@ class CreateStudentAttributesTable extends Migration
      */
     public function up()
     {
-        Schema::create('student_attributes', function (Blueprint $table) {
+        Schema::create('student_attitudes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('description');
             $table->uuid('attitude_predicate_id');
             $table->uuid('student_id');
             $table->timestamps();

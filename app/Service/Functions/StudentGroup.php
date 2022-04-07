@@ -5,6 +5,8 @@ namespace App\Service\Functions;
 use App\Service\Database\BatchService;
 
 class StudentGroup {
+
+    //this one is cancelled
     public static function studentGroupByEntryYear($entryYear)
     {
         $academicCalendar = new AcademicCalendar;
@@ -21,6 +23,6 @@ class StudentGroup {
         $batches = $batchService->index($filterBatch)
 
 
-        return $studentGroups;
+        // return $studentGroups;
     }
 }

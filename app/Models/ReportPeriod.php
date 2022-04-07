@@ -13,4 +13,8 @@ class ReportPeriod extends Model
     public const EVEN = 'EVEN';
 
     public $incrementing = false;
+
+    public function attitudes() {
+        return $this->hasMany(Attitude::class);
+    }
 }

@@ -4,7 +4,6 @@ namespace App\Service\Database;
 
 use App\Models\StudentAbsence;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
 
 class StudentAbsenceService{
