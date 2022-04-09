@@ -20,6 +20,8 @@ use App\Http\Controllers\ScorecardController;
 use App\Http\Controllers\ScorecardComponentController;
 use App\Http\Controllers\ReportbookController;
 use App\Http\Controllers\StudentAbsenceController;
+use App\Http\Controllers\AttitudeController;
+use App\Http\Controllers\AttitudePredicateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -154,5 +156,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/check-get', [StudentAbsenceController::class, 'checkAndGet']);
         Route::post('/', [StudentAbsenceController::class, 'store']);
         Route::patch('/{id}', [StudentAbsenceController::class, 'update']);
+    });
+    Route::prefix('attitudes')->group(function () {
+        Route::get('/', [AttitudeController::class, 'index']);
+        Route::get('/types', [AttitudeController::class, 'types']);
+        Route::post('/', [AttitudeController::class, 'store']);
+        Route::get('/{id}', [AttitudeController::class, 'show']);
+        Route::patch('/{id}', [AttitudeController::class, 'update']);
+        Route::patch('/order/{id}', [AttitudeController::class, 'editOrder']);
+    });
+    Route::prefix('attitude-predicates')->group(function () {
+        Route::post('/', [AttitudePredicateController::class, 'store']);
+        Route::get('/{id}', [AttitudePredicateController::class, 'show']);
+        Route::patch('/{id}', [AttitudePredicateController::class, 'update']);
     });
 });

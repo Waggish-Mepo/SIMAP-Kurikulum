@@ -41,8 +41,22 @@ class AttitudeService {
         return $attitudes;
     }
 
+    public function attitudes()
+    {
+        return config('constant.report_period.attitudes');
+    }
+
     public function detail($attitudeId) {
         $attitude = Attitude::findOrFail($attitudeId);
+
+        return $attitude->toArray();
+    }
+
+    public function detailByOrder($order, $reportPeriod) {
+        $attitude = Attitude::where([
+            ['order', $order],
+            ['report_period_id', $reportPeriod]
+        ])->first();
 
         return $attitude->toArray();
     }
