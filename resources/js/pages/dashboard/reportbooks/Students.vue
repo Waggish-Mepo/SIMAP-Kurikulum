@@ -31,7 +31,9 @@
         </div> -->
 
         <div class="d-flex justify-content-between mt-4">
-            <div></div>
+            <div>
+                <router-link v-bind:to="{ name: 'reportbooks.periods.attitude.components', params: {page: 7, period: $route.params.period} }"><a href="#" class="btn bg-blue1 text-white text-capitalize">atur komponen nilai sikap</a></router-link>
+            </div>
             <select class="form-select btn bg-blue1 text-white w-20" @change="redirectPage">
                 <option selected hidden>Atur Kehadiran Siswa</option>
                 <option v-for="(group,index) in studentGroups" :key="index" :value="group.id">{{group.name}}</option>

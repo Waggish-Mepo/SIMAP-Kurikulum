@@ -5900,6 +5900,13 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
         isAdmin: true
       },
       component: loadView('dashboard/reportbooks/StudentAbsence')
+    }, {
+      path: '/:page/reportbooks/periods/:period/attitude-components',
+      name: 'reportbooks.periods.attitude.components',
+      meta: {
+        isAdmin: true
+      },
+      component: loadView('dashboard/reportbooks/attitude/Component')
     }]
   }, {
     path: '/dashboard/gradebooks',
@@ -5974,8 +5981,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _router_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./router.js */ "./resources/js/router.js");
 /* harmony import */ var _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stores/auth/index.js */ "./resources/js/stores/auth/index.js");
 /* harmony import */ var _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./stores/subjects/index.js */ "./resources/js/stores/subjects/index.js");
@@ -5995,6 +6002,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _stores_scorecardComponents_index_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./stores/scorecardComponents/index.js */ "./resources/js/stores/scorecardComponents/index.js");
 /* harmony import */ var _stores_reportbooks_index_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./stores/reportbooks/index.js */ "./resources/js/stores/reportbooks/index.js");
 /* harmony import */ var _stores_studentAbsences_index_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./stores/studentAbsences/index.js */ "./resources/js/stores/studentAbsences/index.js");
+/* harmony import */ var _stores_attitudes_index_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./stores/attitudes/index.js */ "./resources/js/stores/attitudes/index.js");
+/* harmony import */ var _stores_attitudePredicates_index_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./stores/attitudePredicates/index.js */ "./resources/js/stores/attitudePredicates/index.js");
 
 
  //IMPORT MODULE SECTION
@@ -6017,9 +6026,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_19__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_20__["default"]);
+
+
+vue__WEBPACK_IMPORTED_MODULE_21__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_22__["default"]);
 var debug = "development" !== 'production';
-var store = new vuex__WEBPACK_IMPORTED_MODULE_20__["default"].Store({
+var store = new vuex__WEBPACK_IMPORTED_MODULE_22__["default"].Store({
   modules: {
     auth: _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_1__["default"],
     subjects: _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_2__["default"],
@@ -6038,7 +6049,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_20__["default"].Store({
     scorecards: _stores_scorecards_index_js__WEBPACK_IMPORTED_MODULE_15__["default"],
     scorecardComponents: _stores_scorecardComponents_index_js__WEBPACK_IMPORTED_MODULE_16__["default"],
     reportbooks: _stores_reportbooks_index_js__WEBPACK_IMPORTED_MODULE_17__["default"],
-    studentAbsences: _stores_studentAbsences_index_js__WEBPACK_IMPORTED_MODULE_18__["default"]
+    studentAbsences: _stores_studentAbsences_index_js__WEBPACK_IMPORTED_MODULE_18__["default"],
+    attitudes: _stores_attitudes_index_js__WEBPACK_IMPORTED_MODULE_19__["default"],
+    attitudePredicates: _stores_attitudePredicates_index_js__WEBPACK_IMPORTED_MODULE_20__["default"]
   },
   state: {
     errors: [],
@@ -6095,6 +6108,230 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_20__["default"].Store({
   strict: debug
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (store);
+
+/***/ }),
+
+/***/ "./resources/js/stores/attitudePredicates/index.js":
+/*!*********************************************************!*\
+  !*** ./resources/js/stores/attitudePredicates/index.js ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var state = function state() {
+  return {};
+};
+
+var mutations = {};
+var actions = {
+  showAP: function showAP(_ref, payload) {
+    var commit = _ref.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/attitude-predicates/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  createAP: function createAP(_ref2, payload) {
+    var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/attitude-predicates', payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  editAP: function editAP(_ref3, payload) {
+    var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/attitude-predicates/' + payload.id, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: state,
+  actions: actions,
+  mutations: mutations
+});
+
+/***/ }),
+
+/***/ "./resources/js/stores/attitudes/index.js":
+/*!************************************************!*\
+  !*** ./resources/js/stores/attitudes/index.js ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var state = function state() {
+  return {};
+};
+
+var mutations = {};
+var actions = {
+  index: function index(_ref, payload) {
+    var commit = _ref.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/attitudes?report_period_id=' + payload.report_period_id).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  attitudeTypes: function attitudeTypes(_ref2) {
+    var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/attitudes/types').then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  show: function show(_ref3, payload) {
+    var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/attitudes/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  create: function create(_ref4, payload) {
+    var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/attitudes', payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  edit: function edit(_ref5, payload) {
+    var commit = _ref5.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/attitudes/' + payload.id, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  editOrder: function editOrder(_ref6, payload) {
+    var commit = _ref6.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/attitudes/order/' + payload.id, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: state,
+  actions: actions,
+  mutations: mutations
+});
 
 /***/ }),
 
@@ -59258,6 +59495,10 @@ var map = {
 		"./resources/js/pages/dashboard/reportbooks/Students.vue",
 		"resources_js_pages_dashboard_reportbooks_Students_vue"
 	],
+	"./dashboard/reportbooks/attitude/Component.vue": [
+		"./resources/js/pages/dashboard/reportbooks/attitude/Component.vue",
+		"resources_js_pages_dashboard_reportbooks_attitude_Component_vue"
+	],
 	"./dashboard/teacherRole/Course.vue": [
 		"./resources/js/pages/dashboard/teacherRole/Course.vue",
 		"resources_js_pages_dashboard_teacherRole_Course_vue"
@@ -59405,7 +59646,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_Teacher_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_dashboard_teacherRole_Course_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_Teacher_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_dashboard_reportbooks_attitude_Component_vue":1,"resources_js_pages_dashboard_teacherRole_Course_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

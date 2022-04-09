@@ -133,6 +133,12 @@ const router = new Router({
                 meta: { isAdmin: true },
                 component: loadView('dashboard/reportbooks/StudentAbsence')
             },
+            {
+                path: '/:page/reportbooks/periods/:period/attitude-components',
+                name: 'reportbooks.periods.attitude.components',
+                meta: { isAdmin: true },
+                component: loadView('dashboard/reportbooks/attitude/Component')
+            }
             ]
         },
         {

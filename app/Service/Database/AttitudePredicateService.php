@@ -7,7 +7,7 @@ use App\Models\AttitudePredicate;
 use Illuminate\Support\Facades\Validator;
 use Ramsey\Uuid\Uuid;
 
-class AttitudeService {
+class AttitudePredicateService {
 
     public function index($filter = []) {
         $orderBy = $filter['order_by'] ?? 'ASC';
@@ -73,8 +73,8 @@ class AttitudeService {
         }
 
         $validate = Validator::make($attitudePredicate->toArray(), [
-            'description' => 'required|numeric',
-            'predicate' => 'required|numeric',
+            'description' => 'required|string',
+            'predicate' => 'required|string',
             'attitude_id' => 'required|uuid',
         ]);
 

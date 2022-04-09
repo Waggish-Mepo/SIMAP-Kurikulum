@@ -21,6 +21,8 @@ import scorecards from './stores/scorecards/index.js'
 import scorecardComponents from './stores/scorecardComponents/index.js'
 import reportbooks from './stores/reportbooks/index.js'
 import studentAbsences from './stores/studentAbsences/index.js'
+import attitudes from './stores/attitudes/index.js'
+import attitudePredicates from './stores/attitudePredicates/index.js'
 
 Vue.use(Vuex);
 
@@ -45,7 +47,9 @@ const store = new Vuex.Store({
         scorecards,
         scorecardComponents,
         reportbooks,
-        studentAbsences
+        studentAbsences,
+        attitudes,
+        attitudePredicates
     },
     state: {
         errors: [],
