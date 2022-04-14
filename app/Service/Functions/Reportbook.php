@@ -8,6 +8,7 @@ use App\Models\Reportbook as ModelsReportbook;
 use App\Models\ReportPeriod;
 use App\Models\Scorecard;
 use App\Models\StudentAbsence;
+use App\Models\StudentAttitude;
 use App\Models\StudentCourse;
 use App\Models\StudentGroup;
 use Carbon\Carbon;
@@ -59,6 +60,10 @@ class Reportbook
             ->get()
             ->mapToGroups(fn ($item) => [$item['student_id'] => $item['id']]);
 
+        $studentAttitudes = StudentAttitude::whereIn('student_id', $studentIds)
+            ->get()
+            ->mapToGroups(fn ($item) => [$item['student_id'] => $item['id']]);
+
         $reportbookExists = ModelsReportbook::where('report_period_id', $reportPeriodId)
             ->get()
             ->mapWithKeys(fn ($item) => [$reportPeriodId.$item->student_id => $item->id]);
@@ -70,7 +75,8 @@ class Reportbook
             $reportPeriodId,
             $reportbookExists,
             $studentIds,
-            $studentAbsenceIds
+            $studentAbsenceIds,
+            $studentAttitudes
         ) {
             $reportbooks = collect([]);
 
@@ -81,6 +87,7 @@ class Reportbook
 
                 $scorecard = $groupbyScorecard[$studentId] ?? [];
                 $studentAbsenceId = $studentAbsenceIds[$studentId] ?? null;
+                $studentAttitude = $studentAttitudes[$studentId] ?? [];
 
                 if (!$isExist) {
                     $reportbook = new ModelsReportbook;
@@ -89,8 +96,10 @@ class Reportbook
                     $reportbook->report_period_id = $reportPeriodId;
                     $reportbook->student_absence_id = $studentAbsenceId;
                     $reportbook->score_config = $scorecard;
+                    $reportbook->attitude_config = $studentAttitude;
                     $reportbook->curriculum = $curriculum;
                     $reportbook->notes = null;
+                    $reportbook->attitude_notes = null;
                     $reportbook->save();
                     $reportbooks->push($reportbook);
 
@@ -100,6 +109,7 @@ class Reportbook
                 $reportbookId = $reportbookExists[$reportPeriodId.$studentId];
                 $reportbook = ModelsReportbook::findOrFail($reportbookId);
                 $reportbook->score_config = $scorecard;
+                $reportbook->attitude_config = $studentAttitude;
                 $reportbook->curriculum = $curriculum;
                 $reportbook->save();
                 $reportbooks->push($reportbook);
