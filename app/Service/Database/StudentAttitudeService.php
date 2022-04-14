@@ -24,6 +24,18 @@ class StudentAttitudeService {
         return $studentAttitude->toArray();
     }
 
+    public function update($studentAttitudeId, $payload) {
+
+        $studentAttitude = StudentAttitude::findOrFail($studentAttitudeId);
+
+        AttitudePredicate::findOrFail($payload['attitude_predicate_id']);
+
+        $studentAttitude->attitude_predicate_id = $payload['attitude_predicate_id'];
+        $studentAttitude->save();
+
+        return $studentAttitude->toArray();
+    }
+
     public function delete($studentAttitudeId) {
 
         $studentAttitude = StudentAttitude::findOrFail($studentAttitudeId);

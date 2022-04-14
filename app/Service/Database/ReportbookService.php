@@ -38,6 +38,13 @@ class ReportbookService
                             ->first();
 
                 $reportbooks[$key]['absences'] = $absence;
+
+                $attitudes = StudentAttitude::with('attitudePredicate', 'attitudePredicate.attitude')
+                            ->whereIn('id', $reportbook->attitude_config)
+                            ->where('student_id', $studentId)
+                            ->get();
+
+                $reportbooks[$key]['attitudes'] = $attitudes;
             }
         });
 
