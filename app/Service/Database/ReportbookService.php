@@ -8,6 +8,7 @@ use App\Models\ReportPeriod;
 use App\Models\Scorecard;
 use App\Models\Student;
 use App\Models\StudentAbsence;
+use App\Models\StudentAttitude;
 use App\Service\Functions\Reportbook as FunctionsReportbook;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -37,6 +38,13 @@ class ReportbookService
                             ->first();
 
                 $reportbooks[$key]['absences'] = $absence;
+
+                $attitudes = StudentAttitude::with('attitudePredicate', 'attitudePredicate.attitude')
+                            ->whereIn('id', $reportbook->attitude_config)
+                            ->where('student_id', $studentId)
+                            ->get();
+
+                $reportbooks[$key]['attitudes'] = $attitudes;
             }
         });
 
@@ -100,6 +108,20 @@ class ReportbookService
             $reportbook->save();
 
             return $reportbook->toArray();
+        } else if ($filter['update_type'] === 'attitude_config') {
+            $studentAttitudes = StudentAttitude::where('student_id', $reportbook->student_id)->get();
+
+            $studentAttitudeIds = $studentAttitudes->pluck('id');
+
+            $attributes = [
+                'attitude_config' => $studentAttitudeIds,
+            ];
+
+            $reportbook = $this->fill($reportbook, $attributes);
+
+            $reportbook->save();
+
+            return $reportbook->toArray();
         }
 
         $reportbook = $this->fill($reportbook, $payload);
@@ -128,6 +150,10 @@ class ReportbookService
 
         $scorecardIds = $scorecard->pluck('id');
 
+        $studentAttitudes = StudentAttitude::where('student_id', $student->id)->get();
+
+        $studentAttitudeIds = $studentAttitudes->pluck('id');
+
         $absence = StudentAbsence::where('student_id', $studentId)
                     ->where('report_period_id', $reportPeriodId)
                     ->first()->id ?? null;
@@ -139,6 +165,8 @@ class ReportbookService
         $reportbook->score_config = $scorecardIds;
         $reportbook->student_absence_id = $absence;
         $reportbook->notes = null;
+        $reportbook->attitude_config = $studentAttitudeIds;
+        $reportbook->attitude_notes = null;
         $reportbook->curriculum = $reportbookExist->report_curriculum;
 
         $reportbook->save();
@@ -154,11 +182,15 @@ class ReportbookService
 
         $reportbookArray = $reportbook->toArray();
         $reportbookArray['notes'] = $reportbook['notes'];
+        $reportbookArray['attitude_notes'] = $reportbook['attitude_notes'];
         $reportbookArray['score_config'] = $reportbook['score_config'];
+        $reportbookArray['attitude_config'] = $reportbook['attitude_config'];
 
         Validator::make($reportbookArray, [
             'notes' => 'nullable|string',
+            'attitude_notes' => 'nullable|string',
             'score_config' => ['nullable', 'array'],
+            'attitude_config' => ['nullable', 'array'],
         ])->validate();
 
         return $reportbook;
