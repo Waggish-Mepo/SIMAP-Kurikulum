@@ -43,6 +43,12 @@ const router = new Router({
                 component: loadView('dashboard/Mapel')
             },
             {
+                path: '/:page/rayon',
+                name: 'rayon',
+                meta: { isAdmin: true },
+                component: loadView('dashboard/Rayon')
+            },
+            {
                 path: '/:page/teachers',
                 name: 'teachers',
                 meta: { isAdmin: true },
@@ -70,6 +76,16 @@ const router = new Router({
                 path: '/:page/courses/:course',
                 name: 'courses.students',
                 component: loadView('dashboard/courses/Students')
+            },
+            {
+                path: '/:page/region/regions',
+                name: 'region.regions',
+                component: loadView('dashboard/region/Regions')
+            },
+            {
+                path: '/:page/region/student-region',
+                name: 'region.student-region',
+                component: loadView('dashboard/region/StudentRegion')
             },
             {
                 path: '/:page/courses/:course/add',
