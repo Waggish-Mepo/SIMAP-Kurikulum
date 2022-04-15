@@ -17,6 +17,12 @@
                         <span class="nav_name">Guru</span> 
                     </a> 
                     </router-link>
+                    <router-link v-bind:to="{ name: 'rayon', params: {page: 8} }">
+                    <a href="#" class="nav_link" :class="{active: $route.params.page == 8}"> 
+                        <i class="fas fa-address-book nav_icon" title="Rayon"></i> 
+                        <span class="nav_name">Rayon</span> 
+                    </a> 
+                    </router-link>
                     <router-link v-bind:to="{ name: 'mata_pelajaran', params: {page: 2} }">
                     <a href="#" class="nav_link" :class="{active: $route.params.page == 2}"> 
                         <i class="fas fa-stream nav_icon" title="Mata Pelajaran"></i> 
@@ -52,12 +58,6 @@
                         <i class="fas fa-copy nav_icon" title="Rapor Siswa"></i> 
                         <span class="nav_name">Rapor Siswa</span>
                     </a>
-                    </router-link>
-                    <router-link v-bind:to="{ name: 'rayon', params: {page: 8} }">
-                    <a href="#" class="nav_link" :class="{active: $route.params.page == 8}"> 
-                        <i class="fas fa-address-book nav_icon" title="Rayon"></i> 
-                        <span class="nav_name">Rayon</span> 
-                    </a> 
                     </router-link>
                 </div> 
 
