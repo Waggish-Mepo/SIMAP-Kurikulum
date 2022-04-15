@@ -5308,6 +5308,8 @@ __webpack_require__.r(__webpack_exports__);
     changeTitle: function changeTitle() {
       if (this.$route.params.page == 2) {
         this.title = 'mata pelajaran';
+      } else if (this.$route.params.page == 1) {
+        this.title = 'guru';
       } else if (this.$route.params.page == 3) {
         this.title = 'periode rapor';
       } else if (this.$route.params.page == 4) {
@@ -5319,7 +5321,7 @@ __webpack_require__.r(__webpack_exports__);
       } else if (this.$route.params.page == 7) {
         this.title = 'rapor siswa';
       } else if (this.$route.params.page == 8) {
-        this.title = 'guru';
+        this.title = 'rayon';
       } else {
         this.title = 'dashboard';
       }
@@ -5422,6 +5424,12 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5804,6 +5812,13 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       },
       component: loadView('dashboard/Mapel')
     }, {
+      path: '/:page/rayon',
+      name: 'rayon',
+      meta: {
+        isAdmin: true
+      },
+      component: loadView('dashboard/Rayon')
+    }, {
       path: '/:page/teachers',
       name: 'teachers',
       meta: {
@@ -5835,6 +5850,14 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/:page/courses/:course',
       name: 'courses.students',
       component: loadView('dashboard/courses/Students')
+    }, {
+      path: '/:page/region/regions',
+      name: 'region.regions',
+      component: loadView('dashboard/region/Regions')
+    }, {
+      path: '/:page/region/student-region',
+      name: 'region.student-region',
+      component: loadView('dashboard/region/StudentRegion')
     }, {
       path: '/:page/courses/:course/add',
       name: 'courses.students.add',
@@ -42440,14 +42463,14 @@ var render = function () {
                   _c(
                     "router-link",
                     {
-                      attrs: { to: { name: "teachers", params: { page: 8 } } },
+                      attrs: { to: { name: "teachers", params: { page: 1 } } },
                     },
                     [
                       _c(
                         "a",
                         {
                           staticClass: "nav_link",
-                          class: { active: _vm.$route.params.page == 8 },
+                          class: { active: _vm.$route.params.page == 1 },
                           attrs: { href: "#" },
                         },
                         [
@@ -42627,6 +42650,31 @@ var render = function () {
                           _vm._v(" "),
                           _c("span", { staticClass: "nav_name" }, [
                             _vm._v("Rapor Siswa"),
+                          ]),
+                        ]
+                      ),
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "router-link",
+                    { attrs: { to: { name: "rayon", params: { page: 8 } } } },
+                    [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav_link",
+                          class: { active: _vm.$route.params.page == 8 },
+                          attrs: { href: "#" },
+                        },
+                        [
+                          _c("i", {
+                            staticClass: "fas fa-address-book nav_icon",
+                            attrs: { title: "Rayon" },
+                          }),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "nav_name" }, [
+                            _vm._v("Rayon"),
                           ]),
                         ]
                       ),
@@ -59428,6 +59476,10 @@ var map = {
 		"./resources/js/pages/dashboard/Mapel.vue",
 		"resources_js_pages_dashboard_Mapel_vue"
 	],
+	"./dashboard/Rayon.vue": [
+		"./resources/js/pages/dashboard/Rayon.vue",
+		"resources_js_pages_dashboard_Rayon_vue"
+	],
 	"./dashboard/ReportPeriod.vue": [
 		"./resources/js/pages/dashboard/ReportPeriod.vue",
 		"resources_js_pages_dashboard_ReportPeriod_vue"
@@ -59478,6 +59530,14 @@ var map = {
 	"./dashboard/gradeBook/PeriodCourse.vue": [
 		"./resources/js/pages/dashboard/gradeBook/PeriodCourse.vue",
 		"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue"
+	],
+	"./dashboard/region/Regions.vue": [
+		"./resources/js/pages/dashboard/region/Regions.vue",
+		"resources_js_pages_dashboard_region_Regions_vue"
+	],
+	"./dashboard/region/StudentRegion.vue": [
+		"./resources/js/pages/dashboard/region/StudentRegion.vue",
+		"resources_js_pages_dashboard_region_StudentRegion_vue"
 	],
 	"./dashboard/reportbooks/Period.vue": [
 		"./resources/js/pages/dashboard/reportbooks/Period.vue",
@@ -59646,7 +59706,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_Teacher_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_dashboard_reportbooks_attitude_Component_vue":1,"resources_js_pages_dashboard_teacherRole_Course_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_Rayon_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_Teacher_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_region_Regions_vue":1,"resources_js_pages_dashboard_region_StudentRegion_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_dashboard_reportbooks_attitude_Component_vue":1,"resources_js_pages_dashboard_teacherRole_Course_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

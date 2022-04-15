@@ -26,6 +26,8 @@ export default {
         changeTitle() {
             if(this.$route.params.page == 2) {
                 this.title = 'mata pelajaran';
+            } else if(this.$route.params.page == 1) {
+                this.title = 'guru';
             } else if(this.$route.params.page == 3) {
                 this.title = 'periode rapor';
             } else if(this.$route.params.page == 4) {
@@ -37,7 +39,7 @@ export default {
             } else if(this.$route.params.page == 7) {
                 this.title = 'rapor siswa';
             } else if(this.$route.params.page == 8) {
-                this.title = 'guru';
+                this.title = 'rayon';
             } else {
                 this.title = 'dashboard';
             }
