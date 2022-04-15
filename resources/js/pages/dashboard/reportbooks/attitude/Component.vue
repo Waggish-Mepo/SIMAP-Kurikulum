@@ -21,11 +21,11 @@
             <h5 class="mb-3" v-else>Nilai {{index[0].toUpperCase() + index.slice(1).toLowerCase()}}</h5>
             <table class="table table-bordered text-capitalize bg-white" style="max-width: 1150px" v-if="attitude.length > 0">
                 <thead class="bg-muted text-center">
-                    <th style="border-right-width: 1px !important; border-left-width: 1px !important; padding: 8px 0 !important; width: 80px !important">#</th>
-                    <th style="border-right-width: 1px !important; padding: 8px 0 !important">No.</th>
-                    <th style="border-right-width: 1px !important; padding: 8px 0 !important">Nama</th>
-                    <th style="border-right-width: 1px !important; padding: 8px 0 !important">Predikat</th>
-                    <th style="border-right-width: 1px !important; padding: 8px 0 !important">Deskripsi</th>
+                    <th class="th-comp up-down">#</th>
+                    <th class="th-comp">No.</th>
+                    <th class="th-comp">Nama</th>
+                    <th class="th-comp">Predikat</th>
+                    <th class="th-comp">Deskripsi</th>
                 </thead>
                 <tbody style="border-top: 0;" v-for="(data, index) in attitude" :key="index">
                     <tr>
@@ -305,5 +305,15 @@ export default {
 <style scoped>
 td {
     cursor: pointer;
+}
+
+th.th-comp {
+    border-right-width: 1px !important; 
+    padding: 8px 0 !important
+}
+
+th.th-comp.up-down {
+    border-left-width: 1px !important; 
+    width: 80px !important
 }
 </style>
