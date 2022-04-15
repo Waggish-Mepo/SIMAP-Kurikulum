@@ -42489,6 +42489,31 @@ var render = function () {
                   _vm._v(" "),
                   _c(
                     "router-link",
+                    { attrs: { to: { name: "rayon", params: { page: 8 } } } },
+                    [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav_link",
+                          class: { active: _vm.$route.params.page == 8 },
+                          attrs: { href: "#" },
+                        },
+                        [
+                          _c("i", {
+                            staticClass: "fas fa-address-book nav_icon",
+                            attrs: { title: "Rayon" },
+                          }),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "nav_name" }, [
+                            _vm._v("Rayon"),
+                          ]),
+                        ]
+                      ),
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "router-link",
                     {
                       attrs: {
                         to: { name: "mata_pelajaran", params: { page: 2 } },
@@ -42650,31 +42675,6 @@ var render = function () {
                           _vm._v(" "),
                           _c("span", { staticClass: "nav_name" }, [
                             _vm._v("Rapor Siswa"),
-                          ]),
-                        ]
-                      ),
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "router-link",
-                    { attrs: { to: { name: "rayon", params: { page: 8 } } } },
-                    [
-                      _c(
-                        "a",
-                        {
-                          staticClass: "nav_link",
-                          class: { active: _vm.$route.params.page == 8 },
-                          attrs: { href: "#" },
-                        },
-                        [
-                          _c("i", {
-                            staticClass: "fas fa-address-book nav_icon",
-                            attrs: { title: "Rayon" },
-                          }),
-                          _vm._v(" "),
-                          _c("span", { staticClass: "nav_name" }, [
-                            _vm._v("Rayon"),
                           ]),
                         ]
                       ),
