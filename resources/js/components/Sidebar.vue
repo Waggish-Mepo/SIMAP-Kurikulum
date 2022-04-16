@@ -17,9 +17,9 @@
                         <span class="nav_name">Guru</span> 
                     </a> 
                     </router-link>
-                    <router-link v-bind:to="{ name: 'rayon', params: {page: 8} }">
+                    <router-link v-bind:to="{ name: 'regions', params: {page: 8} }">
                     <a href="#" class="nav_link" :class="{active: $route.params.page == 8}"> 
-                        <i class="fas fa-address-book nav_icon" title="Rayon"></i> 
+                        <i class="far fa-map nav_icon" title="Rayon"></i> 
                         <span class="nav_name">Rayon</span> 
                     </a> 
                     </router-link>

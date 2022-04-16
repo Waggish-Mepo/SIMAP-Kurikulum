@@ -4,7 +4,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'batches', params: {page: 4} }"><a href="#">data siswa</a></router-link></li>
-                <li class="breadcrumb-item" aria-current="page"><router-link v-bind:to="{ name: 'student_groups', params: {page: 4, batch: $route.params.batch} }"><a href="#">{{batchName}}</a></router-link></li>
+                <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'student_groups', params: {page: 4, batch: $route.params.batch} }"><a href="#">{{batchName}}</a></router-link></li>
                 <li class="breadcrumb-item active" aria-current="page" @click="modalEdit = true">{{studentGroup}} <span class="fas fa-pen"></span></li>
             </ol>
         </nav>

@@ -5809,26 +5809,34 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       name: 'dashboard',
       component: loadView('dashboard/Home')
     }, {
-      path: '/:page/mata-pelajaran',
-      name: 'mata_pelajaran',
-      meta: {
-        isAdmin: true
-      },
-      component: loadView('dashboard/Mapel')
-    }, {
-      path: '/:page/rayon',
-      name: 'rayon',
-      meta: {
-        isAdmin: true
-      },
-      component: loadView('dashboard/Rayon')
-    }, {
       path: '/:page/teachers',
       name: 'teachers',
       meta: {
         isAdmin: true
       },
       component: loadView('dashboard/Teacher')
+    }, {
+      path: '/:page/regions',
+      name: 'regions',
+      meta: {
+        isAdmin: true
+      },
+      component: loadView('dashboard/regions/Regions')
+    }, {
+      path: '/:page/regions/:region/students',
+      name: 'regions.students',
+      component: loadView('dashboard/regions/Students')
+    }, {
+      path: '/:page/regions/:region/students/add',
+      name: 'regions.students.add',
+      component: loadView('dashboard/regions/Add')
+    }, {
+      path: '/:page/mata-pelajaran',
+      name: 'mata_pelajaran',
+      meta: {
+        isAdmin: true
+      },
+      component: loadView('dashboard/Mapel')
     }, {
       path: '/:page/periode-rapor',
       name: 'periode_rapor',
@@ -5854,14 +5862,6 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/:page/courses/:course',
       name: 'courses.students',
       component: loadView('dashboard/courses/Students')
-    }, {
-      path: '/:page/region/regions',
-      name: 'region.regions',
-      component: loadView('dashboard/region/Regions')
-    }, {
-      path: '/:page/region/student-region',
-      name: 'region.student-region',
-      component: loadView('dashboard/region/StudentRegion')
     }, {
       path: '/:page/courses/:course/add',
       name: 'courses.students.add',
@@ -5933,7 +5933,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       meta: {
         isAdmin: true
       },
-      component: loadView('dashboard/reportbooks/attitude/Component')
+      component: loadView('dashboard/reportbooks/attitudes/Component')
     }]
   }, {
     path: '/dashboard/gradebooks',
@@ -7203,13 +7203,13 @@ var state = function state() {
 
 var mutations = {};
 var actions = {
-  index: function index(_ref) {
+  index: function index(_ref, payload) {
     var commit = _ref.commit;
     commit('SET_LOADING', true, {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/regions').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/regions/?search=' + payload).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
@@ -8113,8 +8113,26 @@ var actions = {
       });
     });
   },
-  studentAbsence: function studentAbsence(_ref3, payload) {
+  filterByRegion: function filterByRegion(_ref3, payload) {
     var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/students/region/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  studentAbsence: function studentAbsence(_ref4, payload) {
+    var commit = _ref4.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8131,8 +8149,8 @@ var actions = {
       });
     });
   },
-  studentDetail: function studentDetail(_ref4, payload) {
-    var commit = _ref4.commit;
+  studentDetail: function studentDetail(_ref5, payload) {
+    var commit = _ref5.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8149,8 +8167,8 @@ var actions = {
       });
     });
   },
-  withPrevNext: function withPrevNext(_ref5, payload) {
-    var commit = _ref5.commit;
+  withPrevNext: function withPrevNext(_ref6, payload) {
+    var commit = _ref6.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8167,8 +8185,8 @@ var actions = {
       });
     });
   },
-  create: function create(_ref6, payload) {
-    var commit = _ref6.commit;
+  create: function create(_ref7, payload) {
+    var commit = _ref7.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8185,8 +8203,8 @@ var actions = {
       });
     });
   },
-  update: function update(_ref7, payload) {
-    var commit = _ref7.commit;
+  update: function update(_ref8, payload) {
+    var commit = _ref8.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -42599,7 +42617,7 @@ var render = function () {
                   _vm._v(" "),
                   _c(
                     "router-link",
-                    { attrs: { to: { name: "rayon", params: { page: 8 } } } },
+                    { attrs: { to: { name: "regions", params: { page: 8 } } } },
                     [
                       _c(
                         "a",
@@ -42610,7 +42628,7 @@ var render = function () {
                         },
                         [
                           _c("i", {
-                            staticClass: "fas fa-address-book nav_icon",
+                            staticClass: "far fa-map nav_icon",
                             attrs: { title: "Rayon" },
                           }),
                           _vm._v(" "),
@@ -59594,10 +59612,6 @@ var map = {
 		"./resources/js/pages/dashboard/Mapel.vue",
 		"resources_js_pages_dashboard_Mapel_vue"
 	],
-	"./dashboard/Rayon.vue": [
-		"./resources/js/pages/dashboard/Rayon.vue",
-		"resources_js_pages_dashboard_Rayon_vue"
-	],
 	"./dashboard/ReportPeriod.vue": [
 		"./resources/js/pages/dashboard/ReportPeriod.vue",
 		"resources_js_pages_dashboard_ReportPeriod_vue"
@@ -59649,13 +59663,17 @@ var map = {
 		"./resources/js/pages/dashboard/gradeBook/PeriodCourse.vue",
 		"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue"
 	],
-	"./dashboard/region/Regions.vue": [
-		"./resources/js/pages/dashboard/region/Regions.vue",
-		"resources_js_pages_dashboard_region_Regions_vue"
+	"./dashboard/regions/Add.vue": [
+		"./resources/js/pages/dashboard/regions/Add.vue",
+		"resources_js_pages_dashboard_regions_Add_vue"
 	],
-	"./dashboard/region/StudentRegion.vue": [
-		"./resources/js/pages/dashboard/region/StudentRegion.vue",
-		"resources_js_pages_dashboard_region_StudentRegion_vue"
+	"./dashboard/regions/Regions.vue": [
+		"./resources/js/pages/dashboard/regions/Regions.vue",
+		"resources_js_pages_dashboard_regions_Regions_vue"
+	],
+	"./dashboard/regions/Students.vue": [
+		"./resources/js/pages/dashboard/regions/Students.vue",
+		"resources_js_pages_dashboard_regions_Students_vue"
 	],
 	"./dashboard/reportbooks/Period.vue": [
 		"./resources/js/pages/dashboard/reportbooks/Period.vue",
@@ -59673,9 +59691,9 @@ var map = {
 		"./resources/js/pages/dashboard/reportbooks/Students.vue",
 		"resources_js_pages_dashboard_reportbooks_Students_vue"
 	],
-	"./dashboard/reportbooks/attitude/Component.vue": [
-		"./resources/js/pages/dashboard/reportbooks/attitude/Component.vue",
-		"resources_js_pages_dashboard_reportbooks_attitude_Component_vue"
+	"./dashboard/reportbooks/attitudes/Component.vue": [
+		"./resources/js/pages/dashboard/reportbooks/attitudes/Component.vue",
+		"resources_js_pages_dashboard_reportbooks_attitudes_Component_vue"
 	],
 	"./dashboard/teacherRole/Course.vue": [
 		"./resources/js/pages/dashboard/teacherRole/Course.vue",
@@ -59824,7 +59842,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_Rayon_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_Teacher_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_region_Regions_vue":1,"resources_js_pages_dashboard_region_StudentRegion_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_dashboard_reportbooks_attitude_Component_vue":1,"resources_js_pages_dashboard_teacherRole_Course_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_Teacher_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_regions_Add_vue":1,"resources_js_pages_dashboard_regions_Regions_vue":1,"resources_js_pages_dashboard_regions_Students_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_dashboard_reportbooks_attitudes_Component_vue":1,"resources_js_pages_dashboard_teacherRole_Course_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

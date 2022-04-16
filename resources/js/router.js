@@ -37,22 +37,32 @@ const router = new Router({
                 component: loadView('dashboard/Home')
             },
             {
-                path: '/:page/mata-pelajaran',
-                name: 'mata_pelajaran',
-                meta: { isAdmin: true },
-                component: loadView('dashboard/Mapel')
-            },
-            {
-                path: '/:page/rayon',
-                name: 'rayon',
-                meta: { isAdmin: true },
-                component: loadView('dashboard/Rayon')
-            },
-            {
                 path: '/:page/teachers',
                 name: 'teachers',
                 meta: { isAdmin: true },
                 component: loadView('dashboard/Teacher')
+            },
+            {
+                path: '/:page/regions',
+                name: 'regions',
+                meta: { isAdmin: true },
+                component: loadView('dashboard/regions/Regions')
+            },
+            {
+                path: '/:page/regions/:region/students',
+                name: 'regions.students',
+                component: loadView('dashboard/regions/Students')
+            },
+            {
+                path: '/:page/regions/:region/students/add',
+                name: 'regions.students.add',
+                component: loadView('dashboard/regions/Add')
+            },
+            {
+                path: '/:page/mata-pelajaran',
+                name: 'mata_pelajaran',
+                meta: { isAdmin: true },
+                component: loadView('dashboard/Mapel')
             },
             {
                 path: '/:page/periode-rapor',
@@ -76,16 +86,6 @@ const router = new Router({
                 path: '/:page/courses/:course',
                 name: 'courses.students',
                 component: loadView('dashboard/courses/Students')
-            },
-            {
-                path: '/:page/region/regions',
-                name: 'region.regions',
-                component: loadView('dashboard/region/Regions')
-            },
-            {
-                path: '/:page/region/student-region',
-                name: 'region.student-region',
-                component: loadView('dashboard/region/StudentRegion')
             },
             {
                 path: '/:page/courses/:course/add',
@@ -153,7 +153,7 @@ const router = new Router({
                 path: '/:page/reportbooks/periods/:period/attitude-components',
                 name: 'reportbooks.periods.attitude.components',
                 meta: { isAdmin: true },
-                component: loadView('dashboard/reportbooks/attitude/Component')
+                component: loadView('dashboard/reportbooks/attitudes/Component')
             }
             ]
         },

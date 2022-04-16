@@ -33,6 +33,19 @@ const actions = {
                 })
         })
     },
+    filterByRegion({ commit }, payload) {
+        commit('SET_LOADING', true, { root: true });
+        return new Promise((resolve, reject) => {
+            axios.get('/students/region/'+payload)
+                .then((response) => {
+                    resolve(response.data);
+                    commit('SET_GOOD', null, { root: true });
+                })
+                .catch((error) => {
+                    commit('SET_ERROR', error.response.data, { root: true });
+                })
+        })
+    },
     studentAbsence({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {

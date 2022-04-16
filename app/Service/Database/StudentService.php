@@ -20,6 +20,7 @@ class StudentService {
         $name = $filter['name'] ?? null;
         $studentGroup = $filter['student_group_id'] ?? null;
         $studentGroupRelation = $filter['with_student_group'] ?? false;
+        $region = $filter['region_id'] ?? null;
         $absences = $filter['with_student_absence'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
@@ -27,6 +28,10 @@ class StudentService {
 
         if ($name) {
             $query->where('name', 'LIKE', '%' . $name . '%');
+        }
+
+        if ($region) {
+            $query->where('region_id', $region);
         }
 
         if ($anotherOrderBy) {

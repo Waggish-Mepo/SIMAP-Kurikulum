@@ -15,7 +15,7 @@ class Region extends Model
         return $this->hasMany(Student::class);
     }
 
-    public function teachers() {
+    public function teacher() {
         return $this->belongsTo(Teacher::class);
     }
 }

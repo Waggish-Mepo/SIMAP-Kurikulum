@@ -7,10 +7,10 @@ const mutations = {
 };
 
 const actions = {
-    index({ commit }) {
+    index({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/regions')
+            axios.get('/regions/?search='+payload)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });

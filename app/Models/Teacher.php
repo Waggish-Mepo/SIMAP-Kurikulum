@@ -18,4 +18,9 @@ class Teacher extends Model
     public function subjects() {
         return $this->belongsToMany(Subject::class, 'subject_teachers');
     }
+
+    public function regions()
+    {
+        return $this->hasMany(Region::class);
+    }
 }
