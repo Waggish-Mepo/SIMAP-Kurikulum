@@ -24,7 +24,7 @@
                 <button class="btn btn-white text-dark" v-if="!student.next" disabled>Selanjutnya <span class="fas fa-arrow-right"></span></button>
             </div>
         </div>
-        <div class="mt-3 d-flex justify-content-between">
+        <div class="mt-3 d-flex justify-content-between" v-if="subjectGroups.length >= 1">
             <div></div>
             <div>
                 <a href="#" class="btn bg-blue1 text-white" @click="printReport">Cetak Rapor</a>
@@ -105,8 +105,8 @@
         </div>
 
         <h4 class="mt-3">B. Ketidakhadiran</h4>
-        <div class="alert alert-info mb-3 mt-2" v-if="reportbook.absences.length < 1">Data kehadiran <b>{{student.name}}</b> belum diatur.Silahkan mengatur data kehadiran siswa terlebih dahulu.</div>
-        <div class="table-responsive p-0 card-table mt-4">
+        <div class="alert alert-warning mb-3 mt-2" v-if="reportbook.absences == null">Data kehadiran <b>{{student.name}}</b> belum diatur. Silahkan mengatur data kehadiran siswa terlebih dahulu.</div>
+        <div class="table-responsive p-0 card-table mt-4" v-else>
             <table class="table table-bordered text-capitalize bg-white w-auto">
                 <thead class="bg-muted">
                     <tr>
