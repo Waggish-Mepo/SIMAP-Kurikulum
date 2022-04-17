@@ -13,6 +13,7 @@ class Reportbook extends Model
 
     protected $casts = [
         'score_config' => 'array',
+        'attitude_config' => 'array',
     ];
 
     public function student()
