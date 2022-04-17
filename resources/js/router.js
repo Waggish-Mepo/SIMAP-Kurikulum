@@ -83,6 +83,11 @@ const router = new Router({
                 component: loadView('dashboard/region/Regions')
             },
             {
+                path: '/:page/studentrole/home',
+                name: 'studentrole.home',
+                component: loadView('dashboard/studentRole/Home')
+            },
+            {
                 path: '/:page/region/student-region',
                 name: 'region.student-region',
                 component: loadView('dashboard/region/StudentRegion')
