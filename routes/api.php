@@ -110,7 +110,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [StudentController::class, 'store']);
         Route::get('/{id}', [StudentController::class, 'show']);
         Route::patch('/{id}', [StudentController::class, 'update']);
-        Route::get('/region/{region}', [StudentController::class, 'getByRegion']);
+        Route::get('/regions/{region}', [StudentController::class, 'getByRegion']);
+        Route::get('/regions/check/not-signed', [StudentController::class, 'getNotSignedStudent']);
     });
     Route::prefix('majors')->group(function () {
         Route::get('/', [MajorController::class, 'index']);

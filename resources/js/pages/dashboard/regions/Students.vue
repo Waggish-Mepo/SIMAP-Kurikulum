@@ -36,7 +36,7 @@
                         >
                         <template slot="table-row" slot-scope="props">
                             <span v-if="props.column.field === 'id'">
-                                <a href="#" title="Hapus">
+                                <a href="#" title="Hapus" @click="showStudent(props.row.id)">
                                     <i class="fas fa-trash-alt text-danger"></i>
                                 </a>
                             </span>
@@ -46,25 +46,13 @@
                 </tbody>
             </table>
         </div>
-        <div class="modal fade" id="exampleModal4" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Hapus Siswa Dari Rayon</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <p>Yakin Akan Menghapus Siswa Ini Dari Rayon </p>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-end mt-3 mb-3">
-                        <button type="button" class="btn btn-outline-primary me-3">Batal</button>
-                        <button type="button" class="btn btn-danger me-3">Hapus</button>
-                    </div>
-                </div>
+
+        <modal v-if="modalDelete" @close="modalDelete = false" :deleteOpt="deleteStudent">
+            <h5 slot="header">Hapus Siswa dari Rayon</h5>
+            <div slot="body">
+                <span>Yakin untuk menghapus siswa <b>{{student.name}}</b> dari data rayon <b>{{region.name}}</b>?</span>
             </div>
-        </div>
+        </modal>
     </div>
 </template>
 
@@ -80,7 +68,7 @@ export default {
     },
     data(){
         return {
-            // modalUpdate: false,
+            modalDelete: false,
             sortOpts: { enabled: true },
             paginationOpts: {
                 enabled: true,
@@ -122,18 +110,19 @@ export default {
                 },
             ],
             rows: [],
-            region: {}
+            region: {},
+            student: {}
         }
     },
     created() {
         this.getRegion(this.$route.params.region);
-        this.getStudents(this.$route.params.region);
+        this.getStudents();
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
     },
     methods: {
-        ...mapActions('students', ['filterByRegion']),
+        ...mapActions('students', ['filterByRegion', 'studentDetail', 'update']),
         ...mapActions('regions', ['show']),
 
         getRegion(id) {
@@ -141,11 +130,25 @@ export default {
                 this.region = result;
             })
         },
-        getStudents(region) {
-            this.filterByRegion(region).then((result) => {
+        getStudents() {
+            this.filterByRegion(this.$route.params.region).then((result) => {
                 this.rows = result;
             })
         },
+        showStudent(id) {
+            this.studentDetail(id).then((result) => {
+                this.student = result;
+                this.modalDelete = true;
+            })
+        },
+        deleteStudent() {
+            this.student.region_id = null;
+            let payload = {id: this.student.id, data: this.student};
+            this.update(payload).then((result) => {
+                this.modalDelete = false;
+                this.getStudents();
+            })
+        }
     }
 };
 </script>

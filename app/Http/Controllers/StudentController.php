@@ -38,7 +38,14 @@ class StudentController extends Controller
     {
         $studentDB = new StudentService;
 
-        return response()->json($studentDB->index(['region_id' => $region, 'with_student_group' => true, 'without_pagination' => true]));
+        return response()->json($studentDB->index(['region_id' => $region, 'with_student_group' => true, 'order' => true, 'without_pagination' => true]));
+    }
+
+    public function getNotSignedStudent()
+    {
+        $studentDB = new StudentService;
+        
+        return response()->json($studentDB->index(['without_region' => true, 'with_student_group' => true, 'order' => true, 'without_pagination' => true]));
     }
 
     /**

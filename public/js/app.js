@@ -5392,6 +5392,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "modalComponent",
   props: {
@@ -5399,6 +5400,9 @@ __webpack_require__.r(__webpack_exports__);
       type: Function
     },
     deleteOpt: {
+      type: Function
+    },
+    redirectOpt: {
       type: Function
     },
     action: {
@@ -8119,7 +8123,7 @@ var actions = {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/students/region/' + payload).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/students/regions/' + payload).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
@@ -8131,8 +8135,26 @@ var actions = {
       });
     });
   },
-  studentAbsence: function studentAbsence(_ref4, payload) {
+  notSignedStudent: function notSignedStudent(_ref4) {
     var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/students/regions/check/not-signed').then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  studentAbsence: function studentAbsence(_ref5, payload) {
+    var commit = _ref5.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8149,8 +8171,8 @@ var actions = {
       });
     });
   },
-  studentDetail: function studentDetail(_ref5, payload) {
-    var commit = _ref5.commit;
+  studentDetail: function studentDetail(_ref6, payload) {
+    var commit = _ref6.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8167,8 +8189,8 @@ var actions = {
       });
     });
   },
-  withPrevNext: function withPrevNext(_ref6, payload) {
-    var commit = _ref6.commit;
+  withPrevNext: function withPrevNext(_ref7, payload) {
+    var commit = _ref7.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8185,8 +8207,8 @@ var actions = {
       });
     });
   },
-  create: function create(_ref7, payload) {
-    var commit = _ref7.commit;
+  create: function create(_ref8, payload) {
+    var commit = _ref8.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8203,8 +8225,8 @@ var actions = {
       });
     });
   },
-  update: function update(_ref8, payload) {
-    var commit = _ref8.commit;
+  update: function update(_ref9, payload) {
+    var commit = _ref9.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -42491,6 +42513,18 @@ var render = function () {
                     )
                   : _vm._e(),
                 _vm._v(" "),
+                _vm.redirectOpt != null
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-blue text-white",
+                        attrs: { type: "button" },
+                        on: { click: _vm.redirectOpt },
+                      },
+                      [_vm._v("Lihat")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
                 _vm.deleteOpt != null
                   ? _c(
                       "button",
@@ -42628,7 +42662,7 @@ var render = function () {
                         },
                         [
                           _c("i", {
-                            staticClass: "far fa-map nav_icon",
+                            staticClass: "fas fa-map-marked nav_icon",
                             attrs: { title: "Rayon" },
                           }),
                           _vm._v(" "),
@@ -42657,7 +42691,7 @@ var render = function () {
                         },
                         [
                           _c("i", {
-                            staticClass: "fas fa-stream nav_icon",
+                            staticClass: "fas fa-chalkboard nav_icon",
                             attrs: { title: "Mata Pelajaran" },
                           }),
                           _vm._v(" "),
@@ -42686,7 +42720,7 @@ var render = function () {
                         },
                         [
                           _c("i", {
-                            staticClass: "fas fa-book-open nav_icon",
+                            staticClass: "fas fa-clock nav_icon",
                             attrs: { title: "Periode Rapor" },
                           }),
                           _vm._v(" "),
@@ -42736,7 +42770,7 @@ var render = function () {
                         },
                         [
                           _c("i", {
-                            staticClass: "fas fa-inbox nav_icon",
+                            staticClass: "fab fa-leanpub nav_icon",
                             attrs: { title: "Pelajaran" },
                           }),
                           _vm._v(" "),
@@ -42797,7 +42831,7 @@ var render = function () {
                         },
                         [
                           _c("i", {
-                            staticClass: "fas fa-copy nav_icon",
+                            staticClass: "fas fa-graduation-cap nav_icon",
                             attrs: { title: "Rapor Siswa" },
                           }),
                           _vm._v(" "),
@@ -42859,7 +42893,7 @@ var render = function () {
                         },
                         [
                           _c("i", {
-                            staticClass: "fas fa-inbox nav_icon",
+                            staticClass: "fab fa-leanpub nav_icon",
                             attrs: { title: "Pelajaran" },
                           }),
                           _vm._v(" "),

@@ -180,7 +180,7 @@ export default {
             this.create(this.regionPayload).then((result) => {
                 this.modalAdd = false;
                 this.regionPayload.name = '';
-                this.getRegions();
+                this.getRegions(this.search);
             })
         },
         showRegion(id) {
@@ -193,7 +193,7 @@ export default {
             let payload = {id: this.regionEditPayload.id, data: this.regionEditPayload};
             this.edit(payload).then((result) => {
                 this.modalEdit = false;
-                this.getRegions();
+                this.getRegions(this.search);
             })
         }
     }
