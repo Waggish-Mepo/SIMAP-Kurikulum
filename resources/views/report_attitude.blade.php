@@ -173,9 +173,9 @@
                             </thead>
                             <tbody>
                                 @foreach ($reportbook['attitudes'] as $attitude)
-                                    <tr>
-                                        <td>{{$attitude['attitude_predicate']['attitude']['name']}}</td>
-                                        <td>{{$attitude['attitude_predicate']['description']}}</td>
+                                    <tr style="text-align: center">
+                                        <td>{{$attitude['attitudePredicate']['attitude']['name']}}</td>
+                                        <td>{{$attitude['attitudePredicate']['description']}}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
