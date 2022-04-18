@@ -31,7 +31,7 @@ const router = new Router({
             path: '/dashboard',
             component: Root,
             meta: { auth: true },
-            children: [{ 
+            children: [{
                 path: '/',
                 name: 'dashboard',
                 component: loadView('dashboard/Home')
@@ -88,6 +88,21 @@ const router = new Router({
                 component: loadView('dashboard/courses/Students')
             },
             {
+                path: '/:page/region/regions',
+                name: 'region.regions',
+                component: loadView('dashboard/region/Regions')
+            },
+            {
+                path: '/:page/studentrole/home',
+                name: 'studentrole.home',
+                component: loadView('dashboard/studentRole/Home')
+            },
+            {
+                path: '/:page/region/student-region',
+                name: 'region.student-region',
+                component: loadView('dashboard/region/StudentRegion')
+            },
+            {
                 path: '/:page/courses/:course/add',
                 name: 'courses.students.add',
                 component: loadView('dashboard/courses/Add')
@@ -120,7 +135,7 @@ const router = new Router({
                 name: 'gradebooks.course',
                 component: loadView('dashboard/gradeBook/PeriodCourse')
             },
-            { 
+            {
                 path: '/:page/gradebooks/periods/:period/course/:course/gradebook/:gb',
                 name: 'gradebooks.course.detail',
                 component: loadView('dashboard/gradeBook/Detail')
@@ -162,7 +177,7 @@ const router = new Router({
             component: loadView('dashboard/BaseGradeBook'),
             meta: { auth: true },
             children: [
-                { 
+                {
                     path: '/periods/:period/course/:course/gradebook/:gb/student-group/:sg',
                     name: 'gradebooks.course.detail.group',
                     component: loadView('dashboard/gradeBook/DetailGroup')
