@@ -18,6 +18,7 @@
                         <div class="d-flex">
                             <button type="button" class="btn btn-outline-blue" @click="$emit('close')">Batal</button>
                             <button type="button" class="btn btn-blue text-white" v-if="action !=null" @click="action">Simpan</button>
+                            <button type="button" class="btn btn-blue text-white" v-if="redirectOpt !=null" @click="redirectOpt">Lihat</button>
                             <button type="button" class="btn btn-danger text-white" v-if="deleteOpt !=null" @click="deleteOpt">Hapus</button>
                             <button type="button" class="btn btn-danger text-white" v-if="logout !=null" @click="logout">Logout</button>
                         </div>
@@ -36,6 +37,9 @@ export default {
 			type: Function
 		},
 		deleteOpt:{
+			type: Function
+		},
+		redirectOpt:{
 			type: Function
 		},
 		action:{

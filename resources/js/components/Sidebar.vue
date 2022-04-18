@@ -17,21 +17,21 @@
                         <span class="nav_name">Guru</span> 
                     </a> 
                     </router-link>
-                    <router-link v-bind:to="{ name: 'rayon', params: {page: 8} }">
+                    <router-link v-bind:to="{ name: 'regions', params: {page: 8} }">
                     <a href="#" class="nav_link" :class="{active: $route.params.page == 8}"> 
-                        <i class="fas fa-address-book nav_icon" title="Rayon"></i> 
+                        <i class="fas fa-map-marked nav_icon" title="Rayon"></i> 
                         <span class="nav_name">Rayon</span> 
                     </a> 
                     </router-link>
                     <router-link v-bind:to="{ name: 'mata_pelajaran', params: {page: 2} }">
                     <a href="#" class="nav_link" :class="{active: $route.params.page == 2}"> 
-                        <i class="fas fa-stream nav_icon" title="Mata Pelajaran"></i> 
+                        <i class="fas fa-chalkboard nav_icon" title="Mata Pelajaran"></i> 
                         <span class="nav_name">Mata Pelajaran</span> 
                     </a> 
                     </router-link>
                     <router-link v-bind:to="{ name: 'periode_rapor', params: {page: 3} }">
                     <a href="#" class="nav_link" :class="{active: $route.params.page == 3}"> 
-                        <i class="fas fa-book-open nav_icon" title="Periode Rapor"></i> 
+                        <i class="fas fa-clock nav_icon" title="Periode Rapor"></i> 
                         <span class="nav_name">Periode Rapor</span>
                     </a>
                     </router-link>
@@ -43,7 +43,7 @@
                     </router-link>
                     <router-link v-bind:to="{ name: 'courses', params: {page: 5} }">
                     <a href="#" class="nav_link" :class="{active: $route.params.page == 5}"> 
-                        <i class="fas fa-inbox nav_icon" title="Pelajaran"></i> 
+                        <i class="fab fa-leanpub nav_icon" title="Pelajaran"></i> 
                         <span class="nav_name">Pelajaran</span>
                     </a>
                     </router-link>
@@ -55,7 +55,7 @@
                     </router-link>
                     <router-link v-bind:to="{ name: 'reportbooks.periods', params: {page: 7} }">
                     <a href="#" class="nav_link" :class="{active: $route.params.page == 7}"> 
-                        <i class="fas fa-copy nav_icon" title="Rapor Siswa"></i> 
+                        <i class="fas fa-graduation-cap nav_icon" title="Rapor Siswa"></i> 
                         <span class="nav_name">Rapor Siswa</span>
                     </a>
                     </router-link>
@@ -70,7 +70,7 @@
                     </router-link>
                     <router-link v-bind:to="{ name: 'courses.teacher-role', params: {page: 5} }">
                     <a href="#" class="nav_link" :class="{active: $route.params.page == 5}"> 
-                        <i class="fas fa-inbox nav_icon" title="Pelajaran"></i> 
+                        <i class="fab fa-leanpub nav_icon" title="Pelajaran"></i> 
                         <span class="nav_name">Pelajaran</span>
                     </a>
                     </router-link>

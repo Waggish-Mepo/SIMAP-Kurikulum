@@ -23,6 +23,7 @@ import reportbooks from './stores/reportbooks/index.js'
 import studentAbsences from './stores/studentAbsences/index.js'
 import attitudes from './stores/attitudes/index.js'
 import attitudePredicates from './stores/attitudePredicates/index.js'
+import regions from './stores/regions/index.js'
 
 Vue.use(Vuex);
 
@@ -49,7 +50,8 @@ const store = new Vuex.Store({
         reportbooks,
         studentAbsences,
         attitudes,
-        attitudePredicates
+        attitudePredicates,
+        regions
     },
     state: {
         errors: [],

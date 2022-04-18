@@ -34,6 +34,20 @@ class StudentController extends Controller
         return response()->json($studentDB->index(['order' => true,'with_student_group' => true, 'without_pagination' => true]));
     }
 
+    public function getByRegion($region)
+    {
+        $studentDB = new StudentService;
+
+        return response()->json($studentDB->index(['region_id' => $region, 'with_student_group' => true, 'order' => true, 'without_pagination' => true]));
+    }
+
+    public function getNotSignedStudent()
+    {
+        $studentDB = new StudentService;
+        
+        return response()->json($studentDB->index(['without_region' => true, 'with_student_group' => true, 'order' => true, 'without_pagination' => true]));
+    }
+
     /**
      * Show the form for creating a new resource.
      *

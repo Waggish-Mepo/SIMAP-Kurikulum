@@ -22,6 +22,7 @@ use App\Http\Controllers\ReportbookController;
 use App\Http\Controllers\StudentAbsenceController;
 use App\Http\Controllers\AttitudeController;
 use App\Http\Controllers\AttitudePredicateController;
+use App\Http\Controllers\RegionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -109,6 +110,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [StudentController::class, 'store']);
         Route::get('/{id}', [StudentController::class, 'show']);
         Route::patch('/{id}', [StudentController::class, 'update']);
+        Route::get('/regions/{region}', [StudentController::class, 'getByRegion']);
+        Route::get('/regions/check/not-signed', [StudentController::class, 'getNotSignedStudent']);
     });
     Route::prefix('majors')->group(function () {
         Route::get('/', [MajorController::class, 'index']);
@@ -169,5 +172,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [AttitudePredicateController::class, 'store']);
         Route::get('/{id}', [AttitudePredicateController::class, 'show']);
         Route::patch('/{id}', [AttitudePredicateController::class, 'update']);
+    });
+    Route::prefix('regions')->group(function () {
+        Route::get('/', [RegionController::class, 'index']);
+        Route::post('/', [RegionController::class, 'store']);
+        Route::get('/{id}', [RegionController::class, 'show']);
+        Route::patch('/{id}', [RegionController::class, 'update']);
     });
 });

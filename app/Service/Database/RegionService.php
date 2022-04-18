@@ -15,10 +15,20 @@ class RegionService {
         $orderBy = $filter['order_by'] ?? 'ASC';
         $name = $filter['name'] ?? null;
         $teacherId = $filter['teacher_id'] ?? null;
+        $teacher = $filter['with_teacher'] ?? false;
+        $students = $filter['with_students'] ?? false;
         $perPage = $filter['page'] ?? 20;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
         $query = Region::orderBy('created_at', $orderBy);
+
+        if ($teacher) {
+            $query->with('teacher');
+        }
+
+        if ($students) {
+            $query->with('students');
+        }
 
         if ($name) {
             $query->where('name','LIKE', '%'. $name . '%');
@@ -72,7 +82,7 @@ class RegionService {
 
         $validate = Validator::make($region->toArray(), [
             'name' => 'required|string',
-            'teacher_id' => 'required|uuid',
+            // 'teacher_id' => 'uuid',
         ]);
 
         if($validate->fails()) {

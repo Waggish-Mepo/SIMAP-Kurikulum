@@ -5388,6 +5388,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "modalComponent",
   props: {
@@ -5395,6 +5396,9 @@ __webpack_require__.r(__webpack_exports__);
       type: Function
     },
     deleteOpt: {
+      type: Function
+    },
+    redirectOpt: {
       type: Function
     },
     action: {
@@ -5805,26 +5809,34 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       name: 'dashboard',
       component: loadView('dashboard/Home')
     }, {
-      path: '/:page/mata-pelajaran',
-      name: 'mata_pelajaran',
-      meta: {
-        isAdmin: true
-      },
-      component: loadView('dashboard/Mapel')
-    }, {
-      path: '/:page/rayon',
-      name: 'rayon',
-      meta: {
-        isAdmin: true
-      },
-      component: loadView('dashboard/Rayon')
-    }, {
       path: '/:page/teachers',
       name: 'teachers',
       meta: {
         isAdmin: true
       },
       component: loadView('dashboard/Teacher')
+    }, {
+      path: '/:page/regions',
+      name: 'regions',
+      meta: {
+        isAdmin: true
+      },
+      component: loadView('dashboard/regions/Regions')
+    }, {
+      path: '/:page/regions/:region/students',
+      name: 'regions.students',
+      component: loadView('dashboard/regions/Students')
+    }, {
+      path: '/:page/regions/:region/students/add',
+      name: 'regions.students.add',
+      component: loadView('dashboard/regions/Add')
+    }, {
+      path: '/:page/mata-pelajaran',
+      name: 'mata_pelajaran',
+      meta: {
+        isAdmin: true
+      },
+      component: loadView('dashboard/Mapel')
     }, {
       path: '/:page/periode-rapor',
       name: 'periode_rapor',
@@ -5933,7 +5945,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       meta: {
         isAdmin: true
       },
-      component: loadView('dashboard/reportbooks/attitude/Component')
+      component: loadView('dashboard/reportbooks/attitudes/Component')
     }]
   }, {
     path: '/dashboard/gradebooks',
@@ -6008,8 +6020,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _router_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./router.js */ "./resources/js/router.js");
 /* harmony import */ var _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stores/auth/index.js */ "./resources/js/stores/auth/index.js");
 /* harmony import */ var _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./stores/subjects/index.js */ "./resources/js/stores/subjects/index.js");
@@ -6031,6 +6043,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _stores_studentAbsences_index_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./stores/studentAbsences/index.js */ "./resources/js/stores/studentAbsences/index.js");
 /* harmony import */ var _stores_attitudes_index_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./stores/attitudes/index.js */ "./resources/js/stores/attitudes/index.js");
 /* harmony import */ var _stores_attitudePredicates_index_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./stores/attitudePredicates/index.js */ "./resources/js/stores/attitudePredicates/index.js");
+/* harmony import */ var _stores_regions_index_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./stores/regions/index.js */ "./resources/js/stores/regions/index.js");
 
 
  //IMPORT MODULE SECTION
@@ -6055,9 +6068,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_21__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_22__["default"]);
+
+vue__WEBPACK_IMPORTED_MODULE_22__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_23__["default"]);
 var debug = "development" !== 'production';
-var store = new vuex__WEBPACK_IMPORTED_MODULE_22__["default"].Store({
+var store = new vuex__WEBPACK_IMPORTED_MODULE_23__["default"].Store({
   modules: {
     auth: _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_1__["default"],
     subjects: _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_2__["default"],
@@ -6078,7 +6092,8 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_22__["default"].Store({
     reportbooks: _stores_reportbooks_index_js__WEBPACK_IMPORTED_MODULE_17__["default"],
     studentAbsences: _stores_studentAbsences_index_js__WEBPACK_IMPORTED_MODULE_18__["default"],
     attitudes: _stores_attitudes_index_js__WEBPACK_IMPORTED_MODULE_19__["default"],
-    attitudePredicates: _stores_attitudePredicates_index_js__WEBPACK_IMPORTED_MODULE_20__["default"]
+    attitudePredicates: _stores_attitudePredicates_index_js__WEBPACK_IMPORTED_MODULE_20__["default"],
+    regions: _stores_regions_index_js__WEBPACK_IMPORTED_MODULE_21__["default"]
   },
   state: {
     errors: [],
@@ -7179,6 +7194,109 @@ var actions = {
 
 /***/ }),
 
+/***/ "./resources/js/stores/regions/index.js":
+/*!**********************************************!*\
+  !*** ./resources/js/stores/regions/index.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var state = function state() {
+  return {};
+};
+
+var mutations = {};
+var actions = {
+  index: function index(_ref, payload) {
+    var commit = _ref.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/regions/?search=' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  show: function show(_ref2, payload) {
+    var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/regions/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  create: function create(_ref3, payload) {
+    var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/regions', payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  edit: function edit(_ref4, payload) {
+    var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/regions/' + payload.id, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: state,
+  actions: actions,
+  mutations: mutations
+});
+
+/***/ }),
+
 /***/ "./resources/js/stores/reportPeriods/index.js":
 /*!****************************************************!*\
   !*** ./resources/js/stores/reportPeriods/index.js ***!
@@ -8007,8 +8125,44 @@ var actions = {
       });
     });
   },
-  studentAbsence: function studentAbsence(_ref3, payload) {
+  filterByRegion: function filterByRegion(_ref3, payload) {
     var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/students/regions/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  notSignedStudent: function notSignedStudent(_ref4) {
+    var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/students/regions/check/not-signed').then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  studentAbsence: function studentAbsence(_ref5, payload) {
+    var commit = _ref5.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8025,8 +8179,8 @@ var actions = {
       });
     });
   },
-  studentDetail: function studentDetail(_ref4, payload) {
-    var commit = _ref4.commit;
+  studentDetail: function studentDetail(_ref6, payload) {
+    var commit = _ref6.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8043,8 +8197,8 @@ var actions = {
       });
     });
   },
-  withPrevNext: function withPrevNext(_ref5, payload) {
-    var commit = _ref5.commit;
+  withPrevNext: function withPrevNext(_ref7, payload) {
+    var commit = _ref7.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8061,8 +8215,8 @@ var actions = {
       });
     });
   },
-  create: function create(_ref6, payload) {
-    var commit = _ref6.commit;
+  create: function create(_ref8, payload) {
+    var commit = _ref8.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8079,8 +8233,8 @@ var actions = {
       });
     });
   },
-  update: function update(_ref7, payload) {
-    var commit = _ref7.commit;
+  update: function update(_ref9, payload) {
+    var commit = _ref9.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -42367,6 +42521,18 @@ var render = function () {
                     )
                   : _vm._e(),
                 _vm._v(" "),
+                _vm.redirectOpt != null
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-blue text-white",
+                        attrs: { type: "button" },
+                        on: { click: _vm.redirectOpt },
+                      },
+                      [_vm._v("Lihat")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
                 _vm.deleteOpt != null
                   ? _c(
                       "button",
@@ -42493,7 +42659,7 @@ var render = function () {
                   _vm._v(" "),
                   _c(
                     "router-link",
-                    { attrs: { to: { name: "rayon", params: { page: 8 } } } },
+                    { attrs: { to: { name: "regions", params: { page: 8 } } } },
                     [
                       _c(
                         "a",
@@ -42504,7 +42670,7 @@ var render = function () {
                         },
                         [
                           _c("i", {
-                            staticClass: "fas fa-address-book nav_icon",
+                            staticClass: "fas fa-map-marked nav_icon",
                             attrs: { title: "Rayon" },
                           }),
                           _vm._v(" "),
@@ -42533,7 +42699,7 @@ var render = function () {
                         },
                         [
                           _c("i", {
-                            staticClass: "fas fa-stream nav_icon",
+                            staticClass: "fas fa-chalkboard nav_icon",
                             attrs: { title: "Mata Pelajaran" },
                           }),
                           _vm._v(" "),
@@ -42562,7 +42728,7 @@ var render = function () {
                         },
                         [
                           _c("i", {
-                            staticClass: "fas fa-book-open nav_icon",
+                            staticClass: "fas fa-clock nav_icon",
                             attrs: { title: "Periode Rapor" },
                           }),
                           _vm._v(" "),
@@ -42612,7 +42778,7 @@ var render = function () {
                         },
                         [
                           _c("i", {
-                            staticClass: "fas fa-inbox nav_icon",
+                            staticClass: "fab fa-leanpub nav_icon",
                             attrs: { title: "Pelajaran" },
                           }),
                           _vm._v(" "),
@@ -42673,7 +42839,7 @@ var render = function () {
                         },
                         [
                           _c("i", {
-                            staticClass: "fas fa-copy nav_icon",
+                            staticClass: "fas fa-graduation-cap nav_icon",
                             attrs: { title: "Rapor Siswa" },
                           }),
                           _vm._v(" "),
@@ -42735,7 +42901,7 @@ var render = function () {
                         },
                         [
                           _c("i", {
-                            staticClass: "fas fa-inbox nav_icon",
+                            staticClass: "fab fa-leanpub nav_icon",
                             attrs: { title: "Pelajaran" },
                           }),
                           _vm._v(" "),
@@ -59480,10 +59646,6 @@ var map = {
 		"./resources/js/pages/dashboard/Mapel.vue",
 		"resources_js_pages_dashboard_Mapel_vue"
 	],
-	"./dashboard/Rayon.vue": [
-		"./resources/js/pages/dashboard/Rayon.vue",
-		"resources_js_pages_dashboard_Rayon_vue"
-	],
 	"./dashboard/ReportPeriod.vue": [
 		"./resources/js/pages/dashboard/ReportPeriod.vue",
 		"resources_js_pages_dashboard_ReportPeriod_vue"
@@ -59535,13 +59697,17 @@ var map = {
 		"./resources/js/pages/dashboard/gradeBook/PeriodCourse.vue",
 		"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue"
 	],
-	"./dashboard/region/Regions.vue": [
-		"./resources/js/pages/dashboard/region/Regions.vue",
-		"resources_js_pages_dashboard_region_Regions_vue"
+	"./dashboard/regions/Add.vue": [
+		"./resources/js/pages/dashboard/regions/Add.vue",
+		"resources_js_pages_dashboard_regions_Add_vue"
 	],
-	"./dashboard/region/StudentRegion.vue": [
-		"./resources/js/pages/dashboard/region/StudentRegion.vue",
-		"resources_js_pages_dashboard_region_StudentRegion_vue"
+	"./dashboard/regions/Regions.vue": [
+		"./resources/js/pages/dashboard/regions/Regions.vue",
+		"resources_js_pages_dashboard_regions_Regions_vue"
+	],
+	"./dashboard/regions/Students.vue": [
+		"./resources/js/pages/dashboard/regions/Students.vue",
+		"resources_js_pages_dashboard_regions_Students_vue"
 	],
 	"./dashboard/reportbooks/Period.vue": [
 		"./resources/js/pages/dashboard/reportbooks/Period.vue",
@@ -59559,9 +59725,9 @@ var map = {
 		"./resources/js/pages/dashboard/reportbooks/Students.vue",
 		"resources_js_pages_dashboard_reportbooks_Students_vue"
 	],
-	"./dashboard/reportbooks/attitude/Component.vue": [
-		"./resources/js/pages/dashboard/reportbooks/attitude/Component.vue",
-		"resources_js_pages_dashboard_reportbooks_attitude_Component_vue"
+	"./dashboard/reportbooks/attitudes/Component.vue": [
+		"./resources/js/pages/dashboard/reportbooks/attitudes/Component.vue",
+		"resources_js_pages_dashboard_reportbooks_attitudes_Component_vue"
 	],
 	"./dashboard/studentRole/Home.vue": [
 		"./resources/js/pages/dashboard/studentRole/Home.vue",
@@ -59714,7 +59880,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_Rayon_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_Teacher_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_region_Regions_vue":1,"resources_js_pages_dashboard_region_StudentRegion_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_dashboard_reportbooks_attitude_Component_vue":1,"resources_js_pages_dashboard_studentRole_Home_vue":1,"resources_js_pages_dashboard_teacherRole_Course_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_Teacher_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_regions_Add_vue":1,"resources_js_pages_dashboard_regions_Regions_vue":1,"resources_js_pages_dashboard_regions_Students_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_dashboard_reportbooks_attitudes_Component_vue":1,"resources_js_pages_dashboard_studentRole_Home_vue":1,"resources_js_pages_dashboard_teacherRole_Course_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

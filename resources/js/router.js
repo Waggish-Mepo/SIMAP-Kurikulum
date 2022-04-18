@@ -31,28 +31,38 @@ const router = new Router({
             path: '/dashboard',
             component: Root,
             meta: { auth: true },
-            children: [{ 
+            children: [{
                 path: '/',
                 name: 'dashboard',
                 component: loadView('dashboard/Home')
-            },
-            {
-                path: '/:page/mata-pelajaran',
-                name: 'mata_pelajaran',
-                meta: { isAdmin: true },
-                component: loadView('dashboard/Mapel')
-            },
-            {
-                path: '/:page/rayon',
-                name: 'rayon',
-                meta: { isAdmin: true },
-                component: loadView('dashboard/Rayon')
             },
             {
                 path: '/:page/teachers',
                 name: 'teachers',
                 meta: { isAdmin: true },
                 component: loadView('dashboard/Teacher')
+            },
+            {
+                path: '/:page/regions',
+                name: 'regions',
+                meta: { isAdmin: true },
+                component: loadView('dashboard/regions/Regions')
+            },
+            {
+                path: '/:page/regions/:region/students',
+                name: 'regions.students',
+                component: loadView('dashboard/regions/Students')
+            },
+            {
+                path: '/:page/regions/:region/students/add',
+                name: 'regions.students.add',
+                component: loadView('dashboard/regions/Add')
+            },
+            {
+                path: '/:page/mata-pelajaran',
+                name: 'mata_pelajaran',
+                meta: { isAdmin: true },
+                component: loadView('dashboard/Mapel')
             },
             {
                 path: '/:page/periode-rapor',
@@ -125,7 +135,7 @@ const router = new Router({
                 name: 'gradebooks.course',
                 component: loadView('dashboard/gradeBook/PeriodCourse')
             },
-            { 
+            {
                 path: '/:page/gradebooks/periods/:period/course/:course/gradebook/:gb',
                 name: 'gradebooks.course.detail',
                 component: loadView('dashboard/gradeBook/Detail')
@@ -158,7 +168,7 @@ const router = new Router({
                 path: '/:page/reportbooks/periods/:period/attitude-components',
                 name: 'reportbooks.periods.attitude.components',
                 meta: { isAdmin: true },
-                component: loadView('dashboard/reportbooks/attitude/Component')
+                component: loadView('dashboard/reportbooks/attitudes/Component')
             }
             ]
         },
@@ -167,7 +177,7 @@ const router = new Router({
             component: loadView('dashboard/BaseGradeBook'),
             meta: { auth: true },
             children: [
-                { 
+                {
                     path: '/periods/:period/course/:course/gradebook/:gb/student-group/:sg',
                     name: 'gradebooks.course.detail.group',
                     component: loadView('dashboard/gradeBook/DetailGroup')
