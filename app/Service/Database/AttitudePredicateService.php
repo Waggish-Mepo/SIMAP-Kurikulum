@@ -15,7 +15,7 @@ class AttitudePredicateService {
         $attitudeId = $filter['attitude_id'] ?? null;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
-        $query = AttitudePredicate::orderBy('order', $orderBy);
+        $query = AttitudePredicate::orderBy('created_at', $orderBy);
 
         if ($attitudeId) {
             $query->where('attitude_id', $attitudeId);

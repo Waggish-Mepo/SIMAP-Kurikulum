@@ -215,15 +215,15 @@
                             <tbody>
                                 <tr>
                                     <td>Sakit</td>
-                                    <td>{{$reportbook['absences']['sakit']}}</td>
+                                    <td>{{$reportbook['absences']['sakit'] ?? '-'}}</td>
                                 </tr>
                                 <tr>
                                     <td>Ijin</td>
-                                    <td>{{$reportbook['absences']['izin']}}</td>
+                                    <td>{{$reportbook['absences']['izin'] ?? '-'}}</td>
                                 </tr>
                                 <tr>
                                     <td>Tanpa Keterangan</td>
-                                    <td>{{$reportbook['absences']['alpa']}}</td>
+                                    <td>{{$reportbook['absences']['alpa'] ?? '-'}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -277,7 +277,7 @@
                         </div>
                         <div class="wrap-text">
                             <span class="title">Kompetensi Keahlian</span>
-                            : {{$major['name']}}                
+                            : {{$major['name']}}
                         </div>
                     </td>
                     <td>

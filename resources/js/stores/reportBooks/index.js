@@ -123,6 +123,31 @@ const actions = {
                 })
         })
     },
+    printAttitude({ commit }, payload) {
+        commit('SET_LOADING', true, { root: true });
+        return new Promise((resolve, reject) => {
+            axios.get('/reportbooks/attitude/print/?report_period_id='+payload.reportPeriodId+'&student_id='+payload.studentId, {
+                    responseType: 'arraybuffer',
+                    headers: {
+                        'Accept': 'application/pdf'
+                    }
+                })
+                .then((response) => {
+                    // resolve(response.data);
+                    commit('SET_GOOD', null, { root: true });
+                    const name = payload.studentNIS + '-' + payload.studentName + '-karakter' + '.pdf';
+                    const url = window.URL.createObjectURL(new Blob([response.data], {type: 'application/pdf',}));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', name);
+                    document.body.appendChild(link);
+                    link.click();
+                })
+                .catch((error) => {
+                    commit('SET_ERROR', error.response.data, { root: true });
+                })
+        })
+    },
 };
 
 export default {

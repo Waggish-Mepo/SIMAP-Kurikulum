@@ -81,7 +81,7 @@ class ReportbookController extends Controller
         $reportbook = $reportbookDB->byStudent($reportPeriodId, $studentId);
 
         $entryYear = $reportbook[0]['scorecard'][0]['gradebook']['course']['entry_year'];
-        
+
         $groups = [];
         foreach ($reportbook[0]['scorecard'] as $scorecard) {
             $subject = $subjectDB->detail($scorecard['gradebook']['course']['subject_id']);
@@ -91,7 +91,7 @@ class ReportbookController extends Controller
                 $groups[] = $subject['group'];
             }
         }
-        
+
         foreach ($groups as $group) {
             $reportbook[0]['subjectGroups'][$group] = array_filter($reportbook[0]['scorecard']->toArray(), function ($sc) use ($group) {
                 return ($sc['gradebook']['course']['subject']['group'] == $group);
@@ -145,6 +145,63 @@ class ReportbookController extends Controller
         return $pdf->download('reportbook.pdf');
     }
 
+    public function printReportAttitude(Request $request)
+    {
+        $reportbookDB = new ReportbookService;
+        $studentDB = new StudentService;
+        $reportPeriodDB = new ReportPeriodService;
+        $studentGroupDB = new StudentGroupService;
+        $majorDB = new MajorService;
+        $reportbookFunctionService = new Reportbook;
+
+        $reportPeriodId = $request->report_period_id;
+        $studentId = $request->student_id;
+
+        $reportbook = $reportbookDB->byStudent($reportPeriodId, $studentId);
+
+        $entryYear = $reportbook[0]['scorecard'][0]['gradebook']['course']['entry_year'];
+
+        $student = $studentDB->detail($studentId);
+
+        $studentgroup = $studentGroupDB->detail($student['student_group_id']);
+
+        $major = $majorDB->detail($studentgroup['major_id']);
+
+        $reportperiod = $reportPeriodDB->detail($reportPeriodId);
+
+        $date = Carbon::now()->locale('id_ID');
+
+        $semester = $reportbookFunctionService->determineSemester($entryYear, $reportperiod['type']);
+
+        if ((int)$semester == 1) {
+            $semesterWithText = $semester . " (Satu)";
+        } else if ((int)$semester == 2) {
+            $semesterWithText = $semester . " (Dua)";
+        } else if ((int)$semester == 3) {
+            $semesterWithText = $semester . " (Tiga)";
+        } else if ((int)$semester == 4) {
+            $semesterWithText = $semester . " (Empat)";
+        } else if ((int)$semester == 5) {
+            $semesterWithText = $semester . " (Lima)";
+        } else if ((int)$semester == 6) {
+            $semesterWithText = $semester . " (Enam)";
+        }
+
+        $data = [
+            'reportbook' => $reportbook[0],
+            'student' => $student,
+            'reportperiod' => $reportperiod,
+            'studentgroup' => $studentgroup,
+            'major' => $major,
+            'date' => $date->day . ' ' . $date->monthName . ' ' . $date->year,
+            'semester' => $semesterWithText,
+        ];
+
+        $pdf = PDF::loadView('report_attitude', $data);
+        return $pdf->download('attitude-report.pdf');
+        // return view('report_attitude', compact('data'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -166,7 +223,7 @@ class ReportbookController extends Controller
         $reportbookDB = new ReportbookService;
 
         $result = [];
-        for ($i=0; $i < 3; $i++) { 
+        for ($i=0; $i < 3; $i++) {
             $init = $reportbookDB->init($request->reportPeriodId, $request->data[$i]);
             $result[] = $init;
         }
@@ -189,7 +246,7 @@ class ReportbookController extends Controller
      */
     public function show($id)
     {
-        // 
+        //
     }
 
     /**
