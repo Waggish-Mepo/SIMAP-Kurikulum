@@ -23,6 +23,7 @@ use App\Http\Controllers\StudentAbsenceController;
 use App\Http\Controllers\AttitudeController;
 use App\Http\Controllers\AttitudePredicateController;
 use App\Http\Controllers\RegionController;
+use App\Http\Controllers\StudentAttitudeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -178,5 +179,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [RegionController::class, 'store']);
         Route::get('/{id}', [RegionController::class, 'show']);
         Route::patch('/{id}', [RegionController::class, 'update']);
+    });
+    Route::prefix('student-attitudes')->group(function () {
+        Route::get('/{student}', [StudentAttitudeController::class, 'show']);
+        Route::get('/edit/get-id', [StudentAttitudeController::class, 'edit']);
+        Route::post('/', [StudentAttitudeController::class, 'store']);
+        Route::patch('/{id}', [StudentAttitudeController::class, 'update']);
     });
 });

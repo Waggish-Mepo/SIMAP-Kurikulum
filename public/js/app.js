@@ -6012,8 +6012,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _router_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./router.js */ "./resources/js/router.js");
 /* harmony import */ var _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stores/auth/index.js */ "./resources/js/stores/auth/index.js");
 /* harmony import */ var _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./stores/subjects/index.js */ "./resources/js/stores/subjects/index.js");
@@ -6036,6 +6036,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _stores_attitudes_index_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./stores/attitudes/index.js */ "./resources/js/stores/attitudes/index.js");
 /* harmony import */ var _stores_attitudePredicates_index_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./stores/attitudePredicates/index.js */ "./resources/js/stores/attitudePredicates/index.js");
 /* harmony import */ var _stores_regions_index_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./stores/regions/index.js */ "./resources/js/stores/regions/index.js");
+/* harmony import */ var _stores_studentAttitudes_index_js__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./stores/studentAttitudes/index.js */ "./resources/js/stores/studentAttitudes/index.js");
 
 
  //IMPORT MODULE SECTION
@@ -6061,9 +6062,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_22__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_23__["default"]);
+
+vue__WEBPACK_IMPORTED_MODULE_23__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_24__["default"]);
 var debug = "development" !== 'production';
-var store = new vuex__WEBPACK_IMPORTED_MODULE_23__["default"].Store({
+var store = new vuex__WEBPACK_IMPORTED_MODULE_24__["default"].Store({
   modules: {
     auth: _stores_auth_index_js__WEBPACK_IMPORTED_MODULE_1__["default"],
     subjects: _stores_subjects_index_js__WEBPACK_IMPORTED_MODULE_2__["default"],
@@ -6085,7 +6087,8 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_23__["default"].Store({
     studentAbsences: _stores_studentAbsences_index_js__WEBPACK_IMPORTED_MODULE_18__["default"],
     attitudes: _stores_attitudes_index_js__WEBPACK_IMPORTED_MODULE_19__["default"],
     attitudePredicates: _stores_attitudePredicates_index_js__WEBPACK_IMPORTED_MODULE_20__["default"],
-    regions: _stores_regions_index_js__WEBPACK_IMPORTED_MODULE_21__["default"]
+    regions: _stores_regions_index_js__WEBPACK_IMPORTED_MODULE_21__["default"],
+    studentAttitudes: _stores_studentAttitudes_index_js__WEBPACK_IMPORTED_MODULE_22__["default"]
   },
   state: {
     errors: [],
@@ -7797,6 +7800,109 @@ var actions = {
     });
     return new Promise(function (resolve, reject) {
       axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/student-absences/' + payload.id, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: state,
+  actions: actions,
+  mutations: mutations
+});
+
+/***/ }),
+
+/***/ "./resources/js/stores/studentAttitudes/index.js":
+/*!*******************************************************!*\
+  !*** ./resources/js/stores/studentAttitudes/index.js ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var state = function state() {
+  return {};
+};
+
+var mutations = {};
+var actions = {
+  studentAttitudes: function studentAttitudes(_ref, payload) {
+    var commit = _ref.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/student-attitudes/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  createStudentAttitude: function createStudentAttitude(_ref2, payload) {
+    var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/student-attitudes', payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  getStudentAttitudeId: function getStudentAttitudeId(_ref3, payload) {
+    var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/student-attitudes/edit/get-id/?attitude_id=' + payload.attitude_id + '&student_id=' + payload.student_id).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  editStudentAttitude: function editStudentAttitude(_ref4, payload) {
+    var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/student-attitudes/' + payload.id, payload.data).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true

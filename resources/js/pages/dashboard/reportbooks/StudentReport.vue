@@ -110,9 +110,9 @@
             <table class="table table-bordered text-capitalize bg-white w-auto">
                 <thead class="bg-muted">
                     <tr>
-                        <td class="t-padding">Keterangan</td>
-                        <td class="t-padding">Jumlah</td>
-                        <td class="t-padding">Rincian</td>
+                        <th class="t-padding">Keterangan</th>
+                        <th class="t-padding">Jumlah</th>
+                        <th class="t-padding">Rincian</th>
                     </tr>
                 </thead>
                 <tbody style="border-top: 0;" class="text-center">
@@ -145,6 +145,48 @@
             <p class="text-capitalize" v-if="reportbook.notes">{{reportbook.notes}}</p>
         </div>
 
+        <div v-if="reportbook.curriculum !== 'K21 | Sekolah Penggerak'">
+            <h4 class="mt-3">D. Deskripsi Perkembangan Karakter</h4>
+            <div class="table-responsive p-0 card-table mt-4">
+                <table class="table table-bordered bg-white text-center">
+                    <thead class="bg-muted">
+                        <tr class="text-capitalize">
+                            <th>karakter yang dibangun</th>
+                            <th>predikat</th>
+                            <th>deskripsi</th>
+                        </tr>
+                    </thead>
+                    <tbody style="border-top: 0;">
+                        <tr v-for="(attitude, index) in attitudes" :key="index">
+                            <td class="text-capitalize" style="vertical-align : middle;">{{attitude.name}}</td>
+                            <td>
+                                <select class="form-select btn bg-white border-none text-dark w-100" :id="attitude.id" @change="updateStudentAttitude">
+                                    <option hidden>Pilih Predikat</option>
+                                    <option v-for="(predicate,index) in attitude.attitude_predicates" :key="index" :value="predicate.id" :selected="studentAttitudeIds.includes(predicate.id)">{{predicate.predicate}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-select btn bg-white border-none text-dark w-100 disabled" disabled>
+                                    <option hidden>-</option>
+                                    <option v-for="(predicate,index) in attitude.attitude_predicates" :key="index" :value="predicate.id" :selected="studentAttitudeIds.includes(predicate.id)">{{predicate.description}}</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="mt-3">E. Catatan Perkembangan Karakter</h4>
+            <div class="d-flex justify-content-between">
+                <div></div>
+                <button class="btn btn-white text-blue1 mb-2" @click="modalAttitudeNote = true"><span class="fas fa-pen"></span>Edit</button>
+            </div>
+            <div class="card card-note w-100 bg-muted p-3 mb-5">
+                <p class="text-secondary" v-if="!reportbook.attitude_notes">Buat cacatan perkembangan karakter...</p>
+                <p class="text-capitalize" v-if="reportbook.attitude_notes">{{reportbook.attitude_notes}}</p>
+            </div>
+        </div>
+
         <div class="d-none justify-content-between mt-5 mb-3">
             <div></div>
             <div class="card w-auto p-4 bg-white">
@@ -162,8 +204,21 @@
                     {{ errorMessage }}
                 </div>
                 <div class="form-group">
-                    <label class="mb-2">Catatan</label>
+                    <label class="mb-2">Catatan Akademik</label>
                     <textarea class="form-control" rows="4" v-model="reportbook.notes"></textarea>
+                </div>
+            </div>
+        </modal>
+
+        <modal v-if="modalAttitudeNote" @close="modalAttitudeNote = false" :action="addAttitudeNote">
+            <h5 slot="header">Tambah Catatan Perkembangan Karakter</h5>
+            <div slot="body">
+                <div class="alert alert-danger mb-3" v-if="errorMessage">
+                    {{ errorMessage }}
+                </div>
+                <div class="form-group">
+                    <label class="mb-2">Catatan Perkembangan Karakter</label>
+                    <textarea class="form-control" rows="4" v-model="reportbook.attitude_notes"></textarea>
                 </div>
             </div>
         </modal>
@@ -193,15 +248,26 @@ export default {
             student: {},
             studentGroup: {},
             modalNote: false,
+            modalAttitudeNote: false,
             modalPrint: false,
             subjectGroups: [],
-            reportbook: {}
+            reportbook: {},
+            attitudes: [],
+            studentAttitudeIds: [],
+            studentAttitudePayload: {
+                attitude_predicate_id: null,
+                student_id: this.$route.params.student,
+                reportbook_id: null
+            },
+            attitudeIds: []
         }
     },
     created() {
         this.getPeriod(this.$route.params.period);
         this.getStudentPrevNext(this.$route.params.student);
         this.getReportDetail();
+        this.getAttitudes();
+        this.getStudentAttitudes();
     },
     watch: {
         '$route.params.student': {
@@ -221,6 +287,8 @@ export default {
         ...mapActions('students', ['withPrevNext']),
         ...mapActions('studentGroups', ['detailStudentGroup']),
         ...mapActions('reportbooks', ['reportbookStudent', 'editNote', 'print']),
+        ...mapActions('attitudes', ['index']),
+        ...mapActions('studentAttitudes', ['studentAttitudes','createStudentAttitude', 'getStudentAttitudeId', 'editStudentAttitude']),
 
         getPeriod(id) {
             this.detail(id).then((result) => {
@@ -243,6 +311,15 @@ export default {
             this.reportbookStudent(payload).then((result) => {
                 this.reportbook = result;
                 this.subjectGroups = result.subjectGroups;
+                if (this.reportbook.attitude_config.length >= 1) {
+                    this.reportbook.attitudes.forEach(attitude => {
+                        if (!this.attitudeIds.includes(attitude['attitude_predicate']['attitude']['id'])) {
+                            this.attitudeIds.push(attitude['attitude_predicate']['attitude']['id']);   
+                        }
+                    });
+                } else {
+                    this.attitudeIds.splice(0, this.attitudeIds.length);
+                }
             })
         },
         filterSubjects(group) {
@@ -254,6 +331,45 @@ export default {
             let payload = {id: this.reportbook.id, data: {notes: this.reportbook.notes}};
             this.editNote(payload).then((result) => {
                 this.modalNote = false;
+                this.getReportDetail();
+            })
+        },
+        getAttitudes() {
+            let payload = {report_period_id: this.$route.params.period};
+            this.index(payload).then((result) => {
+                this.attitudes = result['CHARACTER'];
+            })
+        },
+        getStudentAttitudes() {
+            this.studentAttitudes(this.$route.params.student).then((result) => {
+                this.studentAttitudeIds = result;
+            });
+        },
+        updateStudentAttitude(e) {
+            let attitudeId = e.target.id;
+            let attitudePredicateId = e.target.value;
+            if (this.attitudeIds.includes(attitudeId)) {
+                let payload = {attitude_id: attitudeId, student_id: this.$route.params.student};
+                this.getStudentAttitudeId(payload).then((result) => {
+                    let editPayload = {id: result, data: {attitude_predicate_id: attitudePredicateId, reportbook_id: this.reportbook.id}};
+                    this.editStudentAttitude(editPayload).then((result) => {
+                        location.reload();
+                    })
+                })
+                // console.log('update');
+            } else {
+                this.studentAttitudePayload.attitude_predicate_id = attitudePredicateId;
+                this.studentAttitudePayload.reportbook_id = this.reportbook.id;
+                this.createStudentAttitude(this.studentAttitudePayload).then((result) => {
+                    location.reload();
+                })
+                // console.log('create');
+            }
+        },
+        addAttitudeNote() {
+            let payload = {id: this.reportbook.id, data: {attitude_notes: this.reportbook.attitude_notes}};
+            this.editNote(payload).then((result) => {
+                this.modalAttitudeNote = false;
                 this.getReportDetail();
             })
         },
@@ -309,6 +425,14 @@ span.fas.fa-pen {
 
 .card-note {
     min-height: 50px;
+}
+
+.form-select.btn:disabled {
+    opacity: 1 !important;
+}
+
+.form-select.disabled {
+    background-image: none !important;
 }
 
 @media (max-width: 575px) {

@@ -24,6 +24,7 @@ import studentAbsences from './stores/studentAbsences/index.js'
 import attitudes from './stores/attitudes/index.js'
 import attitudePredicates from './stores/attitudePredicates/index.js'
 import regions from './stores/regions/index.js'
+import studentAttitudes from './stores/studentAttitudes/index.js'
 
 Vue.use(Vuex);
 
@@ -51,7 +52,8 @@ const store = new Vuex.Store({
         studentAbsences,
         attitudes,
         attitudePredicates,
-        regions
+        regions,
+        studentAttitudes
     },
     state: {
         errors: [],

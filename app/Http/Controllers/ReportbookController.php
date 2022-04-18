@@ -44,6 +44,12 @@ class ReportbookController extends Controller
             }
             $reportbook[0]['subjectGroups'] = $groups;
 
+            // $attitudeIds = [];
+            // foreach ($reportbook[0]['attitudes'] as $attitude) {
+            //     $attitudeIds[] = $attitude['attitude_predicate']['attitude']['id'];
+            // }
+            // $reportbook[0]['attitudeIds'] = $attitudeIds;
+
             return response()->json($reportbook[0]);
         } else {
             return response()->json('failed');
