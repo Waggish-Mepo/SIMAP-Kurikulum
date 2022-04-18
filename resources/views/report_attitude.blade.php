@@ -236,7 +236,7 @@
                         </div>
                         <div class="wrap-text">
                             <span class="title">Kompetensi Keahlian</span>
-                            : {{$major['name']}}                
+                            : {{$major['name']}}
                         </div>
                     </td>
                     <td>
