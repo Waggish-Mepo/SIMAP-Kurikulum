@@ -286,7 +286,7 @@ export default {
         ...mapActions('reportPeriods', ['detail']),
         ...mapActions('students', ['withPrevNext']),
         ...mapActions('studentGroups', ['detailStudentGroup']),
-        ...mapActions('reportbooks', ['reportbookStudent', 'editNote', 'print']),
+        ...mapActions('reportbooks', ['reportbookStudent', 'editNote', 'print', 'printAttitude']),
         ...mapActions('attitudes', ['index']),
         ...mapActions('studentAttitudes', ['studentAttitudes','createStudentAttitude', 'getStudentAttitudeId', 'editStudentAttitude']),
 
@@ -378,7 +378,10 @@ export default {
             if (this.subjectGroups.length < 1) {
                 this.modalPrint = true;
             } else {
-                this.print(payload).then(() => {})
+                this.print(payload).then(() => {});
+                if (this.reportbook.curriculum !== 'K21 | Sekolah Penggerak' && this.reportbook.attitude_config.length >= 1) {
+                    this.printAttitude(payload).then(() => {})   
+                }
             }
         }
     }

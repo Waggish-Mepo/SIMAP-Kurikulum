@@ -92,11 +92,11 @@ const router = new Router({
                 name: 'region.regions',
                 component: loadView('dashboard/region/Regions')
             },
-            {
-                path: '/:page/studentrole/home',
-                name: 'studentrole.home',
-                component: loadView('dashboard/studentRole/Home')
-            },
+            // {
+            //     path: '/:page/studentrole/home',
+            //     name: 'studentrole.home',
+            //     component: loadView('dashboard/studentRole/Home')
+            // },
             {
                 path: '/:page/region/student-region',
                 name: 'region.student-region',
