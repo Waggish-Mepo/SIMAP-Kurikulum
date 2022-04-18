@@ -5855,6 +5855,10 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       name: 'region.regions',
       component: loadView('dashboard/region/Regions')
     }, {
+      path: '/:page/studentrole/home',
+      name: 'studentrole.home',
+      component: loadView('dashboard/studentRole/Home')
+    }, {
       path: '/:page/region/student-region',
       name: 'region.student-region',
       component: loadView('dashboard/region/StudentRegion')
@@ -59559,6 +59563,10 @@ var map = {
 		"./resources/js/pages/dashboard/reportbooks/attitude/Component.vue",
 		"resources_js_pages_dashboard_reportbooks_attitude_Component_vue"
 	],
+	"./dashboard/studentRole/Home.vue": [
+		"./resources/js/pages/dashboard/studentRole/Home.vue",
+		"resources_js_pages_dashboard_studentRole_Home_vue"
+	],
 	"./dashboard/teacherRole/Course.vue": [
 		"./resources/js/pages/dashboard/teacherRole/Course.vue",
 		"resources_js_pages_dashboard_teacherRole_Course_vue"
@@ -59706,7 +59714,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_Rayon_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_Teacher_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_region_Regions_vue":1,"resources_js_pages_dashboard_region_StudentRegion_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_dashboard_reportbooks_attitude_Component_vue":1,"resources_js_pages_dashboard_teacherRole_Course_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_pages_dashboard_BaseGradeBook_vue":1,"resources_js_pages_dashboard_Home_vue":1,"resources_js_pages_dashboard_Login_vue":1,"resources_js_pages_dashboard_Mapel_vue":1,"resources_js_pages_dashboard_Rayon_vue":1,"resources_js_pages_dashboard_ReportPeriod_vue":1,"resources_js_pages_dashboard_Teacher_vue":1,"resources_js_pages_dashboard_batches_Batch_vue":1,"resources_js_pages_dashboard_batches_StudentData_vue":1,"resources_js_pages_dashboard_batches_StudentGroup_vue":1,"resources_js_pages_dashboard_courses_Add_vue":1,"resources_js_pages_dashboard_courses_Course_vue":1,"resources_js_pages_dashboard_courses_Students_vue":1,"resources_js_pages_dashboard_gradeBook_Detail_vue":1,"resources_js_pages_dashboard_gradeBook_DetailGroup_vue":1,"resources_js_pages_dashboard_gradeBook_Period_vue":1,"resources_js_pages_dashboard_gradeBook_PeriodCourse_vue":1,"resources_js_pages_dashboard_region_Regions_vue":1,"resources_js_pages_dashboard_region_StudentRegion_vue":1,"resources_js_pages_dashboard_reportbooks_Period_vue":1,"resources_js_pages_dashboard_reportbooks_StudentAbsence_vue":1,"resources_js_pages_dashboard_reportbooks_StudentReport_vue":1,"resources_js_pages_dashboard_reportbooks_Students_vue":1,"resources_js_pages_dashboard_reportbooks_attitude_Component_vue":1,"resources_js_pages_dashboard_studentRole_Home_vue":1,"resources_js_pages_dashboard_teacherRole_Course_vue":1,"resources_js_pages_errors_404_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};
