@@ -81,7 +81,7 @@ class ReportbookController extends Controller
         $reportbook = $reportbookDB->byStudent($reportPeriodId, $studentId);
 
         $entryYear = $reportbook[0]['scorecard'][0]['gradebook']['course']['entry_year'];
-        
+
         $groups = [];
         foreach ($reportbook[0]['scorecard'] as $scorecard) {
             $subject = $subjectDB->detail($scorecard['gradebook']['course']['subject_id']);
@@ -91,7 +91,7 @@ class ReportbookController extends Controller
                 $groups[] = $subject['group'];
             }
         }
-        
+
         foreach ($groups as $group) {
             $reportbook[0]['subjectGroups'][$group] = array_filter($reportbook[0]['scorecard']->toArray(), function ($sc) use ($group) {
                 return ($sc['gradebook']['course']['subject']['group'] == $group);
@@ -223,7 +223,7 @@ class ReportbookController extends Controller
         $reportbookDB = new ReportbookService;
 
         $result = [];
-        for ($i=0; $i < 3; $i++) { 
+        for ($i=0; $i < 3; $i++) {
             $init = $reportbookDB->init($request->reportPeriodId, $request->data[$i]);
             $result[] = $init;
         }
@@ -246,7 +246,7 @@ class ReportbookController extends Controller
      */
     public function show($id)
     {
-        // 
+        //
     }
 
     /**
