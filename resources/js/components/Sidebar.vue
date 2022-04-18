@@ -81,6 +81,15 @@
                     </a>
                     </router-link>
                 </div>
+
+                <div class="nav_list" v-if="user.role === 'STUDENT'">
+                    <router-link v-bind:to="{ name: 'studentrole.home', params: {page: 9} }">
+                    <a href="#" class="nav_link" :class="{active: $route.params.page == 9}"> 
+                        <i class="fas fa-graduation-cap nav_icon" title="Cetak Rapor"></i> 
+                        <span class="nav_name">Cetak Rapor</span>
+                    </a>
+                    </router-link>
+                </div>
             </div>
             <a href="#" class="nav_link" @click="modalShow = true">
                 <i class="fas fa-power-off nav_icon"></i> 

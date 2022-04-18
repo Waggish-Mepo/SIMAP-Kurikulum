@@ -130,7 +130,7 @@ class StudentService {
         $user->name = $student->name;
         $user->username = $username;
         $user->password = Hash::make($username);
-        $user->role = User::TEACHER;
+        $user->role = User::STUDENT;
         $user->status = true;
         $user->userable_id = $student->id;
         $user->save();
