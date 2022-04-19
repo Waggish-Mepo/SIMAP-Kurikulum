@@ -37,6 +37,12 @@ const router = new Router({
                 component: loadView('dashboard/Home')
             },
             {
+                path: '/:page/studentrole/home',
+                name: 'studentrole.home',
+                meta: { isStudent: true },
+                component: loadView('dashboard/studentRole/Home')
+            },
+            {
                 path: '/:page/teachers',
                 name: 'teachers',
                 meta: { isAdmin: true },
@@ -92,11 +98,6 @@ const router = new Router({
                 name: 'region.regions',
                 component: loadView('dashboard/region/Regions')
             },
-            // {
-            //     path: '/:page/studentrole/home',
-            //     name: 'studentrole.home',
-            //     component: loadView('dashboard/studentRole/Home')
-            // },
             {
                 path: '/:page/region/student-region',
                 name: 'region.student-region',
@@ -212,10 +213,29 @@ router.beforeEach((to, from, next) => {
                     next({
                         name: 'dashboard'
                     })
+                } else if (role === 'STUDENT') {
+                    next({
+                        name: 'studentrole.home'
+                    })
                 } else next('/login')
             } else if (to.matched.some(record => record.meta.isTeacher)) {
                 if (role.includes('TEACHER')) next()
                 else if (role === 'ADMIN') {
+                    next({
+                        name: 'dashboard'
+                    })
+                } else if (role === 'STUDENT') {
+                    next({
+                        name: 'studentrole.home'
+                    })
+                } else next('/login')
+            } else if (to.matched.some(record => record.meta.isStudent)) {
+                if (role.includes('STUDENT')) next()
+                else if (role === 'ADMIN') {
+                    next({
+                        name: 'dashboard'
+                    })
+                } else if (role === 'TEACHER') {
                     next({
                         name: 'dashboard'
                     })

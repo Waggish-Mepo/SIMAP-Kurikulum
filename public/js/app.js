@@ -5326,6 +5326,8 @@ __webpack_require__.r(__webpack_exports__);
         this.title = 'rapor siswa';
       } else if (this.$route.params.page == 8) {
         this.title = 'rayon';
+      } else if (this.$route.params.page == 9) {
+        this.title = 'cetak rapor';
       } else {
         this.title = 'dashboard';
       }
@@ -5432,6 +5434,15 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5813,6 +5824,13 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       name: 'dashboard',
       component: loadView('dashboard/Home')
     }, {
+      path: '/:page/studentrole/home',
+      name: 'studentrole.home',
+      meta: {
+        isStudent: true
+      },
+      component: loadView('dashboard/studentRole/Home')
+    }, {
       path: '/:page/teachers',
       name: 'teachers',
       meta: {
@@ -5870,12 +5888,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/:page/region/regions',
       name: 'region.regions',
       component: loadView('dashboard/region/Regions')
-    }, // {
-    //     path: '/:page/studentrole/home',
-    //     name: 'studentrole.home',
-    //     component: loadView('dashboard/studentRole/Home')
-    // },
-    {
+    }, {
       path: '/:page/region/student-region',
       name: 'region.student-region',
       component: loadView('dashboard/region/StudentRegion')
@@ -5993,11 +6006,31 @@ router.beforeEach(function (to, from, next) {
           next({
             name: 'dashboard'
           });
+        } else if (role === 'STUDENT') {
+          next({
+            name: 'studentrole.home'
+          });
         } else next('/login');
       } else if (to.matched.some(function (record) {
         return record.meta.isTeacher;
       })) {
         if (role.includes('TEACHER')) next();else if (role === 'ADMIN') {
+          next({
+            name: 'dashboard'
+          });
+        } else if (role === 'STUDENT') {
+          next({
+            name: 'studentrole.home'
+          });
+        } else next('/login');
+      } else if (to.matched.some(function (record) {
+        return record.meta.isStudent;
+      })) {
+        if (role.includes('STUDENT')) next();else if (role === 'ADMIN') {
+          next({
+            name: 'dashboard'
+          });
+        } else if (role === 'TEACHER') {
           next({
             name: 'dashboard'
           });
@@ -6426,9 +6459,20 @@ var actions = {
           commit('SET_GOOD', null, {
             root: true
           });
-          _router__WEBPACK_IMPORTED_MODULE_1__["default"].push({
-            name: 'dashboard'
-          });
+
+          if (data.user_data.role === 'STUDENT') {
+            _router__WEBPACK_IMPORTED_MODULE_1__["default"].push({
+              name: 'studentrole.home',
+              params: {
+                page: 9
+              }
+            });
+          } else {
+            _router__WEBPACK_IMPORTED_MODULE_1__["default"].push({
+              name: 'dashboard'
+            });
+          }
+
           resolve(res.data);
         })["catch"](function (error) {
           commit('SET_ERROR', error.response.data, {
@@ -43079,6 +43123,44 @@ var render = function () {
                           _vm._v(" "),
                           _c("span", { staticClass: "nav_name" }, [
                             _vm._v("Buku Nilai"),
+                          ]),
+                        ]
+                      ),
+                    ]
+                  ),
+                ],
+                1
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.user.role === "STUDENT"
+            ? _c(
+                "div",
+                { staticClass: "nav_list" },
+                [
+                  _c(
+                    "router-link",
+                    {
+                      attrs: {
+                        to: { name: "studentrole.home", params: { page: 9 } },
+                      },
+                    },
+                    [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav_link",
+                          class: { active: _vm.$route.params.page == 9 },
+                          attrs: { href: "#" },
+                        },
+                        [
+                          _c("i", {
+                            staticClass: "fas fa-graduation-cap nav_icon",
+                            attrs: { title: "Cetak Rapor" },
+                          }),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "nav_name" }, [
+                            _vm._v("Cetak Rapor"),
                           ]),
                         ]
                       ),

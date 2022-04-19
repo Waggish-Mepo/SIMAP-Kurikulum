@@ -40,6 +40,8 @@ export default {
                 this.title = 'rapor siswa';
             } else if(this.$route.params.page == 8) {
                 this.title = 'rayon';
+            } else if(this.$route.params.page == 9) {
+                this.title = 'cetak rapor';
             } else {
                 this.title = 'dashboard';
             }
