@@ -8,6 +8,7 @@ use App\Service\Database\SubjectService;
 use App\Service\Database\PredicateLetterService;
 use App\Service\Database\StudentService;
 use App\Service\Database\ReportPeriodService;
+use App\Service\Database\RegionService;
 use App\Service\Database\StudentGroupService;
 use App\Service\Database\MajorService;
 use App\Service\Functions\Reportbook;
@@ -71,6 +72,7 @@ class ReportbookController extends Controller
         $predicateLetterDB = new PredicateLetterService;
         $studentDB = new StudentService;
         $reportPeriodDB = new ReportPeriodService;
+        $regionDB = new RegionService;
         $studentGroupDB = new StudentGroupService;
         $majorDB = new MajorService;
         $reportbookFunctionService = new Reportbook;
@@ -99,6 +101,8 @@ class ReportbookController extends Controller
         }
 
         $student = $studentDB->detail($studentId);
+
+        $region = $regionDB->detail($student['region_id'], true);
 
         $studentgroup = $studentGroupDB->detail($student['student_group_id']);
 
@@ -134,6 +138,8 @@ class ReportbookController extends Controller
             'index' => 0,
             'date' => $date->day.' '.$date->monthName.' '.$date->year,
             'semester' => $semesterWithText,
+            'headmaster_name' => config('constant.headmaster_name'),
+            'student_counselor' => $region['teacher'],
         ];
 
         if($reportbook[0]['curriculum'] === 'K21 | Sekolah Penggerak') {
@@ -153,6 +159,7 @@ class ReportbookController extends Controller
         $studentGroupDB = new StudentGroupService;
         $majorDB = new MajorService;
         $reportbookFunctionService = new Reportbook;
+        $regionDB = new RegionService;
 
         $reportPeriodId = $request->report_period_id;
         $studentId = $request->student_id;
@@ -162,6 +169,8 @@ class ReportbookController extends Controller
         $entryYear = $reportbook[0]['scorecard'][0]['gradebook']['course']['entry_year'];
 
         $student = $studentDB->detail($studentId);
+
+        $region = $regionDB->detail($student['region_id'], true);
 
         $studentgroup = $studentGroupDB->detail($student['student_group_id']);
 
@@ -195,6 +204,8 @@ class ReportbookController extends Controller
             'major' => $major,
             'date' => $date->day . ' ' . $date->monthName . ' ' . $date->year,
             'semester' => $semesterWithText,
+            'headmaster_name' => config('constant.headmaster_name'),
+            'student_counselor' => $region['teacher'] ?? [],
         ];
 
         $pdf = PDF::loadView('report_attitude', $data);

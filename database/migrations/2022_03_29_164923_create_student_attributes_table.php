@@ -28,6 +28,6 @@ class CreateStudentAttributesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('student_attributes');
+        Schema::dropIfExists('student_attitudes');
     }
 }
