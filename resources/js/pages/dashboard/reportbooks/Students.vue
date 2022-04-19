@@ -32,12 +32,15 @@
 
         <div class="d-flex flex-wrap justify-content-between mt-4">
             <div>
-                <router-link v-bind:to="{ name: 'reportbooks.periods.attitude.components', params: {page: 7, period: $route.params.period} }"><a href="#" class="btn bg-blue1 text-white text-capitalize">atur komponen nilai sikap</a></router-link>
+                <router-link v-if="this.role === 'ADMIN'" v-bind:to="{ name: 'reportbooks.periods.attitude.components', params: {page: 7, period: $route.params.period} }"><a href="#" class="btn bg-blue1 text-white text-capitalize">atur komponen nilai sikap</a></router-link>
             </div>
-            <select class="form-select btn bg-blue1 text-white w-auto" @change="redirectPage">
+            <select v-if="this.role === 'ADMIN'" class="form-select btn bg-blue1 text-white w-auto" @change="redirectPage">
                 <option selected hidden>Atur Kehadiran Siswa</option>
                 <option v-for="(group,index) in studentGroups" :key="index" :value="group.id">{{group.name}}</option>
             </select>
+            <router-link class="btn bg-blue1 text-white" v-if="this.role === 'TEACHER'" v-bind:to="{name: 'reportbooks.periods.students.absence', params: {page: 7, period: $route.params.period, group: 0, region: regionId}}">
+                Atur Kehadiran Siswa
+            </router-link>
         </div>
 
         <div class="table-responsive mt-3">
@@ -177,6 +180,9 @@ export default {
                     sortable: false,
                 },
             ],
+            teacherIds: [],
+            role: null,
+            regionId: null
         }
     },
     created() {
@@ -189,9 +195,10 @@ export default {
     },
     methods: {
         ...mapActions('reportPeriods', ['detail']),
-        ...mapActions('students', ['indexWithSG']),
+        ...mapActions('students', ['indexWithSG', 'filterByRegion']),
         ...mapActions('studentGroups', ['getAll']),
         ...mapActions('reportbooks', ['createOne', 'checkStudent', 'edit']),
+        ...mapActions('regions', ['regionIdByTeacher']),
 
         getPeriod(id) {
             this.detail(id).then((result) => {
@@ -199,9 +206,21 @@ export default {
             })
         },
         getStudents() {
-            this.indexWithSG().then((result) => {
-                this.rows = result;
-            })
+            let user = JSON.parse(localStorage.getItem('user_data'));
+            let id = user.userable_id;
+            this.role = user.role;
+            if (this.role === 'ADMIN') {
+                this.indexWithSG().then((result) => {
+                    this.rows = result;
+                });
+            } else if (this.role === 'TEACHER') {
+                this.regionIdByTeacher(id).then((result) => {
+                    this.regionId = result[0].id;
+                    this.filterByRegion(this.regionId).then((result) => {
+                        this.rows = result;
+                    })
+                })
+            }
         },
         getStudentGroups() {
             this.getAll().then((result) => {
@@ -211,7 +230,7 @@ export default {
         redirectPage(e) {
             let studentGroup = e.target.value;
 
-            this.$router.push({name: 'reportbooks.periods.students.absence', params: {page: 7, period: this.$route.params.period, group: studentGroup}});
+            this.$router.push({name: 'reportbooks.periods.students.absence', params: {page: 7, period: this.$route.params.period, group: studentGroup, region: 0}});
         },
         checkStudentExist(student) {
             this.checkStudent(student).then((result) => {

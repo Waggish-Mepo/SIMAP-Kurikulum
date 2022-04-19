@@ -106,6 +106,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('students')->group(function () {
         Route::get('/', [StudentController::class, 'index']);
         Route::get('/student-group/{id}/absence', [StudentController::class, 'withAbsence']);
+        Route::get('/absence/region/{region}', [StudentController::class, 'studentRegionwithAbsence']);
         Route::get('/prev-next/{id}', [StudentController::class, 'showWithNextPrev']);
         Route::get('/with-student-groups', [StudentController::class, 'getWithStudentGroup']);
         Route::post('/', [StudentController::class, 'store']);
@@ -177,6 +178,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::prefix('regions')->group(function () {
         Route::get('/', [RegionController::class, 'index']);
+        Route::get('/pluck-teacher', [RegionController::class, 'onlyGetTeacher']);
+        Route::get('/check-teacher/{teacher}', [RegionController::class, 'checkTeacher']);
         Route::post('/', [RegionController::class, 'store']);
         Route::get('/{id}', [RegionController::class, 'show']);
         Route::patch('/{id}', [RegionController::class, 'update']);

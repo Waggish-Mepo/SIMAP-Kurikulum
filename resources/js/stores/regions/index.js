@@ -20,6 +20,32 @@ const actions = {
                 })
         })
     },
+    teacherRegion({ commit }) {
+        commit('SET_LOADING', true, { root: true });
+        return new Promise((resolve, reject) => {
+            axios.get('/regions/pluck-teacher')
+                .then((response) => {
+                    resolve(response.data);
+                    commit('SET_GOOD', null, { root: true });
+                })
+                .catch((error) => {
+                    commit('SET_ERROR', error.response.data, { root: true });
+                })
+        })
+    },
+    regionIdByTeacher({ commit }, payload) {
+        commit('SET_LOADING', true, { root: true });
+        return new Promise((resolve, reject) => {
+            axios.get('/regions/check-teacher/'+payload)
+                .then((response) => {
+                    resolve(response.data);
+                    commit('SET_GOOD', null, { root: true });
+                })
+                .catch((error) => {
+                    commit('SET_ERROR', error.response.data, { root: true });
+                })
+        })
+    },
     show({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {

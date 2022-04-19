@@ -25,6 +25,23 @@ class RegionController extends Controller
         }
     }
 
+    public function onlyGetTeacher()
+    {
+        $regionDB = new RegionService;
+
+        $regions = $regionDB->index(['without_pagination' => true]);
+        $teacherIds = collect($regions)->pluck('teacher_id');
+
+        return response()->json($teacherIds);
+    }
+
+    public function checkTeacher($teacherId)
+    {
+        $regionDB = new RegionService;
+
+        return response()->json($regionDB->index(['teacher_id' => $teacherId,'without_pagination' => true]));
+    }
+
     /**
      * Show the form for creating a new resource.
      *

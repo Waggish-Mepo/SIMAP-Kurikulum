@@ -3,7 +3,7 @@
     <div class="loader" v-if="isLoading"></div>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item">
+        <li class="breadcrumb-item" v-if="this.user.role === 'ADMIN'">
           <router-link v-bind:to="{ name: 'regions', params: { page: 8 } }">
             <a href="#">Rayon</a>
           </router-link>
@@ -112,12 +112,14 @@ export default {
       region: {},
       addPayload: [],
       finalPayload: [],
-      addSuccessed: false
+      addSuccessed: false,
+      user: {}
     };
   },
   created() {
     this.getRegion(this.$route.params.region);
     this.getStudents();
+    this.getUser();
   },
   computed: {
     ...mapState(['errorMessage', 'errors', 'isLoading']),
@@ -126,6 +128,10 @@ export default {
     ...mapActions('students', ['notSignedStudent', 'studentDetail', 'update']),
     ...mapActions('regions', ['show']),
 
+    getUser() {
+      let user = JSON.parse(localStorage.getItem('user_data'));
+      this.user = user;
+    },
     getRegion(id) {
       this.show(id).then((result) => {
         this.region = result;

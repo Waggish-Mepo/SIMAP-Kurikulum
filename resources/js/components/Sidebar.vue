@@ -80,6 +80,18 @@
                         <span class="nav_name">Buku Nilai</span>
                     </a>
                     </router-link>
+                    <router-link v-bind:to="{ name: 'regions.students', params: {page: 8, region: regionId} }" v-if="region">
+                    <a href="#" class="nav_link" :class="{active: $route.params.page == 8}"> 
+                        <i class="fas fa-map-marked nav_icon" title="Siswa Rayon"></i> 
+                        <span class="nav_name">Siswa Rayon</span> 
+                    </a> 
+                    </router-link>
+                    <router-link v-bind:to="{ name: 'reportbooks.periods', params: {page: 7} }" v-if="region">
+                    <a href="#" class="nav_link" :class="{active: $route.params.page == 7}"> 
+                        <i class="fas fa-graduation-cap nav_icon" title="Rapor Siswa"></i> 
+                        <span class="nav_name">Rapor Siswa</span>
+                    </a>
+                    </router-link>
                 </div>
 
                 <div class="nav_list" v-if="user.role === 'STUDENT'">
@@ -118,7 +130,10 @@ export default {
     data() {
         return {
             modalShow: false,
-            user: {}
+            user: {},
+            teacherIds: [],
+            region: false,
+            regionId: null
         }
     },
     created() {
@@ -126,6 +141,8 @@ export default {
     },
     methods: {
         ...mapActions('auth', ['logout', 'getMe']),
+        ...mapActions('regions', ['teacherRegion', 'regionIdByTeacher']),
+        ...mapActions('teachers', ['detail']),
 
         handleLogout() {
             this.logout().then(() => { });
@@ -133,8 +150,22 @@ export default {
         getUser() {
             this.getMe().then((result) => {
                 this.user = result.data;
+                if (this.user.role === 'TEACHER') {
+                    this.checkTeacher();
+                }
             });
         },
+        checkTeacher() {
+            this.teacherRegion().then((result) => {
+                this.teacherIds = result;
+                if (this.teacherIds.includes(this.user.userable_id)) {
+                    this.region = true;
+                    this.regionIdByTeacher(this.user.userable_id).then((result) => {
+                        this.regionId = result[0].id;
+                    })
+                }
+            });
+        }
     }
 }
 </script>
