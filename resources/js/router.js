@@ -57,11 +57,13 @@ const router = new Router({
             {
                 path: '/:page/regions/:region/students',
                 name: 'regions.students',
+                meta: { isAdminAndTeacher: true },
                 component: loadView('dashboard/regions/Students')
             },
             {
                 path: '/:page/regions/:region/students/add',
                 name: 'regions.students.add',
+                meta: { isAdminAndTeacher: true },
                 component: loadView('dashboard/regions/Add')
             },
             {
@@ -91,21 +93,13 @@ const router = new Router({
             {
                 path: '/:page/courses/:course',
                 name: 'courses.students',
+                meta: { isAdminAndTeacher: true },
                 component: loadView('dashboard/courses/Students')
-            },
-            {
-                path: '/:page/region/regions',
-                name: 'region.regions',
-                component: loadView('dashboard/region/Regions')
-            },
-            {
-                path: '/:page/region/student-region',
-                name: 'region.student-region',
-                component: loadView('dashboard/region/StudentRegion')
             },
             {
                 path: '/:page/courses/:course/add',
                 name: 'courses.students.add',
+                meta: { isAdminAndTeacher: true },
                 component: loadView('dashboard/courses/Add')
             },
             {
@@ -129,40 +123,43 @@ const router = new Router({
             {
                 path: '/:page/gradebooks/periods',
                 name: 'gradebooks.period',
+                meta: { isAdminAndTeacher: true },
                 component: loadView('dashboard/gradeBook/Period')
             },
             {
                 path: '/:page/gradebooks/periods/:period',
                 name: 'gradebooks.course',
+                meta: { isAdminAndTeacher: true },
                 component: loadView('dashboard/gradeBook/PeriodCourse')
             },
             {
                 path: '/:page/gradebooks/periods/:period/course/:course/gradebook/:gb',
                 name: 'gradebooks.course.detail',
+                meta: { isAdminAndTeacher: true },
                 component: loadView('dashboard/gradeBook/Detail')
             },
             {
                 path: '/:page/reportbooks/periods',
                 name: 'reportbooks.periods',
-                meta: { isAdmin: true },
+                meta: { isAdminAndTeacher: true },
                 component: loadView('dashboard/reportbooks/Period')
             },
             {
                 path: '/:page/reportbooks/periods/:period/students',
                 name: 'reportbooks.periods.students',
-                meta: { isAdmin: true },
+                meta: { isAdminAndTeacher: true },
                 component: loadView('dashboard/reportbooks/Students')
             },
             {
                 path: '/:page/reportbooks/periods/:period/students/:student',
                 name: 'reportbooks.periods.students.report',
-                meta: { isAdmin: true },
+                meta: { isAdminAndTeacher: true },
                 component: loadView('dashboard/reportbooks/StudentReport')
             },
             {
-                path: '/:page/reportbooks/periods/:period/groups/:group',
+                path: '/:page/reportbooks/periods/:period/groups/:group/region/:region',
                 name: 'reportbooks.periods.students.absence',
-                meta: { isAdmin: true },
+                meta: { isAdminAndTeacher: true },
                 component: loadView('dashboard/reportbooks/StudentAbsence')
             },
             {
@@ -181,6 +178,7 @@ const router = new Router({
                 {
                     path: '/periods/:period/course/:course/gradebook/:gb/student-group/:sg',
                     name: 'gradebooks.course.detail.group',
+                    meta: { isAdminAndTeacher: true },
                     component: loadView('dashboard/gradeBook/DetailGroup')
                 },
             ]
@@ -208,7 +206,7 @@ router.beforeEach((to, from, next) => {
             let user = JSON.parse(localStorage.getItem('user_data'));
             let role = user.role;
             if (to.matched.some(record => record.meta.isAdmin)) {
-                if (role.includes('ADMIN')) next()
+                if (role === ('ADMIN')) next()
                 else if (role === 'TEACHER') {
                     next({
                         name: 'dashboard'
@@ -219,7 +217,7 @@ router.beforeEach((to, from, next) => {
                     })
                 } else next('/login')
             } else if (to.matched.some(record => record.meta.isTeacher)) {
-                if (role.includes('TEACHER')) next()
+                if (role === ('TEACHER')) next()
                 else if (role === 'ADMIN') {
                     next({
                         name: 'dashboard'
@@ -230,7 +228,7 @@ router.beforeEach((to, from, next) => {
                     })
                 } else next('/login')
             } else if (to.matched.some(record => record.meta.isStudent)) {
-                if (role.includes('STUDENT')) next()
+                if (role === ('STUDENT')) next()
                 else if (role === 'ADMIN') {
                     next({
                         name: 'dashboard'
@@ -240,7 +238,14 @@ router.beforeEach((to, from, next) => {
                         name: 'dashboard'
                     })
                 } else next('/login')
-            } else {
+            } else if (to.matched.some(record => record.meta.isAdminAndTeacher)) {
+                if (role === ('ADMIN') || role === ('TEACHER')) next()
+                else if (role === 'STUDENT') {
+                    next({
+                        name: 'studentrole.home'
+                    })
+                } else next('/login')
+            }else {
                 next()
             }
         }

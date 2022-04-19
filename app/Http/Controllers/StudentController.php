@@ -27,6 +27,13 @@ class StudentController extends Controller
         return response()->json($studentDB->index(['student_group_id' => $studentGroup, 'with_student_absence' => true, 'without_pagination' => true]));
     }
 
+    public function studentRegionwithAbsence($regionId)
+    {
+        $studentDB = new StudentService;
+
+        return response()->json($studentDB->index(['region_id' => $regionId, 'with_student_absence' => true, 'without_pagination' => true]));
+    }
+
     public function getWithStudentGroup()
     {
         $studentDB = new StudentService;

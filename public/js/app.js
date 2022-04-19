@@ -5541,6 +5541,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // modal
  // vuex
 
@@ -5553,13 +5565,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       modalShow: false,
-      user: {}
+      user: {},
+      teacherIds: [],
+      region: false,
+      regionId: null
     };
   },
   created: function created() {
     this.getUser();
   },
-  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('auth', ['logout', 'getMe'])), {}, {
+  methods: _objectSpread(_objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('auth', ['logout', 'getMe'])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('regions', ['teacherRegion', 'regionIdByTeacher'])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('teachers', ['detail'])), {}, {
     handleLogout: function handleLogout() {
       this.logout().then(function () {});
     },
@@ -5568,6 +5583,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       this.getMe().then(function (result) {
         _this.user = result.data;
+
+        if (_this.user.role === 'TEACHER') {
+          _this.checkTeacher();
+        }
+      });
+    },
+    checkTeacher: function checkTeacher() {
+      var _this2 = this;
+
+      this.teacherRegion().then(function (result) {
+        _this2.teacherIds = result;
+
+        if (_this2.teacherIds.includes(_this2.user.userable_id)) {
+          _this2.region = true;
+
+          _this2.regionIdByTeacher(_this2.user.userable_id).then(function (result) {
+            _this2.regionId = result[0].id;
+          });
+        }
       });
     }
   })
@@ -5847,10 +5881,16 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
     }, {
       path: '/:page/regions/:region/students',
       name: 'regions.students',
+      meta: {
+        isAdminAndTeacher: true
+      },
       component: loadView('dashboard/regions/Students')
     }, {
       path: '/:page/regions/:region/students/add',
       name: 'regions.students.add',
+      meta: {
+        isAdminAndTeacher: true
+      },
       component: loadView('dashboard/regions/Add')
     }, {
       path: '/:page/mata-pelajaran',
@@ -5883,18 +5923,16 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
     }, {
       path: '/:page/courses/:course',
       name: 'courses.students',
+      meta: {
+        isAdminAndTeacher: true
+      },
       component: loadView('dashboard/courses/Students')
-    }, {
-      path: '/:page/region/regions',
-      name: 'region.regions',
-      component: loadView('dashboard/region/Regions')
-    }, {
-      path: '/:page/region/student-region',
-      name: 'region.student-region',
-      component: loadView('dashboard/region/StudentRegion')
     }, {
       path: '/:page/courses/:course/add',
       name: 'courses.students.add',
+      meta: {
+        isAdminAndTeacher: true
+      },
       component: loadView('dashboard/courses/Add')
     }, {
       path: '/:page/batches',
@@ -5920,41 +5958,50 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
     }, {
       path: '/:page/gradebooks/periods',
       name: 'gradebooks.period',
+      meta: {
+        isAdminAndTeacher: true
+      },
       component: loadView('dashboard/gradeBook/Period')
     }, {
       path: '/:page/gradebooks/periods/:period',
       name: 'gradebooks.course',
+      meta: {
+        isAdminAndTeacher: true
+      },
       component: loadView('dashboard/gradeBook/PeriodCourse')
     }, {
       path: '/:page/gradebooks/periods/:period/course/:course/gradebook/:gb',
       name: 'gradebooks.course.detail',
+      meta: {
+        isAdminAndTeacher: true
+      },
       component: loadView('dashboard/gradeBook/Detail')
     }, {
       path: '/:page/reportbooks/periods',
       name: 'reportbooks.periods',
       meta: {
-        isAdmin: true
+        isAdminAndTeacher: true
       },
       component: loadView('dashboard/reportbooks/Period')
     }, {
       path: '/:page/reportbooks/periods/:period/students',
       name: 'reportbooks.periods.students',
       meta: {
-        isAdmin: true
+        isAdminAndTeacher: true
       },
       component: loadView('dashboard/reportbooks/Students')
     }, {
       path: '/:page/reportbooks/periods/:period/students/:student',
       name: 'reportbooks.periods.students.report',
       meta: {
-        isAdmin: true
+        isAdminAndTeacher: true
       },
       component: loadView('dashboard/reportbooks/StudentReport')
     }, {
-      path: '/:page/reportbooks/periods/:period/groups/:group',
+      path: '/:page/reportbooks/periods/:period/groups/:group/region/:region',
       name: 'reportbooks.periods.students.absence',
       meta: {
-        isAdmin: true
+        isAdminAndTeacher: true
       },
       component: loadView('dashboard/reportbooks/StudentAbsence')
     }, {
@@ -5974,6 +6021,9 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
     children: [{
       path: '/periods/:period/course/:course/gradebook/:gb/student-group/:sg',
       name: 'gradebooks.course.detail.group',
+      meta: {
+        isAdminAndTeacher: true
+      },
       component: loadView('dashboard/gradeBook/DetailGroup')
     }]
   }]
@@ -6002,7 +6052,7 @@ router.beforeEach(function (to, from, next) {
       if (to.matched.some(function (record) {
         return record.meta.isAdmin;
       })) {
-        if (role.includes('ADMIN')) next();else if (role === 'TEACHER') {
+        if (role === 'ADMIN') next();else if (role === 'TEACHER') {
           next({
             name: 'dashboard'
           });
@@ -6014,7 +6064,7 @@ router.beforeEach(function (to, from, next) {
       } else if (to.matched.some(function (record) {
         return record.meta.isTeacher;
       })) {
-        if (role.includes('TEACHER')) next();else if (role === 'ADMIN') {
+        if (role === 'TEACHER') next();else if (role === 'ADMIN') {
           next({
             name: 'dashboard'
           });
@@ -6026,13 +6076,21 @@ router.beforeEach(function (to, from, next) {
       } else if (to.matched.some(function (record) {
         return record.meta.isStudent;
       })) {
-        if (role.includes('STUDENT')) next();else if (role === 'ADMIN') {
+        if (role === 'STUDENT') next();else if (role === 'ADMIN') {
           next({
             name: 'dashboard'
           });
         } else if (role === 'TEACHER') {
           next({
             name: 'dashboard'
+          });
+        } else next('/login');
+      } else if (to.matched.some(function (record) {
+        return record.meta.isAdminAndTeacher;
+      })) {
+        if (role === 'ADMIN' || role === 'TEACHER') next();else if (role === 'STUDENT') {
+          next({
+            name: 'studentrole.home'
           });
         } else next('/login');
       } else {
@@ -7285,8 +7343,44 @@ var actions = {
       });
     });
   },
-  show: function show(_ref2, payload) {
+  teacherRegion: function teacherRegion(_ref2) {
     var commit = _ref2.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/regions/pluck-teacher').then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  regionIdByTeacher: function regionIdByTeacher(_ref3, payload) {
+    var commit = _ref3.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/regions/check-teacher/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  show: function show(_ref4, payload) {
+    var commit = _ref4.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -7303,8 +7397,8 @@ var actions = {
       });
     });
   },
-  create: function create(_ref3, payload) {
-    var commit = _ref3.commit;
+  create: function create(_ref5, payload) {
+    var commit = _ref5.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -7321,8 +7415,8 @@ var actions = {
       });
     });
   },
-  edit: function edit(_ref4, payload) {
-    var commit = _ref4.commit;
+  edit: function edit(_ref6, payload) {
+    var commit = _ref6.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8366,8 +8460,26 @@ var actions = {
       });
     });
   },
-  studentDetail: function studentDetail(_ref6, payload) {
+  studentRegionAbsence: function studentRegionAbsence(_ref6, payload) {
     var commit = _ref6.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/students/absence/region/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  studentDetail: function studentDetail(_ref7, payload) {
+    var commit = _ref7.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8384,8 +8496,8 @@ var actions = {
       });
     });
   },
-  withPrevNext: function withPrevNext(_ref7, payload) {
-    var commit = _ref7.commit;
+  withPrevNext: function withPrevNext(_ref8, payload) {
+    var commit = _ref8.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8402,8 +8514,8 @@ var actions = {
       });
     });
   },
-  create: function create(_ref8, payload) {
-    var commit = _ref8.commit;
+  create: function create(_ref9, payload) {
+    var commit = _ref9.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -8420,8 +8532,8 @@ var actions = {
       });
     });
   },
-  update: function update(_ref9, payload) {
-    var commit = _ref9.commit;
+  update: function update(_ref10, payload) {
+    var commit = _ref10.commit;
     commit('SET_LOADING', true, {
       root: true
     });
@@ -43128,6 +43240,74 @@ var render = function () {
                       ),
                     ]
                   ),
+                  _vm._v(" "),
+                  _vm.region
+                    ? _c(
+                        "router-link",
+                        {
+                          attrs: {
+                            to: {
+                              name: "regions.students",
+                              params: { page: 8, region: _vm.regionId },
+                            },
+                          },
+                        },
+                        [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "nav_link",
+                              class: { active: _vm.$route.params.page == 8 },
+                              attrs: { href: "#" },
+                            },
+                            [
+                              _c("i", {
+                                staticClass: "fas fa-map-marked nav_icon",
+                                attrs: { title: "Siswa Rayon" },
+                              }),
+                              _vm._v(" "),
+                              _c("span", { staticClass: "nav_name" }, [
+                                _vm._v("Siswa Rayon"),
+                              ]),
+                            ]
+                          ),
+                        ]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.region
+                    ? _c(
+                        "router-link",
+                        {
+                          attrs: {
+                            to: {
+                              name: "reportbooks.periods",
+                              params: { page: 7 },
+                            },
+                          },
+                        },
+                        [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "nav_link",
+                              class: { active: _vm.$route.params.page == 7 },
+                              attrs: { href: "#" },
+                            },
+                            [
+                              _c("i", {
+                                staticClass: "fas fa-graduation-cap nav_icon",
+                                attrs: { title: "Rapor Siswa" },
+                              }),
+                              _vm._v(" "),
+                              _c("span", { staticClass: "nav_name" }, [
+                                _vm._v("Rapor Siswa"),
+                              ]),
+                            ]
+                          ),
+                        ]
+                      )
+                    : _vm._e(),
                 ],
                 1
               )

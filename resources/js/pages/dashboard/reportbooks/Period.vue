@@ -92,6 +92,13 @@
                 </div>
             </div>
         </modal>
+
+        <modal v-if="modalPrint" @close="modalPrint = false">
+            <h5 slot="header">Gagal!</h5>
+            <div slot="body">
+                <p>Data tidak ditemukan! <b>Rapor untuk periode ini belum tersedia.</b> Silahkan untuk menghubungi pihak kurikulum terlebih dahulu.</p>
+            </div>
+        </modal>
     </div>
 </template>
 
@@ -126,6 +133,7 @@ export default {
                 page: 1,
                 per_page: 5
             },
+            modalPrint: false,
             modalCurriculum: false,
             entry_years: [],
             grade10: {
@@ -187,15 +195,20 @@ export default {
             })
         },
         showModal(period, schoolYear) {
+            let user = JSON.parse(localStorage.getItem('user_data'));
             this.checkReportbook(period).then((result) => {
                 if(result.length >= 1) {
                     this.$router.push({name: 'reportbooks.periods.students', params: {page: 7, period: period}});
                 } else {
-                    this.periodId = period;
-                    this.grade10.school_year = schoolYear;
-                    this.grade11.school_year = schoolYear;
-                    this.grade12.school_year = schoolYear;
-                    this.modalCurriculum = true;
+                    if (user.role === 'ADMIN') {
+                        this.periodId = period;
+                        this.grade10.school_year = schoolYear;
+                        this.grade11.school_year = schoolYear;
+                        this.grade12.school_year = schoolYear;
+                        this.modalCurriculum = true;   
+                    } else if (user.role === 'TEACHER') {
+                        this.modalPrint = true;
+                    }
                 }
             })
         },

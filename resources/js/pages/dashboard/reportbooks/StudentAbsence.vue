@@ -5,14 +5,16 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'reportbooks.periods', params: {page: 7} }"><a href="#">Periode Rapor</a></router-link></li>
                 <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'reportbooks.periods.students', params: {page: 7, period: period.id} }" class="router"><a href="#">{{period.title + ' - ' + period.school_year}}</a></router-link></li>
-                <li class="breadcrumb-item active" aria-current="page">{{studentGroup.name}}</li>
+                <li class="breadcrumb-item active" aria-current="page" v-if="this.user.role === 'ADMIN'">{{studentGroup.name}}</li>
+                <li class="breadcrumb-item active" aria-current="page" v-if="this.user.role === 'TEACHER'">Siswa Rayon</li>
             </ol>
         </nav>
 
         <div class="alert alert-danger my-3" v-if="errorMessage">
         {{ errorMessage }}
         </div>
-        <h5 class="mt-5 title">Absensi Rombel {{studentGroup.name}}</h5>
+        <h5 class="mt-5 title" v-if="this.user.role === 'ADMIN'">Absensi Rombel {{studentGroup.name}}</h5>
+        <h5 class="mt-5 title" v-if="this.user.role === 'TEACHER'">Absensi Rayon</h5>
         <div class="table-responsive p-0 card-table mt-4">
             <table class="table table-bordered text-capitalize bg-white">
                 <thead class="bg-muted text-left">
@@ -98,13 +100,13 @@ export default {
                 izin: 0,
                 sakit: 0
             },
-            status: ''
+            status: '',
+            user: {}
         }
     },
     created() {
         this.getPeriod(this.$route.params.period);
-        this.getStudentGroup(this.$route.params.group);
-        this.getStudents(this.$route.params.group);
+        this.getStudents();
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
@@ -112,7 +114,7 @@ export default {
     methods: {
         ...mapActions('reportPeriods', ['detail']),
         ...mapActions('studentGroups', ['detailStudentGroup']),
-        ...mapActions('students', ['studentAbsence']),
+        ...mapActions('students', ['studentAbsence', 'studentRegionAbsence']),
         ...mapActions('studentAbsences', ['show', 'create', 'edit']),
 
         getPeriod(id) {
@@ -120,14 +122,23 @@ export default {
                 this.period = result;
             })
         },
+        getStudents() {
+            let user = JSON.parse(localStorage.getItem('user_data'));
+            this.user = user;
+            if (this.user.role === 'ADMIN') {
+                this.getStudentGroup(this.$route.params.group);
+                this.studentAbsence(this.$route.params.group).then((result) => {
+                    this.students = result;
+                })
+            } else if (this.user.role === 'TEACHER') {
+                this.studentRegionAbsence(this.$route.params.region).then((result) => {
+                    this.students = result;
+                })
+            }
+        },
         getStudentGroup(id) {
             this.detailStudentGroup(id).then((result) => {
                 this.studentGroup = result;
-            })
-        },
-        getStudents(id) {
-            this.studentAbsence(id).then((result) => {
-                this.students = result;
             })
         },
         checkAbsen(id) {
@@ -151,7 +162,7 @@ export default {
             if(this.status === 'create') {
                 this.create(this.studentAbsencePayload).then((result) => {
                     this.status = '';
-                    this.getStudents(this.$route.params.group);
+                    this.getStudents();
                     this.modalUpdate = false;
                 })
             }
@@ -159,7 +170,7 @@ export default {
                 let payload = {id: this.studentAbsencePayload.id, data: this.studentAbsencePayload};
                 this.edit(payload).then((result) => {
                     this.status = '';
-                    this.getStudents(this.$route.params.group);
+                    this.getStudents();
                     this.modalUpdate = false;
                 })
             }
