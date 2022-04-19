@@ -197,7 +197,7 @@
                             <div class="column right">
                                 <p>Wali Kelas</p>
                                 <div class="signature"></div>
-                                <div class="name"></div>
+                                <div class="name">{{$student_counselor['name'] ?? '-'}}</div>
                             </div>
                         </div>
                         <div class="last-content">
@@ -205,7 +205,7 @@
                                 <br>Kepala Sekolah
                             </p>
                             <div class="signature"></div>
-                            <div class="name"></div>
+                            <div class="name">{{$headmaster_name}}</div>
                         </div>
                     </div>
                 </td>

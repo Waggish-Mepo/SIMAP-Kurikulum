@@ -214,6 +214,6 @@ return [
             Attitude::COMPETENCE,
             Attitude::PANCASILA,
         ]
-    ]
-
+    ],
+    'headmaster_name' => 'Iin Mulyani, S.Si.',
 ];

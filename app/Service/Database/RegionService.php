@@ -47,8 +47,14 @@ class RegionService {
         return $regions;
     }
 
-    public function detail($regionId) {
-        $region = Region::findOrFail($regionId);
+    public function detail($regionId, $withTeacher = false) {
+        if ($withTeacher) {
+            $region = Region::with('teacher')->find($regionId);
+
+            return $region->toArray() ?? [];
+        }
+
+        $region = Region::find($regionId);
 
         return $region->toArray();
     }
