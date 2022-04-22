@@ -8195,6 +8195,24 @@ var actions = {
         });
       });
     });
+  },
+  deleteCourseStudent: function deleteCourseStudent(_ref5, payload) {
+    var commit = _ref5.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]('/student-courses/' + payload.id + '/student/' + payload.studentId).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({

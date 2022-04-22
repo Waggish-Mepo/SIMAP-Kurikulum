@@ -238,7 +238,7 @@ export default {
         ...mapActions('courses', ['show', 'edit', 'allCurriculums', 'entryYears', 'deleteCourseCascade']),
         ...mapActions('majors', ['allData']),
         ...mapActions('subjects', ['getAll', 'detail']),
-        ...mapActions('studentCourses', ['index']),
+        ...mapActions('studentCourses', ['index', 'deleteCourseStudent']),
 
         getRole() {
             let user = JSON.parse(localStorage.getItem('user_data'));
@@ -313,7 +313,12 @@ export default {
             this.modalDeleteStudent = true;
         },
         deleteStudent() {
-            console.log('delete');
+            let payload = {id: this.course.id, studentId: this.payloadDelete.id};
+
+            this.deleteCourseStudent(payload).then((result) => {
+                this.modalDeleteStudent = false;
+                this.getStudentCourse(this.$route.params.course);
+            });
         }
     }
 }
