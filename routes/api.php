@@ -95,6 +95,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [BatchController::class, 'store']);
         Route::get('/{id}', [BatchController::class, 'show']);
         Route::patch('/{id}', [BatchController::class, 'update']);
+        Route::delete('/{id}', [BatchController::class, 'destroy']);
     });
     Route::prefix('student-groups')->group(function () {
         Route::get('/', [StudentGroupController::class, 'index']);

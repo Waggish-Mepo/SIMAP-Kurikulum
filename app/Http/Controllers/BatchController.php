@@ -91,6 +91,10 @@ class BatchController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $batchDB = new BatchService;
+
+        $batchDB->delete($id);
+
+        return response()->json('ok');
     }
 }
