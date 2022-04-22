@@ -51,7 +51,7 @@ class StudentController extends Controller
     public function getNotSignedStudent()
     {
         $studentDB = new StudentService;
-        
+
         return response()->json($studentDB->index(['without_region' => true, 'with_student_group' => true, 'order' => true, 'without_pagination' => true]));
     }
 
@@ -144,6 +144,10 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $studentDB = new StudentService;
+
+        $studentDB->delete($id);
+
+        return response()->json('ok');
     }
 }

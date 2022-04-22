@@ -8199,6 +8199,24 @@ var actions = {
         });
       });
     });
+  },
+  deleteCourseStudent: function deleteCourseStudent(_ref5, payload) {
+    var commit = _ref5.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]('/student-courses/' + payload.id + '/student/' + payload.studentId).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -8223,6 +8241,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../router */ "./resources/js/router.js");
+
 
 
 var state = function state() {
@@ -8333,6 +8353,31 @@ var actions = {
           root: true
         });
       })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  deleteStudentGroupCascade: function deleteStudentGroupCascade(_ref7, payload) {
+    var commit = _ref7.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]('/student-groups/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+        _router__WEBPACK_IMPORTED_MODULE_1__["default"].push({
+          name: 'batches',
+          params: {
+            page: 4
+          }
+        });
+      })["catch"](function (error) {
+        console.log(error);
         commit('SET_ERROR_VALIDATE', error.response.data, {
           root: true
         });
@@ -8544,6 +8589,25 @@ var actions = {
           root: true
         });
       })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  deleteStudentUser: function deleteStudentUser(_ref11, payload) {
+    var commit = _ref11.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]('/students/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        console.log(error);
         commit('SET_ERROR_VALIDATE', error.response.data, {
           root: true
         });

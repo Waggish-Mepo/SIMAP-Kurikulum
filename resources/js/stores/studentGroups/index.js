@@ -1,4 +1,5 @@
 import axios from "axios";
+import router from "../../router";
 
 const state = () => ({});
 
@@ -81,6 +82,21 @@ const actions = {
                     commit('SET_GOOD', null, { root: true });
                 })
                 .catch((error) => {
+                    commit('SET_ERROR_VALIDATE', error.response.data, { root: true });
+                })
+        })
+    },
+    deleteStudentGroupCascade({ commit }, payload) {
+        commit('SET_LOADING', true, { root: true });
+        return new Promise((resolve, reject) => {
+            axios.delete('/student-groups/'+payload)
+                .then((response) => {
+                    resolve(response.data);
+                    commit('SET_GOOD', null, { root: true });
+                    router.push({ name: 'batches', params: {page: 4} });
+                })
+                .catch((error) => {
+                    console.log(error);
                     commit('SET_ERROR_VALIDATE', error.response.data, { root: true });
                 })
         })

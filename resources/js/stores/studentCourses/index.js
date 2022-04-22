@@ -59,6 +59,19 @@ const actions = {
                 })
         })
     },
+    deleteCourseStudent({ commit }, payload) {
+        commit('SET_LOADING', true, { root: true });
+        return new Promise((resolve, reject) => {
+            axios.delete('/student-courses/'+payload.id+'/student/'+payload.studentId)
+                .then((response) => {
+                    resolve(response.data);
+                    commit('SET_GOOD', null, { root: true });
+                })
+                .catch((error) => {
+                    commit('SET_ERROR_VALIDATE', error.response.data, { root: true });
+                })
+        })
+    },
 };
 
 export default {

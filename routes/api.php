@@ -88,6 +88,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [StudentCourseController::class, 'store']);
         Route::get('/{id}', [StudentCourseController::class, 'selectStudents']);
         Route::patch('/{id}', [StudentCourseController::class, 'update']);
+        Route::delete('/{id}/student/{studentId}', [StudentCourseController::class, 'destroy']);
     });
     Route::prefix('batches')->group(function () {
         Route::get('/', [BatchController::class, 'index']);
@@ -102,6 +103,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [StudentGroupController::class, 'show']);
         Route::get('/by-course/{id}', [StudentGroupController::class, 'getByCourse']);
         Route::patch('/{id}', [StudentGroupController::class, 'update']);
+        Route::delete('/{id}', [StudentGroupController::class, 'destroy']);
     });
     Route::prefix('students')->group(function () {
         Route::get('/', [StudentController::class, 'index']);
@@ -112,6 +114,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [StudentController::class, 'store']);
         Route::get('/{id}', [StudentController::class, 'show']);
         Route::patch('/{id}', [StudentController::class, 'update']);
+        Route::delete('/{id}', [StudentController::class, 'destroy']);
         Route::get('/regions/{region}', [StudentController::class, 'getByRegion']);
         Route::get('/regions/check/not-signed', [StudentController::class, 'getNotSignedStudent']);
     });
