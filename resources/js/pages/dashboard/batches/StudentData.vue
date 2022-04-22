@@ -285,7 +285,7 @@ export default {
     },
     methods: {
         ...mapActions('majors', ['allData']),
-        ...mapActions('studentGroups', ['detailStudentGroup', 'edit']),
+        ...mapActions('studentGroups', ['detailStudentGroup', 'edit', 'deleteStudentGroupCascade']),
         ...mapActions('batches', ['show']),
         ...mapActions('students', ['create', 'index', 'studentDetail', 'update']),
 
@@ -312,7 +312,11 @@ export default {
             this.modalDeleteStudentGroup = true;
         },
         deleteStudentGroup() {
-            console.log('delete');
+            let payload = this.$route.params.group;
+
+            this.deleteStudentGroupCascade(payload).then((result) => {
+                this.modalDeleteStudentGroup = false;
+            })
         },
         showBatch(id) {
             this.show(id).then((result) => {

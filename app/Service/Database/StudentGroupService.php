@@ -4,6 +4,7 @@ namespace App\Service\Database;
 
 use App\Models\StudentGroup;
 use App\Service\Functions\AcademicCalendar;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
@@ -104,6 +105,29 @@ class StudentGroupService {
         $studentGroup->save();
 
         return $studentGroup->toArray();
+    }
+
+    public function delete($studentGroupId) {
+
+        $studentGroup = StudentGroup::findOrFail($studentGroupId);
+
+        $students = $studentGroup->students();
+
+        DB::transaction(function () use ($studentGroup, $students) {
+
+            foreach($students as $student) {
+                $scorecards = $student->scorecards();
+                $scorecards->scorecardComponents()->delete();
+                $scorecards->delete();
+                $student->absences()->delete();
+                $student->courses()->detach();
+            }
+
+            $students->delete();
+            $studentGroup->delete();
+        });
+
+        return 'ok';
     }
 
     private function fill(StudentGroup $studentGroup, array $payload) {

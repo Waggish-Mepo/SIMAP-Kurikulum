@@ -102,6 +102,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [StudentGroupController::class, 'show']);
         Route::get('/by-course/{id}', [StudentGroupController::class, 'getByCourse']);
         Route::patch('/{id}', [StudentGroupController::class, 'update']);
+        Route::delete('/{id}', [StudentGroupController::class, 'destroy']);
     });
     Route::prefix('students')->group(function () {
         Route::get('/', [StudentController::class, 'index']);
