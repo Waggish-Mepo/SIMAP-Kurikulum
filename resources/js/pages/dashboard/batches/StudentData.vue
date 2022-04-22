@@ -287,7 +287,7 @@ export default {
         ...mapActions('majors', ['allData']),
         ...mapActions('studentGroups', ['detailStudentGroup', 'edit', 'deleteStudentGroupCascade']),
         ...mapActions('batches', ['show']),
-        ...mapActions('students', ['create', 'index', 'studentDetail', 'update']),
+        ...mapActions('students', ['create', 'index', 'studentDetail', 'update', 'deleteStudentUser']),
 
         getMajors() {
             this.allData().then((result) => {
@@ -353,7 +353,13 @@ export default {
             })
         },
         deleteStudent() {
-            console.log('delete');
+            let payload = this.studentEditForm.id;
+
+            this.deleteStudentUser(payload).then((result) => {
+                this.modalDeleteStudentGroup = false;
+                this.modalDeleteStudent = false;
+                this.getStudents(this.payload);
+            })
         },
     }
 }

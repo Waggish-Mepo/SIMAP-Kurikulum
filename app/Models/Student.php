@@ -32,4 +32,14 @@ class Student extends Model
         return $this->belongsToMany(Course::class, 'student_courses')
             ->withTimestamps();
     }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'userable_id');
+    }
+
+    public function reportbooks()
+    {
+        return $this->hasMany(Reportbook::class);
+    }
 }

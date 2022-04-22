@@ -6,6 +6,7 @@ use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
 use App\Service\Functions\Username;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -146,6 +147,26 @@ class StudentService {
         $student->save();
 
         return $student;
+    }
+
+    public function delete($studentId)
+    {
+        $student = Student::findOrFail($studentId);
+
+        DB::transaction(function () use ($student) {
+            $scorecards = $student->scorecards();
+            if(count($scorecards->get())) {
+                $scorecards->scorecardComponents()->delete();
+            }
+            $scorecards->delete();
+            $student->absences()->delete();
+            $student->courses()->detach();
+            $student->user()->delete();
+            $student->reportbooks()->delete();
+            $student->delete();
+        });
+
+        return 'ok';
     }
 
     private function fill(Student $student, array $attributes)

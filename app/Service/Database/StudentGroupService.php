@@ -117,10 +117,16 @@ class StudentGroupService {
 
             foreach($students as $student) {
                 $scorecards = $student->scorecards();
-                $scorecards->scorecardComponents()->delete();
+
+                if(count($scorecards->get())) {
+                    $scorecards->scorecardComponents()->delete();
+                }
+
                 $scorecards->delete();
                 $student->absences()->delete();
                 $student->courses()->detach();
+                $student->user()->delete();
+                $student->reportbooks()->delete();
             }
 
             $students->delete();

@@ -113,6 +113,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [StudentController::class, 'store']);
         Route::get('/{id}', [StudentController::class, 'show']);
         Route::patch('/{id}', [StudentController::class, 'update']);
+        Route::delete('/{id}', [StudentController::class, 'destroy']);
         Route::get('/regions/{region}', [StudentController::class, 'getByRegion']);
         Route::get('/regions/check/not-signed', [StudentController::class, 'getNotSignedStudent']);
     });
