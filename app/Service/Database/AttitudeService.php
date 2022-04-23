@@ -3,7 +3,9 @@
 namespace App\Service\Database;
 
 use App\Models\Attitude;
+use App\Models\Reportbook;
 use App\Models\ReportPeriod;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
@@ -85,11 +87,53 @@ class AttitudeService {
         return $attitude->toArray();
     }
 
-    public function delete($attitudeId) {
+    public function delete($reportPeriodId, $attitudeId) {
+        $reportbookService = new ReportbookService;
 
-        $attitude = Attitude::findOrFail($attitudeId);
+        $attitude = Attitude::with(['attitudePredicates', 'attitudePredicates.studentAttitudes'])->findOrFail($attitudeId);
 
-        return $attitude->toArray();
+        $studentIds = $attitude->attitudePredicates->pluck('studentAttitudes')->flatten(1)->pluck('student_id');
+
+        $reportbookIds = Reportbook::where('report_period_id', $reportPeriodId)
+            ->whereIn('student_id', $studentIds)
+            ->get()
+            ->pluck('id');
+
+        DB::transaction(function () use ($attitude, $reportbookService, $reportbookIds, $reportPeriodId) {
+
+            $attitudePredicates = $attitude->attitudePredicates;
+            $attitudeType = $attitude->type;
+
+            foreach ($attitudePredicates as $attitudePredicate) {
+                $attitudePredicate->studentAttitudes()->delete();
+                $attitudePredicate->delete();
+            }
+
+            foreach ($reportbookIds as $reportbookId) {
+                $reportbookService->update($reportbookId, [], ['update_type' => 'attitude_config']);
+            }
+
+            $attitude->delete();
+
+            $this->reorder($reportPeriodId, $attitudeType);
+        });
+
+        return 'ok';
+    }
+
+    private function reorder($reportPeriodId, $type) {
+        $attitudes = Attitude::orderBy('order', 'asc')
+            ->where('report_period_id', $reportPeriodId)
+            ->where('type', $type)
+            ->get();
+
+        $startOrder = 1;
+
+        foreach($attitudes as $attitude) {
+            $attitude->order = $startOrder;
+            $attitude->save();
+            $startOrder++;
+        }
     }
 
     private function fill(Attitude $attitude, array $payload) {

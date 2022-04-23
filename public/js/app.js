@@ -6326,6 +6326,24 @@ var actions = {
         });
       });
     });
+  },
+  deleteAttitudePredicateCascade: function deleteAttitudePredicateCascade(_ref4, payload) {
+    var commit = _ref4.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]('/attitude-predicates/' + payload.periodId + '/predicate/' + payload.id).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -6455,6 +6473,24 @@ var actions = {
     });
     return new Promise(function (resolve, reject) {
       axios__WEBPACK_IMPORTED_MODULE_0___default().patch('/attitudes/order/' + payload.id, payload.data).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  deleteAttitudeCascade: function deleteAttitudeCascade(_ref7, payload) {
+    var commit = _ref7.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]('/attitudes/' + payload.periodId + '/attitude/' + payload.id).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
