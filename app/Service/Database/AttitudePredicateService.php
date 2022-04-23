@@ -64,7 +64,7 @@ class AttitudePredicateService {
 
     public function delete($reportPeriodId, $attitudePredicateId) {
 
-        $reportbookService = new ReportbookService;;
+        $reportbookService = new ReportbookService;
 
         $attitudePredicate = AttitudePredicate::findOrFail($attitudePredicateId);
 

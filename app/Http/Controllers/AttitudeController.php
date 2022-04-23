@@ -116,7 +116,7 @@ class AttitudeController extends Controller
             $upData = $attitudeDB->detailByOrder($upOrder, $reportPeriod);
             $upData['order'] = $old['order'];
             $attitudeDB->update($upData['id'], $upData);
-            
+
             $old['order'] = $old['order'] - 1;
             $attitudeDB->update($id, $old);
         }
@@ -126,7 +126,7 @@ class AttitudeController extends Controller
             $downData = $attitudeDB->detailByOrder($downOrder, $reportPeriod);
             $downData['order'] = $old['order'];
             $attitudeDB->update($downData['id'], $downData);
-            
+
             $old['order'] = $old['order'] + 1;
             $attitudeDB->update($id, $old);
         }
@@ -140,8 +140,12 @@ class AttitudeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($periodId, $id)
     {
-        //
+        $attitudeDB = new AttitudeService;
+
+        $attitudeDB->delete($periodId, $id);
+
+        return 'ok';
     }
 }

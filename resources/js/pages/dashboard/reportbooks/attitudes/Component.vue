@@ -199,7 +199,7 @@ export default {
     },
     methods: {
         ...mapActions('reportPeriods', ['detail']),
-        ...mapActions('attitudes', ['index', 'attitudeTypes', 'show', 'create', 'edit', 'editOrder']),
+        ...mapActions('attitudes', ['index', 'attitudeTypes', 'show', 'create', 'edit', 'editOrder', 'deleteAttitudeCascade']),
         ...mapActions('attitudePredicates', ['showAP', 'createAP', 'editAP', 'deleteAttitudePredicateCascade']),
 
         getPeriod(id) {
@@ -256,7 +256,12 @@ export default {
             this.modalDelete = true;
         },
         deleteComponent() {
-            console.log('delete');
+            let payload = {id: this.componentEditPayload.id, periodId: this.$route.params.period};
+
+            this.deleteAttitudeCascade(payload).then((result) => {
+                this.modalDelete = false;
+                this.getAttitudes();
+            })
         },
         showModalAddAP(id) {
             this.predicatePayload.attitude_id = id;

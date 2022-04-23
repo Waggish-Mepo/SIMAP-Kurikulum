@@ -174,6 +174,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [AttitudeController::class, 'show']);
         Route::patch('/{id}', [AttitudeController::class, 'update']);
         Route::patch('/order/{id}', [AttitudeController::class, 'editOrder']);
+        Route::delete('/{periodId}/attitude/{id}', [AttitudeController::class, 'destroy']);
     });
     Route::prefix('attitude-predicates')->group(function () {
         Route::post('/', [AttitudePredicateController::class, 'store']);
