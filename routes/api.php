@@ -179,6 +179,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [AttitudePredicateController::class, 'store']);
         Route::get('/{id}', [AttitudePredicateController::class, 'show']);
         Route::patch('/{id}', [AttitudePredicateController::class, 'update']);
+        Route::delete('/{reportPeriodId}/predicate/{id}', [AttitudePredicateController::class, 'destroy']);
     });
     Route::prefix('regions')->group(function () {
         Route::get('/', [RegionController::class, 'index']);

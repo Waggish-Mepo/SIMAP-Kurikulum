@@ -200,7 +200,7 @@ export default {
     methods: {
         ...mapActions('reportPeriods', ['detail']),
         ...mapActions('attitudes', ['index', 'attitudeTypes', 'show', 'create', 'edit', 'editOrder']),
-        ...mapActions('attitudePredicates', ['showAP', 'createAP', 'editAP']),
+        ...mapActions('attitudePredicates', ['showAP', 'createAP', 'editAP', 'deleteAttitudePredicateCascade']),
 
         getPeriod(id) {
             this.detail(id).then((result) => {
@@ -296,7 +296,12 @@ export default {
             this.modalDeleteAP = true;
         },
         deleteAttitudePredicate() {
-            console.log('delete');
+            let payload = {id: this.predicateEditPayload.id, periodId: this.$route.params.period};
+
+            this.deleteAttitudePredicateCascade(payload).then((result) => {
+                this.modalDeleteAP = false;
+                this.getAttitudes();
+            })
         }
     }
 }
@@ -308,12 +313,12 @@ td {
 }
 
 th.th-comp {
-    border-right-width: 1px !important; 
+    border-right-width: 1px !important;
     padding: 8px 0 !important
 }
 
 th.th-comp.up-down {
-    border-left-width: 1px !important; 
+    border-left-width: 1px !important;
     width: 80px !important
 }
 </style>

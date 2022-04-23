@@ -4,6 +4,8 @@ namespace App\Service\Database;
 
 use App\Models\Attitude;
 use App\Models\AttitudePredicate;
+use App\Models\Reportbook;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Ramsey\Uuid\Uuid;
 
@@ -60,11 +62,31 @@ class AttitudePredicateService {
         return $attitudePredicate->toArray();
     }
 
-    public function delete($attitudePredicateId) {
+    public function delete($reportPeriodId, $attitudePredicateId) {
+
+        $reportbookService = new ReportbookService;;
 
         $attitudePredicate = AttitudePredicate::findOrFail($attitudePredicateId);
 
-        return $attitudePredicate->toArray();
+        $studentAttitudes = $attitudePredicate->studentAttitudes();
+
+        $studentIds = $studentAttitudes->pluck('student_id');
+
+        $reportbookIds = Reportbook::where('report_period_id', $reportPeriodId)
+            ->whereIn('student_id', $studentIds)
+            ->get()
+            ->pluck('id');
+
+        DB::transaction(function () use ($attitudePredicate, $reportbookService, $reportbookIds) {
+            $attitudePredicate->studentAttitudes()->delete();
+            $attitudePredicate->delete();
+
+            foreach ($reportbookIds as $reportbookId) {
+                $reportbookService->update($reportbookId, [], ['update_type' => 'attitude_config']);
+            }
+        });
+
+        return 'ok';
     }
 
     private function fill(AttitudePredicate $attitudePredicate, array $payload) {
