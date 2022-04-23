@@ -6619,6 +6619,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../router */ "./resources/js/router.js");
+
 
 
 var state = function state() {
@@ -6691,6 +6693,30 @@ var actions = {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true
+        });
+      })["catch"](function (error) {
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
+  },
+  deleteBatchCascade: function deleteBatchCascade(_ref5, payload) {
+    var commit = _ref5.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]('/batches/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+        _router__WEBPACK_IMPORTED_MODULE_1__["default"].push({
+          name: 'batches',
+          params: {
+            page: 4
+          }
         });
       })["catch"](function (error) {
         commit('SET_ERROR_VALIDATE', error.response.data, {
