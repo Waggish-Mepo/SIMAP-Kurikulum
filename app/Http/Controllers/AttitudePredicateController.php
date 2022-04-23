@@ -85,8 +85,12 @@ class AttitudePredicateController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($reportPeriodId, $id)
     {
-        //
+        $attitudePredicateDB = new AttitudePredicateService;
+
+        $attitudePredicateDB->delete($reportPeriodId, $id);
+
+        return response()->json('ok');
     }
 }
