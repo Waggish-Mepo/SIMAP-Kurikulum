@@ -318,7 +318,7 @@ export default {
                         }
                     });
                 } else {
-                    this.attitudeIds.splice(0, this.attitudeIds.length);
+                    this.attitudeIds = [];
                 }
             })
         },

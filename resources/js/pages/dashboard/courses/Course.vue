@@ -53,7 +53,7 @@
         </div>
 
         <!-- modal -->
-        <modal v-if="modalAdd" @close="modalAdd = false" :action="addCourse">
+        <modal v-if="modalAdd" @close="modalAdd = false" :action="checkCourse">
             <h5 slot="header">Tambah Pelajaran</h5>
             <div slot="body">
                 <div class="alert alert-danger mb-3" v-if="errorMessage">
@@ -125,6 +125,7 @@ export default {
             curriculums: [],
             majors: [],
             courses: [],
+            subject: {},
             submitForm: {
                 curriculum: null,
                 caption: null,
@@ -151,7 +152,7 @@ export default {
     },
     methods: {
         ...mapActions('courses', ['create', 'index', 'allCurriculums', 'entryYears']),
-        ...mapActions('subjects', ['getAll', 'searchByCourse']),
+        ...mapActions('subjects', ['getAll', 'searchByCourse', 'detail']),
         ...mapActions('majors', ['allData']),
 
         getMajors() {
@@ -193,6 +194,19 @@ export default {
                 this.courses = result;
             });
         },
+        autoCaption(id) {
+            this.detail(id).then((result) => {
+                this.submitForm.caption = result.name;
+                this.addCourse();
+            });
+        },
+        checkCourse() {
+            if (!this.submitForm.caption) {
+                this.autoCaption(this.submitForm.subject_id);
+            } else {
+                this.addCourse();
+            }
+        },
         addCourse() {
             this.create(this.submitForm).then((result) => {
                 this.modalAdd = false;
@@ -203,7 +217,7 @@ export default {
                 this.submitForm.subject_id = null;
                 this.getCourses(this.payload);
             });
-        },
+        }
     }
 }
 </script>
