@@ -166,7 +166,7 @@ export default {
     },
     methods: {
         ...mapActions('studentGroups', ['create', 'index']),
-        ...mapActions('batches', ['show', 'edit']),
+        ...mapActions('batches', ['show', 'edit', 'deleteBatchCascade']),
         ...mapActions('majors', ['allData']),
 
         getStudentGroups(payload) {
@@ -211,7 +211,11 @@ export default {
             this.modalDelete = true;
         },
         deleteBatch() {
-            console.log('delete');
+            let payload = this.editForm.id, data;
+
+            this.deleteBatchCascade(payload).then((result) => {
+                this.modalDelete = false;
+            })
         },
         getMajors() {
             this.allData().then((result) => {

@@ -4,6 +4,7 @@ namespace App\Service\Database;
 
 use App\Models\Batch;
 use App\Service\Functions\AcademicCalendar;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
@@ -79,6 +80,40 @@ class BatchService {
         $batch->save();
 
         return $batch->toArray();
+    }
+
+    public function delete($batchId) {
+
+        $batch = Batch::findOrFail($batchId);
+
+        $studentGroups = $batch->studentGroups();
+
+        DB::transaction(function () use ($batch, $studentGroups) {
+
+            foreach ($studentGroups as $studentGroup) {
+                $students = $studentGroup->students();
+
+                foreach($students as $student) {
+                    $scorecards = $student->scorecards();
+
+                    if(count($scorecards->get())) {
+                        $scorecards->scorecardComponents()->delete();
+                    }
+
+                    $scorecards->delete();
+                    $student->absences()->delete();
+                    $student->courses()->detach();
+                    $student->user()->delete();
+                    $student->reportbooks()->delete();
+                }
+                $students->delete();
+            }
+
+            $studentGroups->delete();
+            $batch->delete();
+        });
+
+        return 'ok';
     }
 
 
