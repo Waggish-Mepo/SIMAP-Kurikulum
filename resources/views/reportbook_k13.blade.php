@@ -200,7 +200,7 @@
                     <div class="third-section">
                         <h5>B. Catatan Akademik</h5>
                         <div class="card">
-                        {{$reportbook['notes']}}
+                        {{$reportbook['notes'] ?? '-'}}
                         </div>
                     </div>
                     <div class="fourth-section">

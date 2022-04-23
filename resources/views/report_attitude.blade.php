@@ -184,7 +184,7 @@
                     <div class="third-section">
                         <h5>E. Catatan Perkembangan Karakter</h5>
                         <div class="card">
-                        {{$reportbook['attitude_notes']}}
+                        {{$reportbook['attitude_notes'] ?? '-'}}
                         </div>
                     </div>
                     <div class="five-section">
