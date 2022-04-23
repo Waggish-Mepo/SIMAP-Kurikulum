@@ -201,6 +201,9 @@ export default {
         addTeacher() {
             this.create(this.teacherAddForm).then((result) => {
                 this.modalAdd = false;
+                this.teacherAddForm.name = null;
+                this.teacherAddForm.nuptk = null;
+                this.teacherAddForm.jk = null;
                 this.getTeachers(this.payloadGet);
             })
         },

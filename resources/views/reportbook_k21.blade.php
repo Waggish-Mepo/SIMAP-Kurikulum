@@ -196,7 +196,7 @@
                     <div class="third-section">
                         <h5>B. Catatan Akademik</h5>
                         <div class="card">
-                        {{$reportbook['notes']}}
+                        {{$reportbook['notes'] ?? '-'}}
                         </div>
                     </div>
                     <div class="fourth-section">
@@ -211,15 +211,15 @@
                             <tbody>
                                 <tr>
                                     <td>Sakit</td>
-                                    <td>{{$reportbook['absences']['sakit']}}</td>
+                                    <td>{{$reportbook['absences']['sakit'] ?? '-'}}</td>
                                 </tr>
                                 <tr>
                                     <td>Ijin</td>
-                                    <td>{{$reportbook['absences']['izin']}}</td>
+                                    <td>{{$reportbook['absences']['izin'] ?? '-'}}</td>
                                 </tr>
                                 <tr>
                                     <td>Tanpa Keterangan</td>
-                                    <td>{{$reportbook['absences']['alpa']}}</td>
+                                    <td>{{$reportbook['absences']['alpa'] ?? '-'}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -234,7 +234,7 @@
                             <div class="column right">
                                 <p>Wali Kelas</p>
                                 <div class="signature"></div>
-                                <div class="name"></div>
+                                <div class="name">{{$student_counselor['name'] ?? '-'}}</div>
                             </div>
                         </div>
                         <div class="last-content">
@@ -242,7 +242,7 @@
                                 <br>Kepala Sekolah
                             </p>
                             <div class="signature"></div>
-                            <div class="name"></div>
+                            <div class="name">{{$headmaster_name}}</div>
                         </div>
                     </div>
                 </td>

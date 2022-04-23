@@ -206,6 +206,7 @@ export default {
                 this.modalAdd = false;
                 this.payloadGet.schoolYear = '';
                 this.submitAddForm.title = null;
+                this.submitAddForm.type = null;
                 this.getReportPeriods(this.payloadGet);
             });
         },

@@ -98,6 +98,10 @@
                 </div>
             </div>
         </div>
+        <div class="card-body text-center" v-if="gc.general_weight">
+            <p class="text-secondary text-capitalize">bobot penilaian</p>
+            <p class="text-black">{{gc.general_weight}}</p>
+        </div>
     </div>
     <div class="card w-100 mb-3 mt-3 p-2" v-if="components.length < 1">
         <p class="text-center">Data penilaian belum tersedia.</p>
@@ -233,7 +237,7 @@
                         <button class="btn btn-outline-secondary" @click="downScore('knowledge_weight')">
                             <span class="fas fa-minus"></span>
                         </button>
-                        <input type="number" class="form-control" v-model="knowledge_weight" :class="{'is-invalid': errors.knowledge_weight}">
+                        <input type="number" class="form-control" v-model="knowledge_weight" :class="{'is-invalid': errors.knowledge_weight}" @keyup="checkNum">
                         <button class="btn btn-outline-secondary" @click="upScore('knowledge_weight')">
                             <span class="fas fa-plus i-input"></span>
                         </button>
@@ -248,7 +252,7 @@
                         <button class="btn btn-outline-secondary" @click="downScore('skill_weight')">
                             <span class="fas fa-minus"></span>
                         </button>
-                        <input type="number" class="form-control" v-model="skill_weight" :class="{'is-invalid': errors.skill_weight}">
+                        <input type="number" class="form-control" v-model="skill_weight" :class="{'is-invalid': errors.skill_weight}" @keyup="checkNum">
                         <button class="btn btn-outline-secondary" @click="upScore('skill_weight')">
                             <span class="fas fa-plus i-input"></span>
                         </button>
@@ -256,6 +260,21 @@
                     <div class="invalid-feedback" v-if="errors.skill_weight">
                         {{ errors.skill_weight[0] }}
                     </div>
+                </div>
+            </div>
+            <div class="form-group col-sm-6" v-if="course.curriculum == 'K21 | Sekolah Penggerak'">
+                <label class="mb-2">Bobot Penilaian</label>
+                <div class="input-group">
+                    <button class="btn btn-outline-secondary" @click="downScore('general_weight')">
+                        <span class="fas fa-minus"></span>
+                    </button>
+                    <input type="number" class="form-control" v-model="general_weight" :class="{'is-invalid': errors.general_weight}" @keyup="checkNum">
+                    <button class="btn btn-outline-secondary" @click="upScore('general_weight')">
+                        <span class="fas fa-plus i-input"></span>
+                    </button>
+                </div>
+                <div class="invalid-feedback" v-if="errors.general_weight">
+                    {{ errors.general_weight[0] }}
                 </div>
             </div>
         </div>
@@ -287,7 +306,7 @@
                         <button class="btn btn-outline-secondary" @click="downScore('knowledge_weight_edit')">
                             <span class="fas fa-minus"></span>
                         </button>
-                        <input type="number" class="form-control" v-model="componentEditForm.knowledge_weight">
+                        <input type="number" class="form-control" v-model="componentEditForm.knowledge_weight" @keyup="checkNum">
                         <button class="btn btn-outline-secondary" @click="upScore('knowledge_weight_edit')">
                             <span class="fas fa-plus i-input"></span>
                         </button>
@@ -299,11 +318,23 @@
                         <button class="btn btn-outline-secondary" @click="downScore('skill_weight_edit')">
                             <span class="fas fa-minus"></span>
                         </button>
-                        <input type="number" class="form-control" v-model="componentEditForm.skill_weight">
+                        <input type="number" class="form-control" v-model="componentEditForm.skill_weight" @keyup="checkNum">
                         <button class="btn btn-outline-secondary" @click="upScore('skill_weight_edit')">
                             <span class="fas fa-plus i-input"></span>
                         </button>
                     </div>
+                </div>
+            </div>
+            <div class="form-group col-sm-6" v-if="course.curriculum == 'K21 | Sekolah Penggerak'">
+                <label class="mb-2">Bobot Penilaian</label>
+                <div class="input-group">
+                    <button class="btn btn-outline-secondary" @click="downScore('general_weight_edit')">
+                        <span class="fas fa-minus"></span>
+                    </button>
+                    <input type="number" class="form-control" v-model="componentEditForm.general_weight" @keyup="checkNum">
+                    <button class="btn btn-outline-secondary" @click="upScore('general_weight_edit')">
+                        <span class="fas fa-plus i-input"></span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -450,41 +481,64 @@ export default {
             this.modalEditPredikat = false;
             this.modalDeletePredikat = true;
         },
+        checkNum(e) {
+            let num = e.target.value;
+            if (parseInt(num) > 9) {
+                let str = num.toString();
+                e.target.value = str.slice(0, 1);
+            }
+        },
         upScore(model) {
             if(model === "knowledge_weight") {
-                if(this.knowledge_weight < 10) {
-                    this.knowledge_weight += 1;
+                if(parseInt(this.knowledge_weight) < 9) {
+                    this.knowledge_weight = parseInt(this.knowledge_weight) + 1;
                 }
             } else if (model === "skill_weight") {
-                if(this.skill_weight < 10) {
-                    this.skill_weight += 1;
+                if(parseInt(this.skill_weight) < 9) {
+                    this.skill_weight = parseInt(this.skill_weight) + 1;
+                }
+            } else if (model === "general_weight") {
+                if(parseInt(this.general_weight) < 9) {
+                    this.general_weight = parseInt(this.general_weight) + 1;
                 }
             } else if (model === "knowledge_weight_edit") {
-                if (this.componentEditForm.knowledge_weight < 10) {
-                    this.componentEditForm.knowledge_weight += 1;
+                if (parseInt(this.componentEditForm.knowledge_weight) < 9) {
+                    this.componentEditForm.knowledge_weight = parseInt(this.componentEditForm.knowledge_weight) + 1;
                 }
             } else if (model === "skill_weight_edit") {
-                if (this.componentEditForm.skill_weight < 10) {
-                    this.componentEditForm.skill_weight += 1;
+                if (parseInt(this.componentEditForm.skill_weight) < 9) {
+                    this.componentEditForm.skill_weight = parseInt(this.componentEditForm.skill_weight) + 1;
+                }
+            } else if (model === "general_weight_edit") {
+                if (parseInt(this.componentEditForm.general_weight) < 9) {
+                    this.componentEditForm.general_weight = parseInt(this.componentEditForm.general_weight) + 1;
                 }
             }
         },
         downScore(model) {
             if(model === "knowledge_weight") {
-                if(this.knowledge_weight !== 0) {
-                    this.knowledge_weight -= 1;
+                if(parseInt(this.knowledge_weight) !== 0) {
+                    this.knowledge_weight = parseInt(this.knowledge_weight) - 1;
                 }
             } else if (model === "skill_weight") {
-                if(this.skill_weight !== 0) {
-                    this.skill_weight -= 1;
+                if(parseInt(this.skill_weight) !== 0) {
+                    this.skill_weight = parseInt(this.skill_weight) - 1;
+                }
+            } else if (model === "general_weight") {
+                if(parseInt(this.general_weight) !== 0) {
+                    this.general_weight = parseInt(this.general_weight) - 1;
                 }
             } else if (model === "knowledge_weight_edit") {
-                if (this.componentEditForm.knowledge_weight !== 0){
-                    this.componentEditForm.knowledge_weight -= 1;
+                if (parseInt(this.componentEditForm.knowledge_weight) !== 0){
+                    this.componentEditForm.knowledge_weight = parseInt(this.componentEditForm.knowledge_weight) - 1;
                 }
             } else if (model === "skill_weight_edit") {
-                if (this.componentEditForm.knowledge_weight !== 0) {
-                    this.componentEditForm.skill_weight -= 1;
+                if (parseInt(this.componentEditForm.skill_weight) !== 0) {
+                    this.componentEditForm.skill_weight = parseInt(this.componentEditForm.skill_weight) - 1;
+                }
+            } else if (model === "general_weight_edit") {
+                if (parseInt(this.componentEditForm.general_weight) !== 0) {
+                    this.componentEditForm.general_weight = parseInt(this.componentEditForm.general_weight) - 1;
                 }
             }
         },
@@ -516,7 +570,7 @@ export default {
                 this.componentSubmitForm.knowledge_weight = this.knowledge_weight;
                 this.componentSubmitForm.skill_weight = this.skill_weight;
             } else {
-                this.componentSubmitForm.general_weight = 1;
+                this.componentSubmitForm.general_weight = this.general_weight;
             }
             this.createComponents(this.componentSubmitForm).then((result) => {
                 this.componentSubmitForm.title = null;
@@ -525,6 +579,7 @@ export default {
                 this.knowledge_weight = 1;
                 this.componentSubmitForm.skill_weight = null;
                 this.skill_weight = 1;
+                this.general_weight = 1;
                 this.componentSubmitForm.general_weight = null;
                 this.modalAddComponent = false;
                 this.getGradebookComponents(this.$route.params.gb);

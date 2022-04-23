@@ -30,15 +30,15 @@
                 <tbody style="border-top: 0;" v-for="(data, index) in attitude" :key="index">
                     <tr>
                         <td class="text-center" v-if="data.attitude_predicates.length < 1" style="width: 80px !important">
-                            <a href="#" class="text-dark" v-if="data.order > 1" @click="orderUp(data.id)"><i class="fas fa-arrow-up"></i></a>
-                            <a href="#" class="text-dark" v-if="data.order < attitude.length" @click="orderDown(data.id)"><i class="fas fa-arrow-down" style="margin-left: 8px !important"></i></a>
+                            <a href="#" class="text-dark" v-if="index > 0" @click="orderUp(data.id)"><i class="fas fa-arrow-up"></i></a>
+                            <a href="#" class="text-dark" v-if="index < attitude.length-1" @click="orderDown(data.id)"><i class="fas fa-arrow-down" style="margin-left: 8px !important"></i></a>
                         </td>
                         <td class="text-center" v-else :rowspan="data.attitude_predicates.length+1" style="vertical-align : middle; width: 80px !important">
-                            <a href="#" class="text-dark" v-if="data.order > 1" @click="orderUp(data.id)"><i class="fas fa-arrow-up"></i></a>
-                            <a href="#" class="text-dark" v-if="data.order < attitude.length" @click="orderDown(data.id)"><i class="fas fa-arrow-down" style="margin-left: 8px !important"></i></a>
+                            <a href="#" class="text-dark" v-if="index > 0" @click="orderUp(data.id)"><i class="fas fa-arrow-up"></i></a>
+                            <a href="#" class="text-dark" v-if="index < attitude.length-1" @click="orderDown(data.id)"><i class="fas fa-arrow-down" style="margin-left: 8px !important"></i></a>
                         </td>
-                        <td class="text-center" v-if="data.attitude_predicates.length < 1">{{data.order}}.</td>
-                        <td class="text-center" v-else :rowspan="data.attitude_predicates.length+1" style="vertical-align : middle;">{{data.order}}.</td>
+                        <td class="text-center" v-if="data.attitude_predicates.length < 1">{{index+1}}.</td>
+                        <td class="text-center" v-else :rowspan="data.attitude_predicates.length+1" style="vertical-align : middle;">{{index+1}}.</td>
                         <td class="text-center" v-if="data.attitude_predicates.length < 1"><a href="#" @click="showModalEdit(data.id)" class="text-dark">{{data.name}}</a></td>
                         <td class="text-center" v-else :rowspan="data.attitude_predicates.length+1" style="vertical-align : middle;"><a href="#" @click="showModalEdit(data.id)" class="text-dark">{{data.name}}</a></td>
                         <td class="text-center" colspan="2"><a href="#" @click="showModalAddAP(data.id)">Tambah Predikat</a></td>
