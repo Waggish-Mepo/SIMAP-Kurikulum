@@ -12,7 +12,8 @@ use Ramsey\Uuid\Uuid;
 class RegionService {
 
     public function index($filter = []) {
-        $orderBy = $filter['order_by'] ?? 'ASC';
+        $orderBy = $filter['order_by'] ?? 'created_at';
+        $orderType = $filter['order_type'] ?? 'ASC';
         $name = $filter['name'] ?? null;
         $teacherId = $filter['teacher_id'] ?? null;
         $teacher = $filter['with_teacher'] ?? false;
@@ -20,7 +21,7 @@ class RegionService {
         $perPage = $filter['page'] ?? 20;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
-        $query = Region::orderBy('created_at', $orderBy);
+        $query = Region::orderBy($orderBy, $orderType);
 
         if ($teacher) {
             $query->with('teacher');
