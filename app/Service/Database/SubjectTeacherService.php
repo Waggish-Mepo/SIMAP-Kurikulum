@@ -65,6 +65,15 @@ class SubjectTeacherService {
         return $subject;
     }
 
+    public function delete($subjectTeacherId) {
+
+        $subjectTeacher = SubjectTeacher::findOrFail($subjectTeacherId);
+
+        $subjectTeacher->delete();
+
+        return 'ok';
+    }
+
     private function fill($subject, array $attributes)
     {
         foreach ($attributes as $key => $value) {
