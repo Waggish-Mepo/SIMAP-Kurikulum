@@ -17,4 +17,16 @@ class ReportPeriod extends Model
     public function attitudes() {
         return $this->hasMany(Attitude::class);
     }
+
+    public function reportbooks() {
+        return $this->hasMany(Reportbook::class);
+    }
+
+    public function gradebooks() {
+        return $this->hasMany(Gradebook::class);
+    }
+
+    public function absences() {
+        return $this->hasMany(StudentAbsence::class);
+    }
 }

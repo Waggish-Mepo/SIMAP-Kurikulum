@@ -22,12 +22,12 @@ class ReportPeriodController extends Controller
 
         if ($orderBy == '' && $search == '') {
             return response()->json($reportPeriodDB->index(['page' => $perPage]));
-        } 
+        }
 
         if ($search != '') {
             return response()->json($reportPeriodDB->index(['title' => $search, 'page' => $perPage]));
         }
-        
+
         if ($orderBy != '' && $schoolYear != '') {
             return response()->json($reportPeriodDB->index(['school_year' => $schoolYear, 'page' => $perPage]));
         }
@@ -104,6 +104,10 @@ class ReportPeriodController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $reportPeriodDB = new ReportPeriodService;
+
+        $reportPeriodDB->delete($id);
+
+        return response()->json('ok');
     }
 }
