@@ -72,6 +72,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [ReportPeriodController::class, 'store']);
         Route::get('/{id}', [ReportPeriodController::class, 'show']);
         Route::patch('/{id}', [ReportPeriodController::class, 'update']);
+        Route::delete('/{id}', [ReportPeriodController::class, 'destroy']);
     });
     Route::prefix('courses')->group(function () {
         Route::get('/', [CourseController::class, 'index']);

@@ -7611,6 +7611,25 @@ var actions = {
         });
       });
     });
+  },
+  deleteReportPeriodCascade: function deleteReportPeriodCascade(_ref6, payload) {
+    var commit = _ref6.commit;
+    commit('SET_LOADING', true, {
+      root: true
+    });
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]('/report-periods/' + payload).then(function (response) {
+        resolve(response.data);
+        commit('SET_GOOD', null, {
+          root: true
+        });
+      })["catch"](function (error) {
+        console.log(error);
+        commit('SET_ERROR_VALIDATE', error.response.data, {
+          root: true
+        });
+      });
+    });
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
