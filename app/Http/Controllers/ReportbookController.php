@@ -300,6 +300,6 @@ class ReportbookController extends Controller
      */
     public function destroy($id)
     {
-        //
+
     }
 }

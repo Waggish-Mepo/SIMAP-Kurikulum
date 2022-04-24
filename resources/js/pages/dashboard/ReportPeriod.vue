@@ -178,7 +178,7 @@ export default {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
     },
     methods: {
-        ...mapActions('reportPeriods', ['create', 'index', 'detail', 'edit', 'schoolYears']),
+        ...mapActions('reportPeriods', ['create', 'index', 'detail', 'edit', 'schoolYears', 'deleteReportPeriodCascade']),
 
         getSchoolYears() {
             this.schoolYears().then((result) => {
@@ -229,7 +229,13 @@ export default {
             this.modalDelete = true;
         },
         deleteReportPeriod() {
-            console.log('delete');
+             let payload = this.submitEditForm.id;
+
+            this.deleteReportPeriodCascade(payload).then((result) => {
+                this.modalDelete = false;
+                this.payloadGet.schoolYear = '';
+                this.getReportPeriods(this.payloadGet);
+            })
         }
     }
 }
