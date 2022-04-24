@@ -4,6 +4,7 @@ namespace App\Service\Database;
 
 use App\Models\ReportPeriod;
 use App\Service\Functions\AcademicCalendar;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
@@ -75,6 +76,47 @@ class ReportPeriodService{
         return $reportPeriod->toArray();
     }
 
+    public function delete($reportPeriodId) {
+
+        $reportPeriod = ReportPeriod::findOrFail($reportPeriodId);
+
+        $attitudes = $reportPeriod->attitudes();
+        $reportbooks = $reportPeriod->reportbooks();
+        $gradebooks = $reportPeriod->gradebooks();
+        $absences = $reportPeriod->absences();
+
+        DB::transaction(function () use ($reportPeriod, $attitudes, $reportbooks, $gradebooks, $absences) {
+
+            foreach ($attitudes as $attitude) {
+                $attitudePredicates = $attitude->attitudePredicates;
+
+                foreach ($attitudePredicates as $attitudePredicate) {
+                    $attitudePredicate->studentAttitudes()->delete();
+                    $attitudePredicate->delete();
+                }
+            }
+
+            foreach ($gradebooks as $gradebook) {
+                $gradebookComponents = $gradebook->components();
+
+                foreach($gradebookComponents as $gradebookComponent) {
+                    $gradebookComponent->scorecardComponents()->delete();
+                }
+
+                $gradebookComponents->delete();
+                $gradebook->scorecards()->delete();
+                $gradebook->predicateLetters()->delete();
+            }
+
+            $attitudes->delete();
+            $reportbooks->delete();
+            $absences->delete();
+            $gradebooks->delete();
+            $reportPeriod->delete();
+        });
+
+        return 'ok';
+    }
 
     private function fill(ReportPeriod $reportPeriod, array $payload) {
         foreach ($payload as $key => $value) {
