@@ -96,6 +96,16 @@ class SubjectService{
         return 'ok';
     }
 
+    public function deleteTeacher($subjectId) {
+        $subject = Subject::findOrFail($subjectId);
+
+        DB::transaction(function () use ($subject) {
+            $subject->subjectTeachers()->delete();
+        });
+
+        return 'ok';
+    }
+
 
     private function fill(Subject $subject, array $payload) {
         foreach ($payload as $key => $value) {

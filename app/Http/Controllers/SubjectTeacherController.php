@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Service\Database\SubjectService;
 use Illuminate\Http\Request;
 use App\Service\Database\SubjectTeacherService;
 
@@ -71,24 +72,49 @@ class SubjectTeacherController extends Controller
     public function update(Request $request, $id)
     {
         $subjectTeachers = new SubjectTeacherService;
-        $created = [];
-        if($request->teachers) {
-            foreach ($request->teachers as $teacher) {
-                $check = $subjectTeachers->index(['subject_id' => $id, 'teacher_id' => $teacher]);
-                if (!count($check)) {
-                    $created[] = $subjectTeachers->create([
+        $subjectService = new SubjectService;
+
+        $teacherIds = collect($request->teachers);
+
+        $response = [];
+        if(count($request->teachers)) {
+
+            $existsSubjectTeachers = $subjectTeachers->index(['subject_id' => $id]);
+
+            if (!count($existsSubjectTeachers)) {
+                foreach($request->teachers as $teacher) {
+                    $response[] = $subjectTeachers->create([
                         'subject_id' => $request->subject_id,
                         'teacher_id' => $teacher
                     ]);
-                } else {
-                    $created[] = $subjectTeachers->update($check[0]['id'], [
+                }
+            } else {
+                foreach ($existsSubjectTeachers as $teacher) {
+                    if (!$teacherIds->contains($teacher['teacher_id'])) {
+                        $subjectTeachers->delete($teacher['id']);
+                    }
+                }
+
+                $existTeacherIds = collect($existsSubjectTeachers)->pluck('teacher_id');
+
+                foreach($request->teachers as $teacher) {
+                    if ($existTeacherIds->contains($teacher)) {
+                        continue;
+                    }
+
+                    $response[] = $subjectTeachers->create([
                         'subject_id' => $request->subject_id,
                         'teacher_id' => $teacher
                     ]);
                 }
             }
+        } else {
+            $subjectService->deleteTeacher($request->subject_id);
+
+            $response = ['ok'];
         }
-        return response()->json($created);
+
+        return response()->json($response);
     }
 
     /**
