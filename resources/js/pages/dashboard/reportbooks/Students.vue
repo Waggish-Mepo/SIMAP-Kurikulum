@@ -48,9 +48,12 @@
                 <tbody>
                     <tr>
                         <vue-good-table
+                            mode="remote"
                             :columns="columns"
                             :rows="rows"
-                            :pagination-options="paginationOpts"
+                            :pagination-options="{enabled: false}"
+                            @on-sort-change="onSortChange"
+                            @on-column-filter="onColumnFilter"
                             :sort-options="sortOpts"
                             :fixed-header="true"
                             :line-numbers="true"
@@ -63,6 +66,7 @@
                             </span>
                         </template>
                         </vue-good-table>
+                        <pagination v-if="!withoutPagination" class="mt-3" :pagination="pages" @paginate="getStudents" :offset="2" :data="payloadGet"></pagination>
                     </tr>
                 </tbody>
             </table>
@@ -130,10 +134,13 @@
 import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
 // modal
 import modalComponent from '../../../components/Modal.vue';
+// pagination
+import paginateComponent from '../../../components/Pagination.vue';
 export default {
     name: "allStudents",
     components: {
-        "modal": modalComponent
+        "modal": modalComponent,
+        "pagination": paginateComponent
     },
     data() {
         return {
@@ -141,21 +148,6 @@ export default {
             studentGroups: [],
             // modalUpdate: false,
             sortOpts: { enabled: true },
-            paginationOpts: {
-                enabled: true,
-                mode: "records",
-                perPage: 40,
-                position: "bottom",
-                perPageDropdown: [10, 50, 100],
-                dropdownAllowAll: true,
-                setCurrentPage: 1,
-                nextLabel: "Next",
-                prevLabel: "Prev",
-                rowsPerPageLabel: "Rows per page",
-                ofLabel: "of",
-                pageLabel: "Page", // for 'pages' mode
-                allLabel: "All",
-            },
             rows: [],
             columns: [
                 {
@@ -182,7 +174,24 @@ export default {
             ],
             teacherIds: [],
             role: null,
-            regionId: null
+            regionId: null,
+            pages: {
+                total: 0,
+                per_page: 20,
+                from: 1,
+                to: 0,
+                current_page: 1,
+                last_page: 1,
+            },
+            payloadGet: {
+                search: '',
+                searchVal: '',
+                page: 1,
+                per_page: 20,
+                field:"student_group_id",
+                sort:"ASC"
+            },
+            withoutPagination: false
         }
     },
     created() {
@@ -210,8 +219,29 @@ export default {
             let id = user.userable_id;
             this.role = user.role;
             if (this.role === 'ADMIN') {
-                this.indexWithSG().then((result) => {
-                    this.rows = result;
+                this.indexWithSG(this.payloadGet).then((result) => {
+                    this.rows = [];
+                    if (result.per_page) {
+                        this.rows = result.data;
+                        this.pages.total = result.total;
+                        this.pages.per_page = result.per_page;
+                        this.pages.from = result.from;
+                        this.pages.to = result.to;
+                        this.pages.current_page = result.current_page;
+                        this.pages.last_page = result.last_page;
+                    } else {
+                        if (result.data.length > 1) {
+                            for (let i = 0; i < result.data.length; i++) {
+                                if (i == result.data.length-1) {
+                                    this.rows.push(result.data[i][0]);
+                                } else {
+                                    this.rows.push(result.data[i]);
+                                }
+                            }   
+                        } else {
+                            this.rows = result.data;
+                        }
+                    }
                 });
             } else if (this.role === 'TEACHER') {
                 this.regionIdByTeacher(id).then((result) => {
@@ -221,6 +251,49 @@ export default {
                     })
                 })
             }
+        },
+        updateParams(newProps) {
+            this.pages = Object.assign({}, this.pages, newProps);
+        },
+        onColumnFilter(params) {
+            this.updateParams(params);
+            if(!this.pages.columnFilters["name"] && !this.pages.columnFilters["nis"] && !this.pages.columnFilters["student_group.name"]){
+                this.payloadGet.search = "";
+                this.payloadGet.searchVal = "";
+                this.withoutPagination = false;
+                this.getStudents();
+            }
+            else if(this.pages.columnFilters["name"]){
+                this.payloadGet.search = "name";
+                this.payloadGet.searchVal = this.pages.columnFilters["name"];
+                this.withoutPagination = false;
+                this.getStudents();
+            }
+            else if(this.pages.columnFilters["nis"]){
+                this.payloadGet.search = "nis";
+                this.payloadGet.searchVal = this.pages.columnFilters["nis"];
+                this.withoutPagination = false;
+                this.getStudents();
+            }
+            else if(this.pages.columnFilters["student_group.name"]){
+                this.payloadGet.search = "student_group";
+                this.payloadGet.searchVal = this.pages.columnFilters["student_group.name"];
+                this.withoutPagination = true;
+                this.getStudents();
+            }
+        },
+        onSortChange(params) {
+            if(params[0].type == "none"){
+                this.payloadGet.field = "student_group_id";
+                this.payloadGet.sort = "ASC";
+            } else if(params[0].field == "student_group.name") {
+                this.payloadGet.field = "student_group_id";
+                this.payloadGet.sort = params[0].type;
+            } else{
+                this.payloadGet.field = params[0].field;
+                this.payloadGet.sort = params[0].type;
+            }
+            this.getStudents();
         },
         getStudentGroups() {
             this.getAll().then((result) => {

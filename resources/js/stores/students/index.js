@@ -20,10 +20,10 @@ const actions = {
                 })
         })
     },
-    indexWithSG({ commit }) {
+    indexWithSG({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/students/with-student-groups')
+            axios.get('/students/with-student-groups/?page='+payload.page+'&per_page='+payload.per_page+'&search='+payload.search+'&search_value='+payload.searchVal+'&orderBy='+payload.field+'&type='+payload.sort)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
