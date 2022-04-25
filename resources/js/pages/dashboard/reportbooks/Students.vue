@@ -184,6 +184,7 @@ export default {
                 last_page: 1,
             },
             payloadGet: {
+                region: null,
                 search: '',
                 searchVal: '',
                 page: 1,
@@ -246,8 +247,30 @@ export default {
             } else if (this.role === 'TEACHER') {
                 this.regionIdByTeacher(id).then((result) => {
                     this.regionId = result[0].id;
-                    this.filterByRegion(this.regionId).then((result) => {
-                        this.rows = result;
+                    this.payloadGet.region = result[0].id;
+                    this.filterByRegion(this.payloadGet).then((result) => {
+                        this.rows = [];
+                        if (result.per_page) {
+                            this.rows = result.data;
+                            this.pages.total = result.total;
+                            this.pages.per_page = result.per_page;
+                            this.pages.from = result.from;
+                            this.pages.to = result.to;
+                            this.pages.current_page = result.current_page;
+                            this.pages.last_page = result.last_page;
+                        } else {
+                            if (result.data.length > 1) {
+                                for (let i = 0; i < result.data.length; i++) {
+                                    if (i == result.data.length-1) {
+                                        this.rows.push(result.data[i][0]);
+                                    } else {
+                                        this.rows.push(result.data[i]);
+                                    }
+                                }   
+                            } else {
+                                this.rows = result.data;
+                            }
+                        }
                     })
                 })
             }
