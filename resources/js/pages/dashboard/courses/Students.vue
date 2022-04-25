@@ -43,9 +43,10 @@
                                             <vue-good-table
                                                 :columns="columns"
                                                 :rows="sc.data"
-                                                :pagination-options="paginationOpts"
+                                                :pagination-options="{ enabled: false }"
                                                 :sort-options="sortOpts"
                                                 :fixed-header="true"
+                                                :line-numbers="true"
                                                 max-height="800px"
                                                 styleClass="vgt-table condensed striped"
                                             >
@@ -66,7 +67,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="card-body text-center">Belum ada siswa terdaftar</div>
+                        <div class="card-body text-center" v-else>Belum ada siswa terdaftar</div>
                     </div>
                 </div>
             </div>
@@ -205,21 +206,6 @@ export default {
                 },
             ],
             sortOpts: { enabled: true },
-            paginationOpts: {
-                enabled: true,
-                mode: "records",
-                perPage: 40,
-                position: "bottom",
-                perPageDropdown: [10, 50, 100],
-                dropdownAllowAll: true,
-                setCurrentPage: 1,
-                nextLabel: "Next",
-                prevLabel: "Prev",
-                rowsPerPageLabel: "Rows per page",
-                ofLabel: "of",
-                pageLabel: "Page", // for 'pages' mode
-                allLabel: "All",
-            },
         }
     },
     created() {
