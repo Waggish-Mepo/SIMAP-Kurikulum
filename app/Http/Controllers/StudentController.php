@@ -16,9 +16,19 @@ class StudentController extends Controller
     public function index(Request $request)
     {
         $studentGroup = $request->studentGroup;
+        $search = $request->search;
+        $value = $request->search_value;
+        $perPage = $request->per_page;
+        $orderBy = $request->orderBy;
+        $sort = $request->type;
+
         $students = new StudentService;
 
-        return response()->json($students->index(['student_group_id' => $studentGroup, 'without_pagination' => true]));
+        if ($search == "") {
+            return response()->json($students->index(['student_group_id' => $studentGroup, 'order_by' => $orderBy, 'order_type' => $sort, 'per_page' => $perPage]));
+        } else {
+            return response()->json($students->index(['student_group_id' => $studentGroup, $search => $value, 'order_by' => $orderBy, 'order_type' => $sort, 'per_page' => $perPage]));
+        }
     }
 
     public function withAbsence($studentGroup)

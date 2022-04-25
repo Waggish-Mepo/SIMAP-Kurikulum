@@ -50,7 +50,7 @@
               <a href="#" class="btn btn-sm btn-success" @click="getSelected">Tambahkan</a>
             </div>
             </vue-good-table>
-            <pagination class="mt-3" :pagination="pages" @paginate="getStudents" :offset="2" :data="payloadGet"></pagination>
+            <pagination v-if="!withoutPagination" class="mt-3" :pagination="pages" @paginate="getStudents" :offset="2" :data="payloadGet"></pagination>
           </tr>
         </tbody>
       </table>
@@ -122,6 +122,7 @@ export default {
         field:"student_group_id",
         sort:"ASC"
       },
+      withoutPagination: false
     };
   },
   created() {

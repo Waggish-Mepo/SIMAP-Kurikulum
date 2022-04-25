@@ -21,6 +21,8 @@ class StudentService {
         $per_page = $filter['per_page'] ?? 99;
         $name = $filter['name'] ?? null;
         $nis = $filter['nis'] ?? null;
+        $nisn = $filter['nisn'] ?? null;
+        $jk = $filter['jk'] ?? null;
         $studentGroup = $filter['student_group_id'] ?? null;
         $studentGroupRelation = $filter['with_student_group'] ?? false;
         $region = $filter['region_id'] ?? null;
@@ -36,6 +38,14 @@ class StudentService {
 
         if ($nis) {
             $query->where('nis', 'LIKE', '%' . $nis . '%');
+        }
+
+        if ($nisn) {
+            $query->where('nisn', 'LIKE', '%' . $nisn . '%');
+        }
+
+        if ($jk) {
+            $query->where('jk', 'LIKE', '%' . $jk . '%');
         }
 
         if ($region) {

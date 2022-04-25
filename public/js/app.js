@@ -8502,7 +8502,7 @@ var actions = {
       root: true
     });
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/students/?studentGroup=' + payload.studentGroup).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/students/?studentGroup=' + payload.studentGroup + '&page=' + payload.page + '&per_page=' + payload.per_page + '&search=' + payload.search + '&search_value=' + payload.searchVal + '&orderBy=' + payload.field + '&type=' + payload.sort).then(function (response) {
         resolve(response.data);
         commit('SET_GOOD', null, {
           root: true

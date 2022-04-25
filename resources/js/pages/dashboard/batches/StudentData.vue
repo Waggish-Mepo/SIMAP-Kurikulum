@@ -31,11 +31,15 @@
                                 <tbody>
                                 <tr>
                                 <vue-good-table
+                                    mode="remote"
                                     :columns="columns"
                                     :rows="rows"
-                                    :pagination-options="paginationOpts"
+                                    :pagination-options="{enabled: false}"
+                                    @on-sort-change="onSortChange"
+                                    @on-column-filter="onColumnFilter"
                                     :sort-options="sortOpts"
                                     :fixed-header="true"
+                                    :line-numbers="true"
                                     max-height="800px"
                                     styleClass="vgt-table condensed striped"
                                 >
@@ -51,6 +55,7 @@
                                     </span>
                                     </template>
                                 </vue-good-table>
+                                <pagination class="mt-3" :pagination="pages" @paginate="getStudents" :offset="2" :data="payloadGet"></pagination>
                                 </tr>
                                 </tbody>
                             </table>
@@ -195,6 +200,8 @@
 import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
 // modal
 import modalComponent from '../../../components/Modal.vue';
+// pagination
+import paginateComponent from '../../../components/Pagination.vue';
 // vue-select
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
@@ -202,7 +209,8 @@ export default {
     name: "studentData",
     components: {
         "modal": modalComponent,
-        "select2": vSelect
+        "select2": vSelect,
+        "pagination": paginateComponent
     },
     data() {
         return {
@@ -213,8 +221,22 @@ export default {
             batch: {},
             modalEdit: false,
             modalDeleteStudentGroup: false,
-            payload: {
-                studentGroup: this.$route.params.group
+            pages: {
+                total: 0,
+                per_page: 20,
+                from: 1,
+                to: 0,
+                current_page: 1,
+                last_page: 1,
+            },
+            payloadGet: {
+                studentGroup: this.$route.params.group,
+                search: '',
+                searchVal: '',
+                page: 1,
+                per_page: 20,
+                field:"nis",
+                sort:"ASC"
             },
             rows: [],
             columns: [
@@ -246,21 +268,6 @@ export default {
                 },
             ],
             sortOpts: { enabled: true },
-            paginationOpts: {
-                enabled: true,
-                mode: "records",
-                perPage: 40,
-                position: "bottom",
-                perPageDropdown: [10, 50, 100],
-                dropdownAllowAll: true,
-                setCurrentPage: 1,
-                nextLabel: "Next",
-                prevLabel: "Prev",
-                rowsPerPageLabel: "Rows per page",
-                ofLabel: "of",
-                pageLabel: "Page", // for 'pages' mode
-                allLabel: "All",
-            },
             modalDeleteStudent: false,
             studentEditForm: {},
             modalEditStudent: false,
@@ -278,7 +285,7 @@ export default {
         this.getMajors();
         this.showStudentGroup(this.$route.params.group);
         this.showBatch(this.$route.params.batch);
-        this.getStudents(this.payload);
+        this.getStudents(this.payloadGet);
     },
     computed: {
         ...mapState(['errorMessage', 'errors', 'isLoading']),
@@ -326,8 +333,55 @@ export default {
         },
         getStudents(payload) {
             this.index(payload).then((result) => {
-                this.rows = result;
+                this.rows = result.data;
+                this.pages.total = result.total;
+                this.pages.per_page = result.per_page;
+                this.pages.from = result.from;
+                this.pages.to = result.to;
+                this.pages.current_page = result.current_page;
+                this.pages.last_page = result.last_page;
             })
+        },
+        updateParams(newProps) {
+            this.pages = Object.assign({}, this.pages, newProps);
+        },
+        onColumnFilter(params) {
+            this.updateParams(params);
+            if(!this.pages.columnFilters["name"] && !this.pages.columnFilters["nis"] && !this.pages.columnFilters["nisn"] && !this.pages.columnFilters["jk"]){
+                this.payloadGet.search = "";
+                this.payloadGet.searchVal = "";
+                this.getStudents(this.payloadGet);
+            }
+            else if(this.pages.columnFilters["name"]){
+                this.payloadGet.search = "name";
+                this.payloadGet.searchVal = this.pages.columnFilters["name"];
+                this.getStudents(this.payloadGet);
+            }
+            else if(this.pages.columnFilters["nis"]){
+                this.payloadGet.search = "nis";
+                this.payloadGet.searchVal = this.pages.columnFilters["nis"];
+                this.getStudents(this.payloadGet);
+            }
+            else if(this.pages.columnFilters["nisn"]){
+                this.payloadGet.search = "nisn";
+                this.payloadGet.searchVal = this.pages.columnFilters["nisn"];
+                this.getStudents(this.payloadGet);
+            }
+            else if(this.pages.columnFilters["jk"]){
+                this.payloadGet.search = "jk";
+                this.payloadGet.searchVal = this.pages.columnFilters["jk"];
+                this.getStudents(this.payloadGet);
+            }
+        },
+        onSortChange(params) {
+            if(params[0].type == "none"){
+                this.payloadGet.field = "nis";
+                this.payloadGet.sort = "ASC";
+            }else{
+                this.payloadGet.field = params[0].field;
+                this.payloadGet.sort = params[0].type;
+            }
+            this.getStudents(this.payloadGet);
         },
         showModalDeleteStudent() {
             this.modalEditStudent = false;
@@ -343,13 +397,17 @@ export default {
             let payload = {id: this.studentEditForm.id, data: this.studentEditForm};
             this.update(payload).then((result) => {
                 this.modalEditStudent = false;
-                this.getStudents(this.payload);
+                this.getStudents(this.payloadGet);
             })
         },
         addStudent() {
             this.create(this.studentAddForm).then((result) => {
+                this.studentAddForm.name = null;
+                this.studentAddForm.nis = null;
+                this.studentAddForm.nisn = null;
+                this.studentAddForm.jk = null;
                 this.modalAddStudent = false;
-                this.getStudents(this.payload);
+                this.getStudents(this.payloadGet);
             })
         },
         deleteStudent() {
@@ -358,7 +416,7 @@ export default {
             this.deleteStudentUser(payload).then((result) => {
                 this.modalDeleteStudentGroup = false;
                 this.modalDeleteStudent = false;
-                this.getStudents(this.payload);
+                this.getStudents(this.payloadGet);
             })
         },
     }

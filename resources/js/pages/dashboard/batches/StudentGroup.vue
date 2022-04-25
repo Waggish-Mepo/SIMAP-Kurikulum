@@ -141,7 +141,7 @@ export default {
                 batch: this.$route.params.batch,
                 sort: '',
                 page: 1,
-                per_page: 5
+                per_page: 10
             },
             modalEdit: false,
             editForm: {},

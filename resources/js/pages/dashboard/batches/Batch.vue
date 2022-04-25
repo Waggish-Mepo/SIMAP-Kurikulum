@@ -84,7 +84,7 @@ export default {
             payload: {
                 search: '',
                 page: 1,
-                per_page: 5
+                per_page: 10
             },
             modalAdd: false,
             submitAddForm: {
