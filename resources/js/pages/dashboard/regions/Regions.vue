@@ -115,21 +115,6 @@ export default {
             modalAdd: false,
             modalEdit: false,
             sortOpts: { enabled: true },
-            // paginationOpts: {
-            //     enabled: true,
-            //     mode: "records",
-            //     perPage: 30,
-            //     position: "bottom",
-            //     perPageDropdown: [10, 50, 100],
-            //     dropdownAllowAll: true,
-            //     setCurrentPage: 1,
-            //     nextLabel: "Next",
-            //     prevLabel: "Prev",
-            //     rowsPerPageLabel: "Rows per page",
-            //     ofLabel: "of",
-            //     pageLabel: "Page", // for 'pages' mode
-            //     allLabel: "All",
-            // },
             columns: [
                 {
                     label: 'Rayon',
@@ -157,7 +142,7 @@ export default {
             regionEditPayload: {},
             pages: {
                 total: 0,
-                per_page: 10,
+                per_page: 20,
                 from: 1,
                 to: 0,
                 current_page: 1,
@@ -166,7 +151,7 @@ export default {
             payloadGet: {
                 search: '',
                 page: 1,
-                per_page: 10,
+                per_page: 20,
                 field:"created_at",
                 sort:"ASC"
             },

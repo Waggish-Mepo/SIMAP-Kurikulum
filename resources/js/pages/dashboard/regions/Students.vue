@@ -25,10 +25,12 @@
                 <tbody>
                     <tr>
                         <vue-good-table
+                            mode="remote"
                             :columns="columns"
                             :rows="rows"
-                            :pagination-options="paginationOpts"
-                            :sort-options="sortOpts"
+                            :pagination-options="{enabled: false}"
+                            @on-column-filter="onColumnFilter"
+                            :sort-options="{enabled: false}"
                             :fixed-header="true"
                             :line-numbers="true"
                             max-height="800px"
@@ -42,6 +44,7 @@
                             </span>
                         </template>
                         </vue-good-table>
+                        <pagination v-if="!withoutPagination" class="mt-3" :pagination="pages" @paginate="getStudents" :offset="2" :data="payloadGet"></pagination>
                     </tr>
                 </tbody>
             </table>
@@ -61,30 +64,17 @@
 import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
 // modal
 import modalComponent from '../../../components/Modal.vue';
+// pagination
+import paginateComponent from '../../../components/Pagination.vue';
 export default {
     name: 'StudentsInRegion',
     components: {
-        "modal": modalComponent
+        "modal": modalComponent,
+        "pagination": paginateComponent
     },
     data(){
         return {
             modalDelete: false,
-            sortOpts: { enabled: true },
-            paginationOpts: {
-                enabled: true,
-                mode: "records",
-                perPage: 40,
-                position: "bottom",
-                perPageDropdown: [10, 50, 100],
-                dropdownAllowAll: true,
-                setCurrentPage: 1,
-                nextLabel: "Next",
-                prevLabel: "Prev",
-                rowsPerPageLabel: "Rows per page",
-                ofLabel: "of",
-                pageLabel: "Page", // for 'pages' mode
-                allLabel: "All",
-            },
             columns: [
                 {
                     label: 'NIS',
@@ -105,19 +95,34 @@ export default {
                     label: "Aksi",
                     field: "id",
                     tdClass: "text-center",
-                    sortable: false,
                     filterOptions: { enabled: false},
                 },
             ],
             rows: [],
             region: {},
             student: {},
-            user: {}
+            user: {},
+            pages: {
+                total: 0,
+                per_page: 20,
+                from: 1,
+                to: 0,
+                current_page: 1,
+                last_page: 1,
+            },
+            payloadGet: {
+                region: this.$route.params.region,
+                search: '',
+                searchVal: '',
+                page: 1,
+                per_page: 20
+            },
+            withoutPagination: false
         }
     },
     created() {
         this.getRegion(this.$route.params.region);
-        this.getStudents();
+        this.getStudents(this.payloadGet);
         this.getUser();
     },
     computed: {
@@ -136,10 +141,58 @@ export default {
                 this.region = result;
             })
         },
-        getStudents() {
-            this.filterByRegion(this.$route.params.region).then((result) => {
-                this.rows = result;
+        getStudents(payload) {
+            this.filterByRegion(payload).then((result) => {
+                this.rows = [];
+                if (result.per_page) {
+                    this.rows = result.data;
+                    this.pages.total = result.total;
+                    this.pages.per_page = result.per_page;
+                    this.pages.from = result.from;
+                    this.pages.to = result.to;
+                    this.pages.current_page = result.current_page;
+                    this.pages.last_page = result.last_page;
+                } else {
+                    for (let i = 0; i < result.data.length; i++) {
+                        if (i == result.data.length-1) {
+                            this.rows.push(result.data[i][0]);
+                        } else {
+                            this.rows.push(result.data[i]);
+                        }
+                    }
+                }
             })
+        },
+        updateParams(newProps) {
+            this.pages = Object.assign({}, this.pages, newProps);
+            // console.log(this.pages);
+        },
+        onColumnFilter(params) {
+            this.updateParams(params);
+            if(!this.pages.columnFilters["name"] && !this.pages.columnFilters["nis"] && !this.pages.columnFilters["student_group.name"]){
+                this.payloadGet.search = "";
+                this.payloadGet.searchVal = "";
+                this.withoutPagination = false;
+                this.getStudents(this.payloadGet);
+            }
+            else if(this.pages.columnFilters["name"]){
+                this.payloadGet.search = "name";
+                this.payloadGet.searchVal = this.pages.columnFilters["name"];
+                this.withoutPagination = false;
+                this.getStudents(this.payloadGet);
+            }
+            else if(this.pages.columnFilters["nis"]){
+                this.payloadGet.search = "nis";
+                this.payloadGet.searchVal = this.pages.columnFilters["nis"];
+                this.withoutPagination = false;
+                this.getStudents(this.payloadGet);
+            }
+            else if(this.pages.columnFilters["student_group.name"]){
+                this.payloadGet.search = "student_group";
+                this.payloadGet.searchVal = this.pages.columnFilters["student_group.name"];
+                this.withoutPagination = true;
+                this.getStudents(this.payloadGet);
+            }
         },
         showStudent(id) {
             this.studentDetail(id).then((result) => {
@@ -152,7 +205,7 @@ export default {
             let payload = {id: this.student.id, data: this.student};
             this.update(payload).then((result) => {
                 this.modalDelete = false;
-                this.getStudents();
+                this.getStudents(this.payloadGet);
             })
         }
     }

@@ -165,7 +165,7 @@ export default {
             modalEdit: false,
             pages: {
                 total: 0,
-                per_page: 10,
+                per_page: 20,
                 from: 1,
                 to: 0,
                 current_page: 1,
@@ -174,7 +174,7 @@ export default {
             payloadGet: {
                 search: '',
                 page: 1,
-                per_page: 10
+                per_page: 20
             },
         }
     },

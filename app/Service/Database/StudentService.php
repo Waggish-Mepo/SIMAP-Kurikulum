@@ -19,6 +19,7 @@ class StudentService {
         $anotherOrderBy = $filter['order'] ?? false;
         $per_page = $filter['per_page'] ?? 99;
         $name = $filter['name'] ?? null;
+        $nis = $filter['nis'] ?? null;
         $studentGroup = $filter['student_group_id'] ?? null;
         $studentGroupRelation = $filter['with_student_group'] ?? false;
         $region = $filter['region_id'] ?? null;
@@ -30,6 +31,10 @@ class StudentService {
 
         if ($name) {
             $query->where('name', 'LIKE', '%' . $name . '%');
+        }
+
+        if ($nis) {
+            $query->where('nis', 'LIKE', '%' . $nis . '%');
         }
 
         if ($region) {

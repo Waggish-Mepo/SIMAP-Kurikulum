@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Service\Database\StudentService;
+use App\Service\Database\StudentGroupService;
 
 class StudentController extends Controller
 {
@@ -41,11 +42,47 @@ class StudentController extends Controller
         return response()->json($studentDB->index(['order' => true,'with_student_group' => true, 'without_pagination' => true]));
     }
 
-    public function getByRegion($region)
+    public function getByRegion(Request $request)
     {
-        $studentDB = new StudentService;
+        $search = $request->search;
+        $value = $request->search_value;
+        $perPage = $request->per_page;
+        $region = $request->region;
 
-        return response()->json($studentDB->index(['region_id' => $region, 'with_student_group' => true, 'order' => true, 'without_pagination' => true]));
+        $studentDB = new StudentService;
+        $studentGroupDB = new StudentGroupService;
+
+        if ($search == "") {
+            return response()->json($studentDB->index(['region_id' => $region, 'with_student_group' => true, 'order' => true, 'per_page' => $perPage]));
+        } else {
+            if ($search == "name") {
+                return response()->json($studentDB->index(['region_id' => $region, 'name' => $value, 'with_student_group' => true, 'order' => true, 'per_page' => $perPage]));
+            } else if ($search == "nis") {
+                return response()->json($studentDB->index(['region_id' => $region, 'nis' => $value, 'with_student_group' => true, 'order' => true, 'per_page' => $perPage]));
+            } else if ($search == "student_group") {
+                $studentGroups = $studentGroupDB->index(['name' => $value, 'without_pagination' => true]);
+
+                if (!count($studentGroups)) {
+                    return response()->json($studentDB->index(['region_id' => $region, 'with_student_group' => true, 'order' => true, 'per_page' => $perPage]));
+                } else {
+                    if (count($studentGroups) > 1) {
+                        $firstData = $studentDB->index(['region_id' => $region, 'student_group_id' => $studentGroups[0]['id'],'with_student_group' => true, 'order' => true, 'without_pagination' => true]);
+
+                        for ($i=1; $i < count($studentGroups); $i++) {
+                            $data = $studentDB->index(['region_id' => $region, 'student_group_id' => $studentGroups[$i]['id'], 'with_student_group' => true, 'order' => true, 'without_pagination' => true]);
+                            $firstData[] = $data;
+                        }
+
+                        return response()->json([
+                            'data' => $firstData,
+                            'per_page' => NULL
+                        ]);
+                    } else {
+                        return response()->json($studentDB->index(['region_id' => $region, 'student_group_id' => $studentGroups[0]['id'], 'with_student_group' => true, 'order' => true, 'per_page' => $perPage]));
+                    }
+                }
+            }
+        }
     }
 
     public function getNotSignedStudent()

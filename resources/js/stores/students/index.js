@@ -36,7 +36,7 @@ const actions = {
     filterByRegion({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/students/regions/'+payload)
+            axios.get('/students/region/get/?region='+payload.region+'&page='+payload.page+'&per_page='+payload.per_page+'&search='+payload.search+'&search_value='+payload.searchVal)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
