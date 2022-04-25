@@ -29,8 +29,9 @@
                             :columns="columns"
                             :rows="rows"
                             :pagination-options="{enabled: false}"
+                            @on-sort-change="onSortChange"
                             @on-column-filter="onColumnFilter"
-                            :sort-options="{enabled: false}"
+                            :sort-options="{enabled: true}"
                             :fixed-header="true"
                             :line-numbers="true"
                             max-height="800px"
@@ -95,6 +96,7 @@ export default {
                     label: "Aksi",
                     field: "id",
                     tdClass: "text-center",
+                    sortable: false,
                     filterOptions: { enabled: false},
                 },
             ],
@@ -115,7 +117,9 @@ export default {
                 search: '',
                 searchVal: '',
                 page: 1,
-                per_page: 20
+                per_page: 20,
+                field:"student_group_id",
+                sort:"ASC"
             },
             withoutPagination: false
         }
@@ -153,19 +157,22 @@ export default {
                     this.pages.current_page = result.current_page;
                     this.pages.last_page = result.last_page;
                 } else {
-                    for (let i = 0; i < result.data.length; i++) {
-                        if (i == result.data.length-1) {
-                            this.rows.push(result.data[i][0]);
-                        } else {
-                            this.rows.push(result.data[i]);
-                        }
+                    if (result.data.length > 1) {
+                        for (let i = 0; i < result.data.length; i++) {
+                            if (i == result.data.length-1) {
+                                this.rows.push(result.data[i][0]);
+                            } else {
+                                this.rows.push(result.data[i]);
+                            }
+                        }   
+                    } else {
+                        this.rows = result.data;
                     }
                 }
             })
         },
         updateParams(newProps) {
             this.pages = Object.assign({}, this.pages, newProps);
-            // console.log(this.pages);
         },
         onColumnFilter(params) {
             this.updateParams(params);
@@ -193,6 +200,19 @@ export default {
                 this.withoutPagination = true;
                 this.getStudents(this.payloadGet);
             }
+        },
+        onSortChange(params) {
+            if(params[0].type == "none"){
+                this.payloadGet.field = "student_group_id";
+                this.payloadGet.sort = "ASC";
+            } else if(params[0].field == "student_group.name") {
+                this.payloadGet.field = "student_group_id";
+                this.payloadGet.sort = params[0].type;
+            } else{
+                this.payloadGet.field = params[0].field;
+                this.payloadGet.sort = params[0].type;
+            }
+            this.getStudents(this.payloadGet);
         },
         showStudent(id) {
             this.studentDetail(id).then((result) => {

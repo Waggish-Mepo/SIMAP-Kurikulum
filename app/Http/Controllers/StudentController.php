@@ -48,29 +48,33 @@ class StudentController extends Controller
         $value = $request->search_value;
         $perPage = $request->per_page;
         $region = $request->region;
+        $orderBy = $request->orderBy;
+        $sort = $request->type;
 
         $studentDB = new StudentService;
         $studentGroupDB = new StudentGroupService;
 
         if ($search == "") {
-            return response()->json($studentDB->index(['region_id' => $region, 'with_student_group' => true, 'order' => true, 'per_page' => $perPage]));
+            return response()->json($studentDB->index(['region_id' => $region, 'with_student_group' => true, 'order_by' => $orderBy, 'order_type' => $sort, 'per_page' => $perPage]));
         } else {
             if ($search == "name") {
-                return response()->json($studentDB->index(['region_id' => $region, 'name' => $value, 'with_student_group' => true, 'order' => true, 'per_page' => $perPage]));
+                return response()->json($studentDB->index(['region_id' => $region, 'name' => $value, 'with_student_group' => true, 'order_by' => $orderBy, 'order_type' => $sort, 'per_page' => $perPage]));
             } else if ($search == "nis") {
-                return response()->json($studentDB->index(['region_id' => $region, 'nis' => $value, 'with_student_group' => true, 'order' => true, 'per_page' => $perPage]));
+                return response()->json($studentDB->index(['region_id' => $region, 'nis' => $value, 'with_student_group' => true, 'order_by' => $orderBy, 'order_type' => $sort, 'per_page' => $perPage]));
             } else if ($search == "student_group") {
                 $studentGroups = $studentGroupDB->index(['name' => $value, 'without_pagination' => true]);
 
                 if (!count($studentGroups)) {
-                    return response()->json($studentDB->index(['region_id' => $region, 'with_student_group' => true, 'order' => true, 'per_page' => $perPage]));
+                    return response()->json($studentDB->index(['region_id' => $region, 'with_student_group' => true, 'order_by' => $orderBy, 'order_type' => $sort, 'per_page' => $perPage]));
                 } else {
                     if (count($studentGroups) > 1) {
-                        $firstData = $studentDB->index(['region_id' => $region, 'student_group_id' => $studentGroups[0]['id'],'with_student_group' => true, 'order' => true, 'without_pagination' => true]);
+                        $firstData = $studentDB->index(['region_id' => $region, 'student_group_id' => $studentGroups[0]['id'],'with_student_group' => true, 'order_by' => $orderBy, 'order_type' => $sort, 'without_pagination' => true]);
 
                         for ($i=1; $i < count($studentGroups); $i++) {
-                            $data = $studentDB->index(['region_id' => $region, 'student_group_id' => $studentGroups[$i]['id'], 'with_student_group' => true, 'order' => true, 'without_pagination' => true]);
-                            $firstData[] = $data;
+                            $data = $studentDB->index(['region_id' => $region, 'student_group_id' => $studentGroups[$i]['id'], 'with_student_group' => true, 'order_by' => $orderBy, 'order_type' => $sort, 'without_pagination' => true]);
+                            if (count($data) >= 1) {
+                                $firstData[] = $data;
+                            }
                         }
 
                         return response()->json([
@@ -78,18 +82,65 @@ class StudentController extends Controller
                             'per_page' => NULL
                         ]);
                     } else {
-                        return response()->json($studentDB->index(['region_id' => $region, 'student_group_id' => $studentGroups[0]['id'], 'with_student_group' => true, 'order' => true, 'per_page' => $perPage]));
+                        $data = $studentDB->index(['region_id' => $region, 'student_group_id' => $studentGroups[0]['id'], 'with_student_group' => true, 'order_by' => $orderBy, 'order_type' => $sort, 'without_pagination' => true]);
+                        return response()->json([
+                            'data' => $data,
+                            'per_page' => NULL
+                        ]);
                     }
                 }
             }
         }
     }
 
-    public function getNotSignedStudent()
+    public function getNotSignedStudent(Request $request)
     {
-        $studentDB = new StudentService;
+        $search = $request->search;
+        $value = $request->search_value;
+        $perPage = $request->per_page;
+        $orderBy = $request->orderBy;
+        $sort = $request->type;
 
-        return response()->json($studentDB->index(['without_region' => true, 'with_student_group' => true, 'order' => true, 'without_pagination' => true]));
+        $studentDB = new StudentService;
+        $studentGroupDB = new StudentGroupService;
+
+        if ($search == "") {
+            return response()->json($studentDB->index(['without_region' => true, 'with_student_group' => true, 'order_by' => $orderBy, 'order_type' => $sort, 'per_page' => $perPage]));
+        } else {
+            if ($search == "name") {
+                return response()->json($studentDB->index(['without_region' => true, 'name' => $value, 'with_student_group' => true, 'order_by' => $orderBy, 'order_type' => $sort, 'per_page' => $perPage]));
+            } else if ($search == "nis") {
+                return response()->json($studentDB->index(['without_region' => true, 'nis' => $value, 'with_student_group' => true, 'order_by' => $orderBy, 'order_type' => $sort, 'per_page' => $perPage]));
+            } else if ($search == "student_group") {
+                $studentGroups = $studentGroupDB->index(['name' => $value, 'without_pagination' => true]);
+
+                if (!count($studentGroups)) {
+                    return response()->json($studentDB->index(['without_region' => true, 'with_student_group' => true, 'order_by' => $orderBy, 'order_type' => $sort, 'per_page' => $perPage]));
+                } else {
+                    if (count($studentGroups) > 1) {
+                        $firstData = $studentDB->index(['without_region' => true, 'student_group_id' => $studentGroups[0]['id'], 'with_student_group' => true, 'order_by' => $orderBy, 'order_type' => $sort, 'without_pagination' => true]);
+
+                        for ($i = 1; $i < count($studentGroups); $i++) {
+                            $data = $studentDB->index(['without_region' => true, 'student_group_id' => $studentGroups[$i]['id'], 'with_student_group' => true, 'order_by' => $orderBy, 'order_type' => $sort, 'without_pagination' => true]);
+                            if (count($data) >= 1) {
+                                $firstData[] = $data;
+                            }
+                        }
+
+                        return response()->json([
+                            'data' => $firstData,
+                            'per_page' => NULL
+                        ]);
+                    } else {
+                        $data = $studentDB->index(['without_region' => true, 'student_group_id' => $studentGroups[0]['id'], 'with_student_group' => true, 'order_by' => $orderBy, 'order_type' => $sort, 'without_pagination' => true]);
+                        return response()->json([
+                            'data' => $data,
+                            'per_page' => NULL
+                        ]);
+                    }
+                }
+            }
+        }
     }
 
     /**

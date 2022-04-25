@@ -15,7 +15,8 @@ use Ramsey\Uuid\Uuid;
 class StudentService {
     public function index($filter = [])
     {
-        $orderBy = $filter['order_by'] ?? 'ASC';
+        $orderBy = $filter['order_by'] ?? 'nis';
+        $orderType = $filter['order_type'] ?? 'ASC';
         $anotherOrderBy = $filter['order'] ?? false;
         $per_page = $filter['per_page'] ?? 99;
         $name = $filter['name'] ?? null;
@@ -27,7 +28,7 @@ class StudentService {
         $absences = $filter['with_student_absence'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
-        $query = Student::orderBy('nis', $orderBy);
+        $query = Student::orderBy($orderBy, $orderType);
 
         if ($name) {
             $query->where('name', 'LIKE', '%' . $name . '%');
