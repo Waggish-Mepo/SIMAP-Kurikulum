@@ -1,9 +1,14 @@
 <template>
   <div>
     <div class="loader" v-if="isLoading"></div>
+    <div v-if="isLoading" class="w-100 card-loading">
+        <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+    </div>
     <div class="alert alert-danger mb-3" v-if="errorMessage">
       {{ errorMessage }}
     </div>
+
+    <div v-if="!isLoading">
     <h4 class="text-capitalize mb-3 font-weight-bold text-center" v-if="user.role === 'TEACHER'" style="margin-top: 7%">selamat datang, {{user.name}}</h4>
     <h4 class="text-capitalize my-3 font-weight-bold" v-if="user.role === 'ADMIN'">selamat datang, {{user.name}}</h4>
     <div class="d-flex flex-wrap justify-content-center mt-5" v-if="user.role === 'ADMIN'">
@@ -3291,6 +3296,7 @@
                 ></path>
             </g>
         </svg>
+    </div>
     </div>
     </div>
   </div>

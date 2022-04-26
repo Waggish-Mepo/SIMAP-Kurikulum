@@ -1,6 +1,14 @@
 <template>
     <div class="mt-2 pb-3">
         <div class="loader" v-if="isLoading"></div>
+        <div v-if="isLoading" class="w-100 card-loading">
+            <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+        </div>
+        <div class="alert alert-danger my-3" v-if="errorMessage">
+        {{ errorMessage }}
+        </div>
+
+        <div v-if="!isLoading">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'reportbooks.periods', params: {page: 7} }"><a href="#">Periode Rapor</a></router-link></li>
@@ -9,9 +17,6 @@
             </ol>
         </nav>
 
-        <div class="alert alert-danger my-3" v-if="errorMessage">
-        {{ errorMessage }}
-        </div>
         <div class="d-flex flex-wrap justify-content-between align-items-center mt-3">
             <div>
                 <h5 class="text-capitalize title">{{student.name}}</h5>
@@ -229,6 +234,7 @@
                 <p>Data tidak ditemukan! <b>Tidak dapat mengunduh rapor siswa {{student.name}}.</b> Silahkan untuk mengatur nilai pada siswa terlebih dahulu.</p>
             </div>
         </modal>
+        </div>
     </div>
 </template>
 

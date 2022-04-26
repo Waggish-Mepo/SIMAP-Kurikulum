@@ -1,10 +1,15 @@
 <template>
     <div>
         <div class="loader" v-if="isLoading"></div>
-        <h4 class="text-capitalize mt-3 mb-4 font-weight-bold">rayon</h4>
+        <div v-if="isLoading" class="w-100 card-loading">
+            <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+        </div>
         <div class="alert alert-danger my-3" v-if="errorMessage">
             {{ errorMessage }}
         </div>
+
+        <div v-if="!isLoading">
+        <h4 class="text-capitalize mt-3 mb-4 font-weight-bold">rayon</h4>
         <div class="row">
             <div class="col-md-6">
                 <div class="input-group mb-3">
@@ -90,6 +95,7 @@
                 </div>
             </div>
         </modal>
+        </div>
     </div>
 </template>
 

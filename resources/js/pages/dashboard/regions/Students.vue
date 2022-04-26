@@ -1,16 +1,20 @@
 <template>
     <div>
         <div class="loader" v-if="isLoading"></div>
+        <div v-if="isLoading" class="w-100 card-loading">
+            <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+        </div>
+        <div class="alert alert-danger my-3" v-if="errorMessage">
+        {{ errorMessage }}
+        </div>
+
+        <div v-if="!isLoading">
         <nav aria-label="breadcrumb" v-if="this.user.role === 'ADMIN'">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'regions', params: {page: 8} }"><a href="#">Rayon</a></router-link></li>
                 <li class="breadcrumb-item active" aria-current="page">{{region.name}}</li>
             </ol>
         </nav>
-
-        <div class="alert alert-danger my-3" v-if="errorMessage">
-        {{ errorMessage }}
-        </div>
 
         <h4 class="text-capitalize mt-3 mb-4 font-weight-bold">Daftar Siswa Rayon {{region.name}}</h4>
         <div class="col-md-6">
@@ -57,6 +61,7 @@
                 <span>Yakin untuk menghapus siswa <b>{{student.name}}</b> dari data rayon <b>{{region.name}}</b>?</span>
             </div>
         </modal>
+        </div>
     </div>
 </template>
 

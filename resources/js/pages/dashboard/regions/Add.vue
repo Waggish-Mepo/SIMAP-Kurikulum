@@ -1,6 +1,14 @@
 <template>
   <div>
     <div class="loader" v-if="isLoading"></div>
+    <div v-if="isLoading" class="w-100 card-loading">
+      <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+    </div>
+    <div class="alert alert-danger my-3" v-if="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div v-if="!isLoading">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item" v-if="this.user.role === 'ADMIN'">
@@ -18,10 +26,6 @@
         </li>
       </ol>
     </nav>
-
-    <div class="alert alert-danger my-3" v-if="errorMessage">
-      {{ errorMessage }}
-    </div>
 
     <div class="alert alert-success my-3" v-if="addSuccessed">
       <span>Siswa berhasil ditambahkan ke data rayon <b>{{region.name}}</b>. <router-link v-bind:to="{ name: 'regions.students', params: { page: 8, region: $route.params.region } }"><a href="#">Lihat data siswa rayon</a></router-link></span>
@@ -63,6 +67,7 @@
         <span>Siswa berhasil ditambahkan ke data rayon <b>{{region.name}}</b>. Lihat data siswa rayon?</span>
       </div>
     </modal>
+    </div>
   </div>
 </template>
 

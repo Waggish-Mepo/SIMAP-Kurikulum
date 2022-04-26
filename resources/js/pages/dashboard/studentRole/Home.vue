@@ -1,9 +1,14 @@
 <template>
     <div>
         <div class="loader" v-if="isLoading"></div>
+        <div v-if="isLoading" class="w-100 card-loading">
+            <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+        </div>
         <div class="alert alert-danger my-3" v-if="errorMessage">
         {{ errorMessage }}
         </div>
+
+        <div v-if="!isLoading">
         <div class="row mt-3 mb-sm-3 mb-4">
             <div class="col-md-8">
                 <div class="input-group mb-3">
@@ -45,6 +50,7 @@
                 <p>Data tidak ditemukan! <b>Rapor belum tersedia.</b> Silahkan untuk menghubungi pembimbing rayon terlebih dahulu.</p>
             </div>
         </modal>
+        </div>
     </div>
 </template>
 

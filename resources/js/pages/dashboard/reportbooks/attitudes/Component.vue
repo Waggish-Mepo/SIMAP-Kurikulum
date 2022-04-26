@@ -1,6 +1,14 @@
 <template>
     <div class="mt-2">
         <div class="loader" v-if="isLoading"></div>
+        <div v-if="isLoading" class="w-100 card-loading">
+            <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+        </div>
+        <div class="alert alert-danger my-3" v-if="errorMessage">
+        {{ errorMessage }}
+        </div>
+
+        <div v-if="!isLoading">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'reportbooks.periods', params: {page: 7} }"><a href="#">Periode Rapor</a></router-link></li>
@@ -9,9 +17,6 @@
             </ol>
         </nav>
 
-        <div class="alert alert-danger my-3" v-if="errorMessage">
-        {{ errorMessage }}
-        </div>
         <h5 class="mb-3 mt-5 title">Komponen Nilai Rapor Sikap</h5>
         <a href="#" class="btn bg-blue1 text-white mb-4" @click="modalAdd = true">Tambah Komponen Nilai Sikap</a>
 
@@ -148,6 +153,7 @@
                 <span><b>Semua data</b> yang berkaitan dengan predikat <b>{{predicateEditPayload.predicate}}</b> pada komponen nilai <b class="text-capitalize">{{selectedComponent}}</b> juga akan <b>terhapus</b> dan <b>tidak dapat diakses kembali</b>. Yakin tetap menghapus?</span>
             </div>
         </modal>
+        </div>
     </div>
 </template>
 

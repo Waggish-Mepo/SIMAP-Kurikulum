@@ -1,6 +1,14 @@
 <template>
     <div class="mt-2">
         <div class="loader" v-if="isLoading"></div>
+        <div v-if="isLoading" class="w-100 card-loading">
+            <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+        </div>
+        <div class="alert alert-danger my-3" v-if="errorMessage">
+        {{ errorMessage }}
+        </div>
+
+        <div v-if="!isLoading">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'courses', params: {page: 5} }"><a href="#">Pelajaran</a></router-link></li>
@@ -8,9 +16,6 @@
             </ol>
         </nav>
 
-        <div class="alert alert-danger my-3" v-if="errorMessage">
-        {{ errorMessage }}
-        </div>
         <div class="row my-3">
             <div class="col-12">
                 <router-link v-bind:to="{ name: 'courses.students.add', params: {page: 5, course: $route.params.course} }" class="btn btn-primary btn-block mt-md-1">
@@ -147,6 +152,7 @@
                 <span>Yakin untuk menghapus siswa <b>{{payloadDelete.name}}</b>? siswa tidak akan terdaftar dalam pelajaran lagi, dan semua data terkait akan terhapus</span>
             </div>
         </modal>
+        </div>
     </div>
 </template>
 

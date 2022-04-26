@@ -1,6 +1,14 @@
 <template>
     <div class="mt-2">
         <div class="loader" v-if="isLoading"></div>
+        <div v-if="isLoading" class="w-100 card-loading">
+            <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+        </div>
+        <div class="alert alert-danger my-3" v-if="errorMessage">
+        {{ errorMessage }}
+        </div>
+
+        <div v-if="!isLoading">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'reportbooks.periods', params: {page: 7} }"><a href="#">Periode Rapor</a></router-link></li>
@@ -10,9 +18,6 @@
             </ol>
         </nav>
 
-        <div class="alert alert-danger my-3" v-if="errorMessage">
-        {{ errorMessage }}
-        </div>
         <h5 class="mt-5 title" v-if="this.user.role === 'ADMIN'">Absensi Rombel {{studentGroup.name}}</h5>
         <h5 class="mt-5 title" v-if="this.user.role === 'TEACHER'">Absensi Rayon</h5>
         <div class="table-responsive p-0 card-table mt-4">
@@ -74,6 +79,7 @@
                 </div>
             </div>
         </modal>
+        </div>
     </div>
 </template>
 

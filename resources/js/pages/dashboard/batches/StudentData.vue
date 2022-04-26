@@ -1,6 +1,13 @@
 <template>
     <div class="mt-3">
         <div class="loader" v-if="isLoading"></div>
+        <div v-if="isLoading" class="w-100 card-loading">
+            <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+        </div>
+        <div class="alert alert-danger my-3" v-if="errorMessage">
+        {{ errorMessage }}
+        </div>
+        <div v-if="!isLoading">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'batches', params: {page: 4} }"><a href="#">data siswa</a></router-link></li>
@@ -9,9 +16,6 @@
             </ol>
         </nav>
 
-        <div class="alert alert-danger my-3" v-if="errorMessage">
-        {{ errorMessage }}
-        </div>
         <div class="row my-3">
             <div class="col-12">
                 <a href="#" class="btn btn-primary btn-block mt-md-1" @click="modalAddStudent = true">
@@ -192,6 +196,7 @@
                 <span><b>Semua data</b> siswa <b class="text-capitalize">{{studentEditForm.name}} - {{studentEditForm.nis}}</b> akan <b>terhapus</b> dan <b>tidak dapat diakses kembali</b>. Yakin tetap menghapus siswa <b class="text-capitalize">{{studentEditForm.name}} - {{studentEditForm.nis}}</b> beserta datanya?</span>
             </div>
         </modal>
+        </div>
     </div>
 </template>
 

@@ -1,9 +1,14 @@
 <template>
     <div>
         <div class="loader" v-if="isLoading"></div>
+        <div v-if="isLoading" class="w-100 card-loading">
+            <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+        </div>
         <div class="alert alert-danger my-3" v-if="errorMessage">
         {{ errorMessage }}
         </div>
+
+        <div v-if="!isLoading">
         <div class="row mt-3 mb-sm-3 mb-4">
             <div class="col-md-8">
                 <div class="input-group mb-3">
@@ -38,6 +43,7 @@
         <div v-else class="w-100 card-not-found">
             <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
             <h5 class="text-center text-capitalize mt-4">data terkait tidak ditemukan</h5>
+        </div>
         </div>
     </div>
 </template>
