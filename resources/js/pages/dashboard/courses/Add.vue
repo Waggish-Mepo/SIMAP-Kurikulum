@@ -1,6 +1,14 @@
 <template>
     <div class="mt-2">
         <div class="loader" v-if="isLoading"></div>
+        <div v-if="isLoading" class="w-100 card-loading">
+            <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+        </div>
+        <div class="alert alert-danger my-3" v-if="errorMessage">
+        {{ errorMessage }}
+        </div>
+
+        <div v-if="!isLoading">
         <nav aria-label="breadcrumb" class="mb-5">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'courses', params: {page: 5} }"><a href="#">Pelajaran</a></router-link></li>
@@ -8,10 +16,6 @@
                 <li class="breadcrumb-item active" aria-current="page">Tambah Siswa Terdaftar</li>
             </ol>
         </nav>
-
-        <div class="alert alert-danger my-3" v-if="errorMessage">
-        {{ errorMessage }}
-        </div>
 
         <div class="alert alert-info mb-3">mohon untuk menekan tombol <strong>tambahkan</strong> pada tiap-tiap table rombel, apabila telah memilih siswa dan ingin mendaftarkannya</div>
         
@@ -38,9 +42,10 @@
                                             <vue-good-table
                                                 :columns="columns"
                                                 :rows="sc.data"
-                                                :pagination-options="paginationOpts"
+                                                :pagination-options="{ enabled: false }"
                                                 :sort-options="sortOpts"
                                                 :fixed-header="true"
+                                                :line-numbers="true"
                                                 @on-selected-rows-change="selectionChanged"
                                                 :select-options="{ enabled: true }"
                                                 max-height="800px"
@@ -69,6 +74,7 @@
         <div v-if="studentCourses.length < 1" class="w-100 card-not-found">
             <img src="/assets/img/sad.png" alt="not found" class="d-block img m-auto">
             <h5 class="text-center text-capitalize mt-4">data terkait tidak ditemukan</h5>
+        </div>
         </div>
     </div>
 </template>
@@ -100,21 +106,6 @@ export default {
                 },
             ],
             sortOpts: { enabled: true },
-            paginationOpts: {
-                enabled: true,
-                mode: "records",
-                perPage: 40,
-                position: "bottom",
-                perPageDropdown: [10, 50, 100],
-                dropdownAllowAll: true,
-                setCurrentPage: 1,
-                nextLabel: "Next",
-                prevLabel: "Prev",
-                rowsPerPageLabel: "Rows per page",
-                ofLabel: "of",
-                pageLabel: "Page", // for 'pages' mode
-                allLabel: "All",
-            },
             addStudentData: [],
             finalStudentId: []
         }

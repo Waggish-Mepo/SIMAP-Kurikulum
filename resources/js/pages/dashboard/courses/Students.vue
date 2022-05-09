@@ -1,6 +1,14 @@
 <template>
     <div class="mt-2">
         <div class="loader" v-if="isLoading"></div>
+        <div v-if="isLoading" class="w-100 card-loading">
+            <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+        </div>
+        <div class="alert alert-danger my-3" v-if="errorMessage">
+        {{ errorMessage }}
+        </div>
+
+        <div v-if="!isLoading">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'courses', params: {page: 5} }"><a href="#">Pelajaran</a></router-link></li>
@@ -8,9 +16,6 @@
             </ol>
         </nav>
 
-        <div class="alert alert-danger my-3" v-if="errorMessage">
-        {{ errorMessage }}
-        </div>
         <div class="row my-3">
             <div class="col-12">
                 <router-link v-bind:to="{ name: 'courses.students.add', params: {page: 5, course: $route.params.course} }" class="btn btn-primary btn-block mt-md-1">
@@ -43,9 +48,10 @@
                                             <vue-good-table
                                                 :columns="columns"
                                                 :rows="sc.data"
-                                                :pagination-options="paginationOpts"
+                                                :pagination-options="{ enabled: false }"
                                                 :sort-options="sortOpts"
                                                 :fixed-header="true"
+                                                :line-numbers="true"
                                                 max-height="800px"
                                                 styleClass="vgt-table condensed striped"
                                             >
@@ -66,7 +72,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="card-body text-center">Belum ada siswa terdaftar</div>
+                        <div class="card-body text-center" v-else>Belum ada siswa terdaftar</div>
                     </div>
                 </div>
             </div>
@@ -146,6 +152,7 @@
                 <span>Yakin untuk menghapus siswa <b>{{payloadDelete.name}}</b>? siswa tidak akan terdaftar dalam pelajaran lagi, dan semua data terkait akan terhapus</span>
             </div>
         </modal>
+        </div>
     </div>
 </template>
 
@@ -205,21 +212,6 @@ export default {
                 },
             ],
             sortOpts: { enabled: true },
-            paginationOpts: {
-                enabled: true,
-                mode: "records",
-                perPage: 40,
-                position: "bottom",
-                perPageDropdown: [10, 50, 100],
-                dropdownAllowAll: true,
-                setCurrentPage: 1,
-                nextLabel: "Next",
-                prevLabel: "Prev",
-                rowsPerPageLabel: "Rows per page",
-                ofLabel: "of",
-                pageLabel: "Page", // for 'pages' mode
-                allLabel: "All",
-            },
         }
     },
     created() {

@@ -1,9 +1,14 @@
 <template>
   <div class="mt-5">
     <div class="loader" v-if="isLoading"></div>
+    <div v-if="isLoading" class="w-100 card-loading">
+        <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+    </div>
     <div class="alert alert-danger mb-3" v-if="errorMessage">
       {{ errorMessage }}
     </div>
+
+    <div v-if="!isLoading">
     <div class="card w-100 bg-white p-3 mb-md-5 mb-3">
         <div class="d-flex flex-wrap">
             <h5 class="text-capitalize pt-2">lihat berdasarkan :</h5>
@@ -120,6 +125,7 @@
             <span><b>Semua data</b> yang berkaitan dengan periode <b class="text-capitalize">{{submitEditForm.title + ' - ' + submitEditForm.school_year}}</b> juga akan <b>terhapus</b> dan <b>tidak dapat diakses kembali</b>. Yakin tetap menghapus periode rapor <b class="text-capitalize">{{submitEditForm.title + ' - ' + submitEditForm.school_year}}</b>?</span>
         </div>
     </modal>
+    </div>
   </div>
 </template>
 

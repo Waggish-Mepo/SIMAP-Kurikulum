@@ -15,13 +15,16 @@ class RegionController extends Controller
     public function index(Request $request)
     {
         $search = $request->search;
+        $perPage = $request->per_page;
+        $orderBy = $request->orderBy;
+        $sort = $request->type;
 
         $regionDB = new RegionService;
 
         if ($search == "") {
-            return response()->json($regionDB->index(['with_teacher' => true, 'without_pagination' => true]));
+            return response()->json($regionDB->index(['with_teacher' => true, 'per_page' => $perPage, 'order_by' => $orderBy, 'order_type' => $sort]));
         } else {
-            return response()->json($regionDB->index(['with_teacher' => true, 'name' => $search, 'without_pagination' => true]));
+            return response()->json($regionDB->index(['with_teacher' => true, 'name' => $search, 'per_page' => $perPage, 'order_by' => $orderBy, 'order_type' => $sort]));
         }
     }
 

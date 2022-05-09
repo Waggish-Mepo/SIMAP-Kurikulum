@@ -1,14 +1,19 @@
 <template>
     <div>
         <div class="loader" v-if="isLoading"></div>
-        <h4 class="text-capitalize mt-3 mb-4 font-weight-bold">rayon</h4>
+        <div v-if="isLoading" class="w-100 card-loading">
+            <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+        </div>
         <div class="alert alert-danger my-3" v-if="errorMessage">
             {{ errorMessage }}
         </div>
+
+        <div v-if="!isLoading">
+        <h4 class="text-capitalize mt-3 mb-4 font-weight-bold">rayon</h4>
         <div class="row">
             <div class="col-md-6">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Rayon...." @keyup="searchRegion()" v-model="search">
+                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Rayon...." @keyup="searchRegion()" v-model="payloadGet.search">
                     <div class="input-group-append">
                         <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white" @click="searchRegion()"><i class="fa fa-search"></i></a>
                     </div>
@@ -19,7 +24,7 @@
                     <a href="#" class="btn btn-primary btn-block mt-md-1" @click="modalAdd = true">
                         <span class="fas fa-plus"></span> Tambah Rayon
                     </a>
-                    <a href="#" class="btn btn-secondary btn-block mt-md-1" @click="search = ''; getRegions('')">Refresh Data</a>
+                    <a href="#" class="btn btn-secondary btn-block mt-md-1" @click="payloadGet.search = ''; getRegions(payloadGet)">Refresh Data</a>
                 </div>
             </div>
         </div>
@@ -28,9 +33,11 @@
                 <tbody>
                     <tr>
                         <vue-good-table
+                            mode="remote"
                             :columns="columns"
                             :rows="rows"
-                            :pagination-options="paginationOpts"
+                            :pagination-options="{enabled: false}"
+                            @on-sort-change="onSortChange"
                             :sort-options="sortOpts"
                             :fixed-header="true"
                             :line-numbers="true"
@@ -52,6 +59,7 @@
                             </span>
                         </template>
                         </vue-good-table>
+                        <pagination class="mt-3" :pagination="pages" @paginate="getRegions" :offset="2" :data="payloadGet"></pagination>
                     </tr>
                 </tbody>
             </table>
@@ -87,6 +95,7 @@
                 </div>
             </div>
         </modal>
+        </div>
     </div>
 </template>
 
@@ -95,6 +104,8 @@
 import {mapActions, mapMutations, mapGetters, mapState} from 'vuex';
 // modal
 import modalComponent from '../../../components/Modal.vue';
+// pagination
+import paginateComponent from '../../../components/Pagination.vue';
 // vue-select
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
@@ -102,38 +113,24 @@ export default {
     name: 'Regions',
     components: {
         "modal": modalComponent,
-        "select2": vSelect
+        "select2": vSelect,
+        "pagination": paginateComponent
     },
     data(){
         return {
             modalAdd: false,
             modalEdit: false,
             sortOpts: { enabled: true },
-            paginationOpts: {
-                enabled: true,
-                mode: "records",
-                perPage: 30,
-                position: "bottom",
-                perPageDropdown: [10, 50, 100],
-                dropdownAllowAll: true,
-                setCurrentPage: 1,
-                nextLabel: "Next",
-                prevLabel: "Prev",
-                rowsPerPageLabel: "Rows per page",
-                ofLabel: "of",
-                pageLabel: "Page", // for 'pages' mode
-                allLabel: "All",
-            },
             columns: [
                 {
                     label: 'Rayon',
                     field: 'name',
-                    filterOptions: { enabled: true },
+                    filterOptions: { enabled: false },
                 },
                 {
                     label: 'Pembimbing Rayon',
                     field: 'teacher.name',
-                    filterOptions: { enabled: true },
+                    filterOptions: { enabled: false },
                 },
                 {
                     label: "Aksi",
@@ -143,17 +140,31 @@ export default {
                 },
             ],
             rows: [],
-            search: '',
             teachers: [],
             regionPayload: {
                 name: '',
                 teacher_id: null
             },
-            regionEditPayload: {}
+            regionEditPayload: {},
+            pages: {
+                total: 0,
+                per_page: 20,
+                from: 1,
+                to: 0,
+                current_page: 1,
+                last_page: 1,
+            },
+            payloadGet: {
+                search: '',
+                page: 1,
+                per_page: 20,
+                field:"created_at",
+                sort:"ASC"
+            },
         }
     },
     created() {
-        this.getRegions(this.search);
+        this.getRegions(this.payloadGet);
         this.getTeachers();
     },
     computed: {
@@ -164,12 +175,28 @@ export default {
         ...mapActions('teachers', ['getAll']),
 
         searchRegion() {
-            this.getRegions(this.search);
+            this.getRegions(this.payloadGet);
         },
-        getRegions(search) {
-            this.index(search).then((result) => {
-                this.rows = result;
+        getRegions(payload) {
+            this.index(payload).then((result) => {
+                this.rows = result.data;
+                this.pages.total = result.total;
+                this.pages.per_page = result.per_page;
+                this.pages.from = result.from;
+                this.pages.to = result.to;
+                this.pages.current_page = result.current_page;
+                this.pages.last_page = result.last_page;
             })
+        },
+        onSortChange(params) {
+            if(params[0].type == "none"){
+                this.payloadGet.field = "created_at";
+                this.payloadGet.sort = "ASC";
+            }else{
+                this.payloadGet.field = params[0].field;
+                this.payloadGet.sort = params[0].type;
+            }
+            this.getRegions(this.payloadGet);
         },
         getTeachers() {
             this.getAll().then((result) => {
@@ -180,7 +207,7 @@ export default {
             this.create(this.regionPayload).then((result) => {
                 this.modalAdd = false;
                 this.regionPayload.name = '';
-                this.getRegions(this.search);
+                this.getRegions(this.payloadGet);
             })
         },
         showRegion(id) {
@@ -193,7 +220,7 @@ export default {
             let payload = {id: this.regionEditPayload.id, data: this.regionEditPayload};
             this.edit(payload).then((result) => {
                 this.modalEdit = false;
-                this.getRegions(this.search);
+                this.getRegions(this.payloadGet);
             })
         }
     }

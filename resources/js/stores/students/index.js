@@ -10,7 +10,7 @@ const actions = {
     index({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/students/?studentGroup='+payload.studentGroup)
+            axios.get('/students/?studentGroup='+payload.studentGroup+'&page='+payload.page+'&per_page='+payload.per_page+'&search='+payload.search+'&search_value='+payload.searchVal+'&orderBy='+payload.field+'&type='+payload.sort)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -20,10 +20,10 @@ const actions = {
                 })
         })
     },
-    indexWithSG({ commit }) {
+    indexWithSG({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/students/with-student-groups')
+            axios.get('/students/with-student-groups/?page='+payload.page+'&per_page='+payload.per_page+'&search='+payload.search+'&search_value='+payload.searchVal+'&orderBy='+payload.field+'&type='+payload.sort)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -36,7 +36,7 @@ const actions = {
     filterByRegion({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/students/regions/'+payload)
+            axios.get('/students/region/get/?region='+payload.region+'&page='+payload.page+'&per_page='+payload.per_page+'&search='+payload.search+'&search_value='+payload.searchVal+'&orderBy='+payload.field+'&type='+payload.sort)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });
@@ -46,10 +46,10 @@ const actions = {
                 })
         })
     },
-    notSignedStudent({ commit }) {
+    notSignedStudent({ commit }, payload) {
         commit('SET_LOADING', true, { root: true });
         return new Promise((resolve, reject) => {
-            axios.get('/students/regions/check/not-signed')
+            axios.get('/students/regions/check/not-signed/?page='+payload.page+'&per_page='+payload.per_page+'&search='+payload.search+'&search_value='+payload.searchVal+'&orderBy='+payload.field+'&type='+payload.sort)
                 .then((response) => {
                     resolve(response.data);
                     commit('SET_GOOD', null, { root: true });

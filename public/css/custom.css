@@ -63,6 +63,15 @@
     color: #4962AC;
 }
 /* load */
+.card-loading {
+    margin-top: 10%;
+}
+
+.card-loading img {
+    max-width: 240px;
+    width: 100%;
+}
+
 .loader {
     position: absolute;
     width: 100%;

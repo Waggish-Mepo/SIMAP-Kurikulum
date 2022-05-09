@@ -1,6 +1,14 @@
 <template>
     <div style="margin-top: 70px">
         <div class="loader" v-if="isLoading"></div>
+        <div v-if="isLoading" class="w-100 card-loading">
+            <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+        </div>
+        <div class="alert alert-danger my-3" v-if="errorMessage">
+            {{ errorMessage }}
+        </div>
+
+        <div v-if="!isLoading">
         <nav aria-label="breadcrumb" class="nav-breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'gradebooks.period', params: {page: 6} }"><a href="#">Buku Nilai</a></router-link></li>
@@ -9,10 +17,6 @@
                 <li class="breadcrumb-item active" aria-current="page">Rapor Siswa</li>
             </ol>
         </nav>
-
-        <div class="alert alert-danger my-3" v-if="errorMessage">
-            {{ errorMessage }}
-        </div>
 
         <h5 class="text-capitalize">rapor siswa (pengetahuan dan keterampilan)</h5>
         <div class="d-flex flex-column mt-3 text-capitalize">
@@ -152,6 +156,7 @@
                 </div>
             </div>
         </modal>
+        </div>
     </div>
 </template>
 

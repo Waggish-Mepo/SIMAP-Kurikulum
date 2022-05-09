@@ -1,16 +1,20 @@
 <template>
     <div class="mt-2">
         <div class="loader" v-if="isLoading"></div>
+        <div v-if="isLoading" class="w-100 card-loading">
+            <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+        </div>
+        <div class="alert alert-danger my-3" v-if="errorMessage">
+        {{ errorMessage }}
+        </div>
+
+        <div v-if="!isLoading">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'gradebooks.period', params: {page: 6} }"><a href="#">Buku Nilai Periode</a></router-link></li>
                 <li class="breadcrumb-item active" aria-current="page">{{period.title}} {{period.school_year}}</li>
             </ol>
         </nav>
-
-        <div class="alert alert-danger my-3" v-if="errorMessage">
-        {{ errorMessage }}
-        </div>
 
         <div>
             <div class="mb-4" v-for="(subject, index) in courses" :key="index">
@@ -79,6 +83,7 @@
                 </div>
             </div>
         </modal>
+        </div>
     </div>
 </template>
 

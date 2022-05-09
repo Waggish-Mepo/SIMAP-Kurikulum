@@ -1,9 +1,14 @@
 <template>
     <div class="mt-3">
         <div class="loader" v-if="isLoading"></div>
+        <div v-if="isLoading" class="w-100 card-loading">
+            <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+        </div>
         <div class="alert alert-danger mb-3" v-if="errorMessage">
         {{ errorMessage }}
         </div>
+
+        <div v-if="!isLoading">
         <div class="col-12 mt-3">
             <h5 class="mt-3 mb-3">Mata Pelajaran</h5>
             <div class="card w-100 bg-white p-2 mt-3 mb-4" v-if="courses.length > 0" @click="modalAdd = true">
@@ -89,6 +94,7 @@
                 </div>
             </div>
         </modal>
+        </div>
     </div>
 </template>
 

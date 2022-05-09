@@ -1,6 +1,13 @@
 <template>
 <div class="mt-3">
     <div class="loader" v-if="isLoading"></div>
+    <div v-if="isLoading" class="w-100 card-loading">
+        <img src="/assets/img/loading.png" alt="loading" class="d-block m-auto">
+    </div>
+    <div class="alert alert-danger my-3" v-if="errorMessage">
+        {{ errorMessage }}
+    </div>
+    <div v-if="!isLoading">
     <nav aria-label="breadcrumb" class="nav-breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><router-link v-bind:to="{ name: 'gradebooks.period', params: {page: 6} }"><a href="#">Buku Nilai</a></router-link></li>
@@ -9,9 +16,6 @@
         </ol>
     </nav>
 
-    <div class="alert alert-danger my-3" v-if="errorMessage">
-        {{ errorMessage }}
-    </div>
     <div class="d-flex justify-content-between flex-wrap mb-3">
         <div>
             <h5 class="text-capitalize">pengaturan dan komponen nilai pada rapor</h5>
@@ -354,6 +358,7 @@
             <span>Gagal membuka <b>halaman penilaian</b> dikarenakan tidak ditemukannya data <b>rombel</b> pada mata pelajaran <b class="text-capitalize">{{course.caption}} {{course.entry_year_with_class}}</b>. Silahkan atur rombel pada halaman <b>Data Siswa</b></span>
         </div>
     </modal>
+    </div>
 </div>
 </template>
 
