@@ -230,18 +230,32 @@ class StudentController extends Controller
 
         $student = $studentDB->detail($id);
 
-        $studentNext = $studentDB->next($student['nis'], $student['student_group_id'], $id);
-        if($studentNext) {
-            $student['next'] = $studentNext['id'];
+        $studentNext = $studentDB->next($student['nis'], $student['student_group_id'], $id, $student['region_id']);
+
+        if($studentNext['next']) {
+            $student['next'] = $studentNext['next']['id'];
         } else {
             $student['next'] = null;
         }
 
-        $studentPrev = $studentDB->prev($student['nis'], $student['student_group_id'], $id);
-        if($studentPrev) {
-            $student['prev'] = $studentPrev['id'];
+        if($studentNext['next_in_region']) {
+            $student['next_in_region'] = $studentNext['next_in_region']['id'];
+        } else {
+            $student['next_in_region'] = null;
+        }
+
+        $studentPrev = $studentDB->prev($student['nis'], $student['student_group_id'], $id, $student['region_id']);
+
+        if($studentPrev['prev']) {
+            $student['prev'] = $studentPrev['prev']['id'];
         } else {
             $student['prev'] = null;
+        }
+
+        if($studentPrev['prev_in_region']) {
+            $student['prev_in_region'] = $studentPrev['prev_in_region']['id'];
+        } else {
+            $student['prev_in_region'] = null;
         }
 
         return response()->json($student);

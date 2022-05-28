@@ -22,11 +22,17 @@
                 <h5 class="text-capitalize title">{{student.name}}</h5>
                 <p class="text-secondary">{{student.name}} - {{studentGroup.name}}</p>
             </div>
-            <div class="pt-3">
+            <div class="pt-3" v-if="this.roleAccount === 'ADMIN'">
                 <button class="btn btn-white text-dark" v-if="student.prev" @click="prevNext(student.prev)"><span class="fas fa-arrow-left"></span>Sebelumnya</button>
                 <button class="btn btn-white text-dark" v-if="!student.prev" disabled><span class="fas fa-arrow-left"></span>Sebelumnya</button>
                 <button class="btn btn-white text-dark" v-if="student.next" @click="prevNext(student.next)">Selanjutnya <span class="fas fa-arrow-right"></span></button>
                 <button class="btn btn-white text-dark" v-if="!student.next" disabled>Selanjutnya <span class="fas fa-arrow-right"></span></button>
+            </div>
+            <div class="pt-3" v-if="this.roleAccount === 'TEACHER'">
+                <button class="btn btn-white text-dark" v-if="student.prev_in_region" @click="prevNext(student.prev_in_region)"><span class="fas fa-arrow-left"></span>Sebelumnya</button>
+                <button class="btn btn-white text-dark" v-if="!student.prev_in_region" disabled><span class="fas fa-arrow-left"></span>Sebelumnya</button>
+                <button class="btn btn-white text-dark" v-if="student.next_in_region" @click="prevNext(student.next_in_region)">Selanjutnya <span class="fas fa-arrow-right"></span></button>
+                <button class="btn btn-white text-dark" v-if="!student.next_in_region" disabled>Selanjutnya <span class="fas fa-arrow-right"></span></button>
             </div>
         </div>
         <div class="mt-3 d-flex justify-content-between" v-if="subjectGroups.length >= 1">
@@ -250,6 +256,7 @@ export default {
     },
     data() {
         return {
+            roleAccount: null,
             period: {},
             student: {},
             studentGroup: {},
@@ -269,6 +276,7 @@ export default {
         }
     },
     created() {
+        this.getRole();
         this.getPeriod(this.$route.params.period);
         this.getStudentPrevNext(this.$route.params.student);
         this.getReportDetail();
@@ -296,6 +304,10 @@ export default {
         ...mapActions('attitudes', ['index']),
         ...mapActions('studentAttitudes', ['studentAttitudes','createStudentAttitude', 'getStudentAttitudeId', 'editStudentAttitude']),
 
+        getRole() {
+            let user = JSON.parse(localStorage.getItem('user_data'));
+            this.roleAccount = user.role;
+        },
         getPeriod(id) {
             this.detail(id).then((result) => {
                 this.period = result;
