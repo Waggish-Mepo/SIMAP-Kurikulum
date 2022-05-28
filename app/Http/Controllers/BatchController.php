@@ -19,9 +19,9 @@ class BatchController extends Controller
         $perPage = $request->per_page;
 
         if ($search == "") {
-            return response()->json($batchDB->index(['page' => $perPage]));
+            return response()->json($batchDB->index(['page' => $perPage, 'order' => 'batch_name']));
         } else {
-            return response()->json($batchDB->index(['batch_name' => $search, 'page' => $perPage]));
+            return response()->json($batchDB->index(['batch_name' => $search, 'page' => $perPage, 'order' => 'batch_name']));
         }
     }
 
