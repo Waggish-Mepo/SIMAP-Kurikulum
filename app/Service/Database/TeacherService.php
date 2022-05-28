@@ -17,6 +17,7 @@ class TeacherService {
         $orderBy = $filter['order_by'] ?? 'ASC';
         $per_page = $filter['per_page'] ?? 99;
         $withSubject = $filter['with_subject'] ?? false;
+        $withUser = $filter['with_user'] ?? false;
         $name = $filter['teacher_name'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
@@ -24,6 +25,10 @@ class TeacherService {
 
         if ($withSubject) {
             $query->with('subjects');
+        }
+
+        if ($withUser) {
+            $query->with('user');
         }
 
         if ($name) {
