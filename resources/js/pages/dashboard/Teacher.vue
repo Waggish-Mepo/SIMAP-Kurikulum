@@ -35,6 +35,7 @@
                     <tr>
                         <th class="text-center">No.</th>
                         <th>Nama</th>
+                        <th>Akun</th>
                         <th>NUPTK</th>
                         <th>Jenis Kelamin</th>
                         <th>Mata Pelajaran</th>
@@ -45,6 +46,8 @@
                     <tr v-for="(teacher, index) in teachers" :key="index">
                         <td class="text-center">{{index+1}}</td>
                         <td>{{teacher.name}}</td>
+                        <td v-if="teacher.user">{{teacher.user['username']}}</td>
+                        <td v-else>-</td>
                         <td>{{teacher.nuptk}}</td>
                         <td>{{teacher.jk}}</td>
                         <td v-if="teacher.teacher_details_string">{{teacher.teacher_details_string}}</td>

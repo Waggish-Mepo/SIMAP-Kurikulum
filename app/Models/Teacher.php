@@ -23,4 +23,9 @@ class Teacher extends Model
     {
         return $this->hasMany(Region::class);
     }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'userable_id');
+    }
 }

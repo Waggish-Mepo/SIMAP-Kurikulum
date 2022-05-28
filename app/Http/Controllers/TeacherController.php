@@ -26,9 +26,9 @@ class TeacherController extends Controller
         $perPage = $request->per_page;
 
         if($teacherSearch == "") {
-            $teachers = $teachersDB->index(['with_subject' => true, 'per_page' => $perPage]);
+            $teachers = $teachersDB->index(['with_subject' => true, 'with_user' => true, 'per_page' => $perPage]);
         } else {
-            $teachers = $teachersDB->index(['teacher_name' => $teacherSearch,'with_subject' => true, 'per_page' => $perPage]);
+            $teachers = $teachersDB->index(['teacher_name' => $teacherSearch,'with_subject' => true, 'with_user' => true, 'per_page' => $perPage]);
         }
 
         foreach ($teachers as $key => $teacher) {

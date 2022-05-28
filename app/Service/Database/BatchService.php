@@ -12,6 +12,7 @@ use Ramsey\Uuid\Uuid;
 class BatchService {
 
     public function index($filter = []) {
+        $order = $filter['order'] ?? 'created_at';
         $orderBy = $filter['order_by'] ?? 'ASC';
         $batchName = $filter['batch_name'] ?? null;
         $entryYear = $filter['entry_year'] ?? null;
@@ -21,7 +22,7 @@ class BatchService {
         $withStudentGroupsStudents = $filter['with_student_groups_students'] ?? false;
         $withoutPagination = $filter['without_pagination'] ?? false;
 
-        $query = Batch::orderBy('created_at', $orderBy);
+        $query = Batch::orderBy($order, $orderBy);
 
         if ($withMajor) {
             $query->with('major');

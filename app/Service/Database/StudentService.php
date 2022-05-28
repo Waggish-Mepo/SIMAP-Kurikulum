@@ -88,26 +88,48 @@ class StudentService {
         return $student->toArray();
     }
 
-    public function next($nis, $sg, $id)
+    public function next($nis, $sg, $id, $region)
     {
-        $student = Student::where([
+        $studentRegion = Student::where([
+            ['nis', '>=', $nis],
+            ['region_id', $region],
+            ['id', '!=', $id]
+        ])->oldest()->first();
+
+        $studentSG = Student::where([
             ['nis', '>=', $nis],
             ['student_group_id', $sg],
             ['id', '!=', $id]
         ])->oldest()->first();
 
-        return $student;
+        $studentNext = [
+            'next' => $studentSG,
+            'next_in_region' => $studentRegion
+        ];
+
+        return $studentNext;
     }
 
-    public function prev($nis, $sg, $id)
+    public function prev($nis, $sg, $id, $region)
     {
-        $student = Student::where([
+        $studentRegion = Student::where([
+            ['nis', '<=', $nis],
+            ['region_id', $region],
+            ['id', '!=', $id]
+        ])->oldest()->first();
+
+        $studentSG = Student::where([
             ['nis', '<=', $nis],
             ['student_group_id', $sg],
             ['id', '!=', $id]
         ])->oldest()->first();
 
-        return $student;
+        $studentPrev = [
+            'prev' => $studentSG,
+            'prev_in_region' => $studentRegion
+        ];
+
+        return $studentPrev;
     }
 
     public function bulkDetail($studentIds)

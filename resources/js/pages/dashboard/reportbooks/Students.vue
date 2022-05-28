@@ -254,6 +254,7 @@ export default {
                 this.regionIdByTeacher(id).then((result) => {
                     this.regionId = result[0].id;
                     this.payloadGet.region = result[0].id;
+                    this.payloadGet.field = 'nis';
                     this.filterByRegion(this.payloadGet).then((result) => {
                         this.rows = [];
                         if (result.per_page) {
