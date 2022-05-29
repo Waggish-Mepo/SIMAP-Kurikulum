@@ -59,7 +59,8 @@
                                         <td v-if="sc.predicate_letter">{{sc.predicate_letter.letter}}</td>
                                         <td v-if="!sc.predicate_letter">-</td>
                                         <td>
-                                            <span class="text-danger" v-if="sc.final_score < gradebookData.scorebar && sc.final_score !== null">
+                                            <span v-if="sc.final_score == 100" class="text-dark">{{sc.final_score | scoreCheck}}</span>
+                                            <span class="text-danger" v-else-if="sc.final_score < gradebookData.scorebar && sc.final_score !== null">
                                                 {{sc.final_score | scoreCheck}}
                                             </span>
                                             <span v-else>{{sc.final_score | scoreCheck}}</span>
@@ -118,7 +119,8 @@
                                         <td v-if="sc.predicate_letter">{{sc.predicate_letter.letter}}</td>
                                         <td v-if="!sc.predicate_letter">-</td>
                                         <td>
-                                            <span class="text-danger" v-if="sc.final_score < gradebookData.scorebar && sc.final_score !== null">
+                                            <span v-if="sc.final_score == 100" class="text-dark">{{sc.final_score | scoreCheck}}</span>
+                                            <span class="text-danger" v-else-if="sc.final_score < gradebookData.scorebar && sc.final_score !== null">
                                                 {{sc.final_score | scoreCheck}}
                                             </span>
                                             <span v-else>{{sc.final_score | scoreCheck}}</span>
