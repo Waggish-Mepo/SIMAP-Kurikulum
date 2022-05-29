@@ -67,7 +67,8 @@
                         <td>{{scorecard.gradebook.course.subject['name']}}</td>
                         <td class="text-center">{{scorecard.gradebook.scorebar}}</td>
                         <td class="text-center">
-                            <span class="text-danger" v-if="scorecard.final_score < scorecard.gradebook.scorebar && scorecard.final_score !== null">{{scorecard.final_score | scoreCheck}}</span>
+                            <span class="text-dark" v-if="scorecard.final_score == 100">{{scorecard.final_score | scoreCheck}}</span>
+                            <span class="text-danger" v-else-if="scorecard.final_score < scorecard.gradebook.scorebar && scorecard.final_score !== null">{{scorecard.final_score | scoreCheck}}</span>
                             <span class="text-dark" v-else>{{scorecard.final_score | scoreCheck}}</span>
                         </td>
                         <td class="text-center">{{scorecard.predicate_desc['letter']}}</td>
@@ -98,15 +99,18 @@
                         <td>{{scorecard.gradebook.course.subject['name']}}</td>
                         <td class="text-center">{{scorecard.gradebook.scorebar}}</td>
                         <td class="text-center">
-                            <span class="text-danger" v-if="scorecard.knowledge_score < scorecard.gradebook.scorebar && scorecard.knowledge_score !== null">{{scorecard.knowledge_score | scoreCheck}}</span>
+                            <span class="text-dark" v-if="scorecard.knowledge_score == 100">{{scorecard.knowledge_score | scoreCheck}}</span>
+                            <span class="text-danger" v-else-if="scorecard.knowledge_score < scorecard.gradebook.scorebar && scorecard.knowledge_score !== null">{{scorecard.knowledge_score | scoreCheck}}</span>
                             <span class="text-dark" v-else>{{scorecard.knowledge_score | scoreCheck}}</span>
                         </td>
                         <td class="text-center">
-                            <span class="text-danger" v-if="scorecard.skill_score < scorecard.gradebook.scorebar && scorecard.skill_score !== null">{{scorecard.skill_score | scoreCheck}}</span>
+                            <span class="text-dark" v-if="scorecard.skill_score == 100">{{scorecard.skill_score | scoreCheck}}</span>
+                            <span class="text-danger" v-else-if="scorecard.skill_score < scorecard.gradebook.scorebar && scorecard.skill_score !== null">{{scorecard.skill_score | scoreCheck}}</span>
                             <span class="text-dark" v-else>{{scorecard.skill_score | scoreCheck}}</span>
                         </td>
                         <td class="text-center">
-                            <span class="text-danger" v-if="scorecard.final_score < scorecard.gradebook.scorebar && scorecard.final_score !== null">{{scorecard.final_score | scoreCheck}}</span>
+                            <span class="text-dark" v-if="scorecard.final_score == 100">{{scorecard.final_score | scoreCheck}}</span>
+                            <span class="text-danger" v-else-if="scorecard.final_score < scorecard.gradebook.scorebar && scorecard.final_score !== null">{{scorecard.final_score | scoreCheck}}</span>
                             <span class="text-dark" v-else>{{scorecard.final_score | scoreCheck}}</span>
                         </td>
                         <td class="text-center">{{scorecard.predicate_desc['letter']}}</td>
