@@ -18,7 +18,7 @@
         <div class="row mt-3">
             <div class="col-md-6">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Rombel...." @keyup="searchStudentGroup" v-model="payload.search">
+                    <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Rombel...." v-model="payload.search">
                     <div class="input-group-append">
                         <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white"><i class="fas fa-search"></i></a>
                     </div>

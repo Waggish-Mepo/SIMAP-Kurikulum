@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-md-6">
             <div class="input-group mb-3">
-                <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Mapel...." @keyup="searchSubject()" v-model="search">
+                <input type="text" class="form-control input-text shadow-sm bg-white" placeholder="Cari Mapel...." v-model="search">
                 <div class="input-group-append">
                     <a href="#" class="btn btn-outline-muted btn-lg shadow-sm bg-white" @click="searchSubject()"><i class="fa fa-search"></i></a>
                 </div>
