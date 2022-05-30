@@ -43,7 +43,7 @@ class ReportbookController extends Controller
                     $groups[] = $subject['group'];
                 }
             }
-            $reportbook[0]['subjectGroups'] = $groups;
+            $reportbook[0]['subjectGroups'] = collect($groups)->sort()->values();
 
             return response()->json($reportbook[0]);
         } else {
