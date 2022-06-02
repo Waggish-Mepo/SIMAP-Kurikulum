@@ -17,7 +17,7 @@
         </nav>
 
         <h4 class="text-capitalize mt-3 mb-4 font-weight-bold">Daftar Siswa Rayon {{region.name}}</h4>
-        <div class="col-md-6">
+        <div class="col-md-6" v-if="this.user.role === 'ADMIN'">
             <div class="d-flex">
                 <router-link v-bind:to="{ name: 'regions.students.add', params: {page: 8, region: region.id} }" class="btn btn-primary btn-block mt-md-1">
                     <span class="fas fa-plus"></span> Tambah Siswa
@@ -169,7 +169,7 @@ export default {
                             } else {
                                 this.rows.push(result.data[i]);
                             }
-                        }   
+                        }
                     } else {
                         this.rows = result.data;
                     }
